@@ -1,0 +1,72 @@
+{
+  "id": "5164916",
+  "name": "拼个壳",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "23929824",
+      "name": "sdk-贴纸",
+      "font_class": "sdk-tiezhi",
+      "unicode": "e732",
+      "unicode_decimal": 59186
+    },
+    {
+      "icon_id": "25542058",
+      "name": "发动机支架",
+      "font_class": "fadongjizhijia",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "30394618",
+      "name": "贴纸 星",
+      "font_class": "a-tiezhixing",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "16665711",
+      "name": "款式",
+      "font_class": "kuanshi",
+      "unicode": "e714",
+      "unicode_decimal": 59156
+    },
+    {
+      "icon_id": "4548178",
+      "name": "应用中心_卡通动漫",
+      "font_class": "dongman",
+      "unicode": "e7cc",
+      "unicode_decimal": 59340
+    },
+    {
+      "icon_id": "9319054",
+      "name": "一卡通平台",
+      "font_class": "ziyuan",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "39912531",
+      "name": "卡通狗",
+      "font_class": "katonggou",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "40084568",
+      "name": "卡通笑脸",
+      "font_class": "katongxiaolian",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "46530230",
+      "name": "卡通海豚-copy-copy",
+      "font_class": "icon--haitun-3",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}

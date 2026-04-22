@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link href="css/google-fonts.css" rel="stylesheet" />
+    <link href="css/material-symbols.css" rel="stylesheet" />
+    <script src="js/tailwindcss.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        surface: '#F5F5F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .canvas-grid {
+            background-size: 40px 40px;
+            background-image: radial-gradient(circle, #dbdddd 1px, transparent 1px);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .glass-toolbar {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .phone-shadow {
+            box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+
+        .tool-active {
+            border: 3px solid #FFD700 !important;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            background-color: #fffbeb !important;
+        }
+
+        .tool-icon-container {
+            transition: all 0.2s ease-in-out;
+        }
+
+        #draggable-toolbar {
+            user-select: none;
+            touch-action: none;
+            cursor: default;
+        }
+
+        #toolbar-handle {
+            cursor: grab;
+        }
+
+        #toolbar-handle:active {
+            cursor: grabbing;
+        }
+
+        .canvas-layer {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            border: 2px solid transparent;
+            transition: border 0.2s ease;
+        }
+
+        .canvas-layer:hover {
+            border: 2px solid #FFD700;
+        }
+
+        .brush-layer-container:hover {
+            border: 2px solid #3b82f6;
+        }
+
+        .layer-controls {
+            display: none;
+        }
+
+        .canvas-layer:hover .layer-controls,
+        .brush-layer-container:hover .layer-controls {
+            display: block;
+        }
+
+        .layer-btn {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .layer-close {
+            top: -12px;
+            right: -12px;
+            color: #ef4444;
+        }
+
+        .layer-resize {
+            bottom: -12px;
+            right: -12px;
+            color: #FFD700;
+            cursor: nwse-resize;
+        }
+
+        /* 3D Transform Styles */
+        #scene-3d {
+            perspective: 1200px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+
+        #phone-container {
+            position: relative;
+            width: 280px;
+            height: 560px;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        .phone-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 3.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .phone-back {
+            background: white;
+            transform: translateZ(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .phone-front {
+            background: #111;
+            transform: rotateY(180deg) translateZ(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .phone-edge-container {
+            position: absolute;
+            inset: 0;
+            transform-style: preserve-3d;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .phone-side {
+            position: absolute;
+            background: #d1d1d1;
+            backface-visibility: visible;
+        }
+
+        .phone-edge-right {
+            width: 20px;
+            height: calc(100% - 7rem);
+            right: -10px;
+            top: 3.5rem;
+            transform: rotateY(90deg);
+        }
+
+        .phone-edge-left {
+            width: 20px;
+            height: calc(100% - 7rem);
+            left: -10px;
+            top: 3.5rem;
+            transform: rotateY(-90deg);
+        }
+
+        .phone-edge-top {
+            width: calc(100% - 7rem);
+            height: 20px;
+            top: -10px;
+            left: 3.5rem;
+            transform: rotateX(90deg);
+        }
+
+        .phone-edge-bottom {
+            width: calc(100% - 7rem);
+            height: 20px;
+            bottom: -10px;
+            left: 3.5rem;
+            transform: rotateX(-90deg);
+        }
+
+        .corner-3d {
+            position: absolute;
+            width: 7rem;
+            height: 7rem;
+            transform-style: preserve-3d;
+        }
+
+        .corner-3d::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 20px solid #d1d1d1;
+            border-radius: 3.5rem;
+            transform: translateZ(-10px);
+        }
+
+        .corner-tl {
+            top: 0;
+            left: 0;
+        }
+
+        .corner-tr {
+            top: 0;
+            right: 0;
+            transform: scaleX(-1);
+        }
+
+        .corner-bl {
+            bottom: 0;
+            left: 0;
+            transform: scaleY(-1);
+        }
+
+        .corner-br {
+            bottom: 0;
+            right: 0;
+            transform: scale(-1);
+        }
+
+        .phone-face-middle {
+            position: absolute;
+            inset: 0;
+            border-radius: 3.5rem;
+            background: #d1d1d1;
+            transform: translateZ(0px);
+            height: 100%;
+            width: 100%;
+        }
+
+        .preview-active #zoom-target {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .preview-active #scene-3d {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .footer-hidden {
+            transform: translateY(100%);
+        }
+    </style>
+    <script>
+        let historyStack = [];
+        let redoStack = [];
+        const MAX_HISTORY = 50;
+        let canvasScale = 1.0;
+        let is3DMode = false;
+        
+        // 画笔相关变量
+        let isDrawing = false;
+        let isDragging = false;
+        let lastX = 0;
+        let lastY = 0;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let brushColor = '#000000';
+        let brushSize = 5;
+        let brushMode = 'draw'; // 'draw' 或 'erase'
+        let currentBrushLayer = null;
+        let selectedBrushLayer = null;
+        let brushLayerCounter = 0;
+
+        function zoomCanvas(delta) {
+            const target = document.getElementById('zoom-target');
+            if (!target) return;
+
+            canvasScale = Math.min(Math.max(0.5, canvasScale + delta), 2.0);
+            target.style.transform = `scale(${canvasScale})`;
+            target.style.transition = 'transform 0.2s ease-out';
+        }
+
+        function saveState() {
+            const canvas = document.querySelector('#zoom-target .w-full.h-full');
+            const zoomTarget = document.getElementById('zoom-target');
+            if (!canvas || !zoomTarget) return;
+
+            const bgNameElement = document.querySelector('#toolbar-default .font-bold.text-xs');
+
+            const state = {
+                canvasHTML: canvas.innerHTML,
+                scale: canvasScale,
+                bgName: bgNameElement ? bgNameElement.textContent : ''
+            };
+
+            historyStack.push(JSON.stringify(state));
+            if (historyStack.length > MAX_HISTORY) historyStack.shift();
+            redoStack = [];
+            updateUndoRedoUI();
+            if (is3DMode) update3DContent();
+        }
+        
+        // 画笔绘制相关函数
+        function startDrawing(e) {
+            if (currentTool !== 'brush') return;
+            
+            const canvas = document.querySelector('#zoom-target .w-full.h-full');
+            if (!canvas) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // 检查是否点击在某个画笔图层上
+            let clickedLayer = null;
+            const brushLayers = canvas.querySelectorAll('.brush-layer-container');
+            
+            // 从上层图层开始检查
+            for (let i = brushLayers.length - 1; i >= 0; i--) {
+                const layerContainer = brushLayers[i];
+                const layer = layerContainer.querySelector('.brush-layer-canvas');
+                const layerX = mouseX - parseInt(layerContainer.style.left || 0);
+                const layerY = mouseY - parseInt(layerContainer.style.top || 0);
+                
+                if (layerX >= 0 && layerX < layer.width && layerY >= 0 && layerY < layer.height) {
+                    const ctx = layer.getContext('2d');
+                    const imageData = ctx.getImageData(layerX, layerY, 1, 1);
+                    const pixel = imageData.data;
+                    const isOverDrawing = pixel[3] > 0; // 检查 alpha 通道
+                    
+                    if (isOverDrawing) {
+                        clickedLayer = layerContainer;
+                        break;
+                    }
+                }
+            }
+            
+            if (clickedLayer) {
+                // 选中该图层
+                selectBrushLayer(clickedLayer);
+                
+                // 开始拖拽
+                isDragging = true;
+                dragStartX = mouseX;
+                dragStartY = mouseY;
+                
+                // 添加鼠标移动和释放事件监听器
+                document.addEventListener('mousemove', dragDrawing);
+                document.addEventListener('mouseup', stopDragging);
+            } else {
+                // 创建新的画笔图层容器
+                brushLayerCounter++;
+                const layerId = `brush-layer-${brushLayerCounter}`;
+                
+                const layerContainer = document.createElement('div');
+                layerContainer.id = layerId;
+                layerContainer.className = 'brush-layer-container absolute pointer-events-auto';
+                layerContainer.style.left = '0px';
+                layerContainer.style.top = '0px';
+                layerContainer.style.width = canvas.clientWidth + 'px';
+                layerContainer.style.height = canvas.clientHeight + 'px';
+                layerContainer.style.zIndex = '100';
+                
+                const drawingCanvas = document.createElement('canvas');
+                drawingCanvas.className = 'brush-layer-canvas w-full h-full';
+                drawingCanvas.width = canvas.clientWidth;
+                drawingCanvas.height = canvas.clientHeight;
+                
+                // 添加控制按钮
+                const controlsDiv = document.createElement('div');
+                controlsDiv.className = 'layer-controls';
+                controlsDiv.innerHTML = `
+                    <div class="layer-btn layer-close" onclick="removeBrushLayer('${layerId}')">
+                        <span class="material-symbols-outlined">close</span>
+                    </div>
+                    <div class="layer-btn layer-resize" onmousedown="resizeBrushLayer(event, '${layerId}')">
+                        <span class="material-symbols-outlined">resize</span>
+                    </div>
+                `;
+                
+                layerContainer.appendChild(drawingCanvas);
+                layerContainer.appendChild(controlsDiv);
+                canvas.appendChild(layerContainer);
+                
+                // 添加点击事件监听器，无论当前工具是什么都可以选中图层
+                layerContainer.addEventListener('mousedown', function(e) {
+                    // 如果点击的是控制按钮，不执行选中逻辑
+                    if (e.target.closest('.layer-btn')) return;
+                    
+                    // 选中该图层
+                    selectBrushLayer(layerContainer);
+                    
+                    // 开始拖拽
+                    isDragging = true;
+                    const rect = document.querySelector('#zoom-target .w-full.h-full').getBoundingClientRect();
+                    dragStartX = e.clientX - rect.left;
+                    dragStartY = e.clientY - rect.top;
+                    
+                    // 添加鼠标移动和释放事件监听器
+                    document.addEventListener('mousemove', dragDrawing);
+                    document.addEventListener('mouseup', stopDragging);
+                });
+                
+                // 设置当前图层
+                currentBrushLayer = layerContainer;
+                
+                // 开始绘制
+                isDrawing = true;
+                lastX = mouseX;
+                lastY = mouseY;
+                
+                // 开始绘制
+                const ctx = drawingCanvas.getContext('2d');
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                
+                // 添加鼠标移动和释放事件监听器
+                document.addEventListener('mousemove', draw);
+                document.addEventListener('mouseup', stopDrawing);
+            }
+        }
+        
+        // 选择画笔图层
+        function selectBrushLayer(layer) {
+            // 移除所有图层的选中状态
+            const brushLayers = document.querySelectorAll('.brush-layer-container');
+            brushLayers.forEach(l => {
+                l.style.border = 'none';
+                const controls = l.querySelector('.layer-controls');
+                if (controls) controls.style.display = 'none';
+            });
+            
+            // 设置当前选中的图层
+            selectedBrushLayer = layer;
+            // 添加选中状态样式
+            layer.style.border = '2px solid #3b82f6';
+            // 显示控制按钮
+            const controls = layer.querySelector('.layer-controls');
+            if (controls) controls.style.display = 'block';
+        }
+        
+        // 拖拽绘制内容
+        function dragDrawing(e) {
+            if (!isDragging || !selectedBrushLayer) return;
+            
+            const rect = document.querySelector('#zoom-target .w-full.h-full').getBoundingClientRect();
+            const currentX = e.clientX - rect.left;
+            const currentY = e.clientY - rect.top;
+            
+            const deltaX = currentX - dragStartX;
+            const deltaY = currentY - dragStartY;
+            
+            // 更新图层位置
+            const currentLeft = parseInt(selectedBrushLayer.style.left || 0);
+            const currentTop = parseInt(selectedBrushLayer.style.top || 0);
+            
+            selectedBrushLayer.style.left = (currentLeft + deltaX) + 'px';
+            selectedBrushLayer.style.top = (currentTop + deltaY) + 'px';
+            
+            // 更新拖拽起点
+            dragStartX = currentX;
+            dragStartY = currentY;
+        }
+        
+        // 停止拖拽
+        function stopDragging() {
+            if (!isDragging) return;
+            
+            isDragging = false;
+            
+            // 移除事件监听器
+            document.removeEventListener('mousemove', dragDrawing);
+            document.removeEventListener('mouseup', stopDragging);
+            
+            // 保存状态
+            saveState();
+        }
+        
+        function draw(e) {
+            if (!isDrawing || !currentBrushLayer) return;
+            
+            const canvas = currentBrushLayer.querySelector('.brush-layer-canvas');
+            if (!canvas) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            
+            const currentX = e.clientX - rect.left;
+            const currentY = e.clientY - rect.top;
+            
+            // 设置绘制样式
+            const ctx = canvas.getContext('2d');
+            ctx.lineWidth = brushSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            if (brushMode === 'draw') {
+                // 绘制模式
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.strokeStyle = brushColor;
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+            } else if (brushMode === 'erase') {
+                // 橡皮擦模式
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(lastX, lastY, brushSize / 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+            }
+            
+            lastX = currentX;
+            lastY = currentY;
+        }
+        
+        function stopDrawing() {
+            if (!isDrawing) return;
+            
+            isDrawing = false;
+            
+            // 移除事件监听器
+            document.removeEventListener('mousemove', draw);
+            document.removeEventListener('mouseup', stopDrawing);
+            
+            // 计算绘制内容的边界框并调整图层大小
+            if (currentBrushLayer) {
+                const canvas = currentBrushLayer.querySelector('.brush-layer-canvas');
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    
+                    let minX = canvas.width;
+                    let minY = canvas.height;
+                    let maxX = 0;
+                    let maxY = 0;
+                    
+                    // 遍历像素，找到绘制内容的边界
+                    for (let y = 0; y < canvas.height; y++) {
+                        for (let x = 0; x < canvas.width; x++) {
+                            const index = (y * canvas.width + x) * 4;
+                            const alpha = data[index + 3];
+                            
+                            if (alpha > 0) {
+                                if (x < minX) minX = x;
+                                if (x > maxX) maxX = x;
+                                if (y < minY) minY = y;
+                                if (y > maxY) maxY = y;
+                            }
+                        }
+                    }
+                    
+                    // 如果有绘制内容，调整图层大小和位置
+                    if (minX < maxX && minY < maxY) {
+                        const padding = 10; // 添加一些内边距
+                        const width = maxX - minX + padding * 2;
+                        const height = maxY - minY + padding * 2;
+                        
+                        // 创建新的canvas，只包含绘制内容
+                        const newCanvas = document.createElement('canvas');
+                        newCanvas.className = 'brush-layer-canvas w-full h-full';
+                        newCanvas.width = width;
+                        newCanvas.height = height;
+                        
+                        const newCtx = newCanvas.getContext('2d');
+                        newCtx.drawImage(canvas, minX - padding, minY - padding, width, height, 0, 0, width, height);
+                        
+                        // 替换原有的canvas
+                        const oldCanvas = currentBrushLayer.querySelector('.brush-layer-canvas');
+                        if (oldCanvas) {
+                            oldCanvas.remove();
+                        }
+                        
+                        currentBrushLayer.appendChild(newCanvas);
+                        
+                        // 调整图层容器的大小和位置
+                        const currentLeft = parseInt(currentBrushLayer.style.left || 0);
+                        const currentTop = parseInt(currentBrushLayer.style.top || 0);
+                        
+                        currentBrushLayer.style.width = width + 'px';
+                        currentBrushLayer.style.height = height + 'px';
+                        currentBrushLayer.style.left = (currentLeft + minX - padding) + 'px';
+                        currentBrushLayer.style.top = (currentTop + minY - padding) + 'px';
+                    }
+                }
+            }
+            
+            // 重置当前画笔图层
+            currentBrushLayer = null;
+            
+            // 保存状态
+            saveState();
+            
+            // 松开鼠标后去掉画笔工具的选中，切换到默认工具
+            selectTool(null, 'default');
+        }
+        
+        // 画笔工具控制函数
+        function setBrushColor(color) {
+            brushColor = color;
+        }
+        
+        function setBrushSize(size) {
+            brushSize = size;
+        }
+        
+        function setBrushMode(mode) {
+            brushMode = mode;
+        }
+        
+        // 删除画笔图层
+        window.removeBrushLayer = function(layerId) {
+            const layer = document.getElementById(layerId);
+            if (layer) {
+                layer.remove();
+                if (selectedBrushLayer === layer) {
+                    selectedBrushLayer = null;
+                }
+                saveState();
+            }
+        };
+        
+        // 调整画笔图层大小
+        window.resizeBrushLayer = function(e, layerId) {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            const layer = document.getElementById(layerId);
+            if (!layer) return;
+            
+            const canvas = layer.querySelector('.brush-layer-canvas');
+            if (!canvas) return;
+            
+            let startX = e.clientX;
+            let startY = e.clientY;
+            let startWidth = layer.offsetWidth;
+            let startHeight = layer.offsetHeight;
+            
+            // 改变鼠标指针样式
+            document.body.style.cursor = 'nwse-resize';
+            
+            function handleMouseMove(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+                
+                // 只允许向右和向下调整大小
+                const newWidth = Math.max(50, startWidth + deltaX);
+                const newHeight = Math.max(50, startHeight + deltaY);
+                
+                layer.style.width = newWidth + 'px';
+                layer.style.height = newHeight + 'px';
+                
+                // 调整canvas大小
+                canvas.style.width = newWidth + 'px';
+                canvas.style.height = newHeight + 'px';
+            }
+            
+            function handleMouseUp(e) {
+                e.stopPropagation();
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+                // 恢复鼠标指针样式
+                document.body.style.cursor = '';
+                saveState();
+            }
+            
+            // 添加事件监听器
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        };
+        
+        // 点击页面其他地方时，移除画笔图层的选中状态
+        document.addEventListener('click', function(e) {
+            // 检查点击的目标是否是画笔图层或其控制按钮
+            const isBrushLayer = e.target.closest('.brush-layer-container');
+            const isBrushTool = e.target.closest('[data-tool="brush"]');
+            
+            // 如果点击的不是画笔图层且不是画笔工具，则移除所有画笔图层的选中状态
+            if (!isBrushLayer && !isBrushTool) {
+                const brushLayers = document.querySelectorAll('.brush-layer-container');
+                brushLayers.forEach(layer => {
+                    layer.style.border = 'none';
+                    const controls = layer.querySelector('.layer-controls');
+                    if (controls) controls.style.display = 'none';
+                });
+                // 重置选中的图层
+                selectedBrushLayer = null;
+            }
+        });
+
+        function undo() {
+            if (historyStack.length <= 1) return;
+            const currentState = historyStack.pop();
+            redoStack.push(currentState);
+            const prevState = JSON.parse(historyStack[historyStack.length - 1]);
+            applyState(prevState);
+            updateUndoRedoUI();
+        }
+
+        function redo() {
+            if (redoStack.length === 0) return;
+            const stateToRestore = JSON.parse(redoStack.pop());
+            historyStack.push(JSON.stringify(stateToRestore));
+            applyState(stateToRestore);
+            updateUndoRedoUI();
+        }
+
+        function applyState(state) {
+            const canvas = document.querySelector('#zoom-target .w-full.h-full');
+            const zoomTarget = document.getElementById('zoom-target');
+
+            if (canvas) canvas.innerHTML = state.canvasHTML;
+            if (zoomTarget) {
+                canvasScale = state.scale;
+                zoomTarget.style.transform = `scale(${canvasScale})`;
+            }
+
+            if (canvas) {
+                // 重新绑定文字图层的事件
+                const layers = canvas.querySelectorAll('.canvas-layer');
+                layers.forEach(layer => bindLayerEvents(layer));
+                
+                // 重新绑定画笔图层的事件
+                const brushLayers = canvas.querySelectorAll('.brush-layer-container');
+                brushLayers.forEach(layer => {
+                    // 添加点击事件监听器，无论当前工具是什么都可以选中图层
+                    layer.addEventListener('mousedown', function(e) {
+                        // 如果点击的是控制按钮，不执行选中逻辑
+                        if (e.target.closest('.layer-btn')) return;
+                        
+                        // 选中该图层
+                        selectBrushLayer(layer);
+                        
+                        // 开始拖拽
+                        isDragging = true;
+                        const rect = document.querySelector('#zoom-target .w-full.h-full').getBoundingClientRect();
+                        dragStartX = e.clientX - rect.left;
+                        dragStartY = e.clientY - rect.top;
+                        
+                        // 添加鼠标移动和释放事件监听器
+                        document.addEventListener('mousemove', dragDrawing);
+                        document.addEventListener('mouseup', stopDragging);
+                    });
+                });
+            }
+            update3DContent();
+        }
+
+        function updateUndoRedoUI() {
+            const undoBtn = document.querySelector('[title="撤销"]');
+            const redoBtn = document.querySelector('[title="重做"]');
+            if (undoBtn) undoBtn.style.opacity = historyStack.length > 1 ? '1' : '0.3';
+            if (redoBtn) redoBtn.style.opacity = redoStack.length > 0 ? '1' : '0.3';
+        }
+
+        function toggleDrawer(drawerId) {
+            const panels = ['panel-layout', 'panel-deco'];
+            const targetPanelId = drawerId === 'drawer-layout' ? 'panel-layout' : 'panel-deco';
+
+            panels.forEach(id => {
+                const panel = document.getElementById(id);
+                if (id === targetPanelId) {
+                    const isHidden = panel.classList.contains('-translate-x-full');
+                    if (isHidden) {
+                        panel.classList.remove('-translate-x-full', 'opacity-0');
+                        panel.classList.add('translate-x-0', 'opacity-100');
+                    } else {
+                        panel.classList.add('-translate-x-full', 'opacity-0');
+                        panel.classList.remove('translate-x-0', 'opacity-100');
+                    }
+                } else {
+                    panel.classList.add('-translate-x-full', 'opacity-0');
+                    panel.classList.remove('translate-x-10', 'opacity-100');
+                }
+            });
+        }
+
+        let currentTool = 'default';
+        let textToolUsed = false;
+        let textToolBtn = null;
+
+        function selectTool(btn, toolType) {
+            currentTool = toolType;
+            textToolUsed = false; // 重置文字工具使用状态
+            textToolBtn = btn; // 保存文字工具按钮引用
+            const footer = document.querySelector('footer');
+            const zoomTarget = document.getElementById('zoom-target');
+
+            if (toolType === 'default' || toolType === null) {
+                footer.classList.add('footer-hidden');
+                if (zoomTarget) {
+                    zoomTarget.style.cursor = 'default';
+                    zoomTarget.removeEventListener('click', handleTextToolClick);
+                }
+            } else {
+                footer.classList.remove('footer-hidden');
+                if (toolType === 'text' && zoomTarget) {
+                    zoomTarget.style.cursor = 'text';
+                    zoomTarget.addEventListener('click', handleTextToolClick);
+                    zoomTarget.removeEventListener('mousedown', startDrawing);
+                } else if (toolType === 'brush' && zoomTarget) {
+                    zoomTarget.style.cursor = 'crosshair';
+                    zoomTarget.addEventListener('mousedown', startDrawing);
+                    zoomTarget.removeEventListener('click', handleTextToolClick);
+                } else if (zoomTarget) {
+                    zoomTarget.style.cursor = 'default';
+                    zoomTarget.removeEventListener('click', handleTextToolClick);
+                    zoomTarget.removeEventListener('mousedown', startDrawing);
+                }
+            }
+
+            document.querySelectorAll('.tool-active').forEach(el => el.classList.remove('tool-active'));
+            // 为所有工具添加高亮，包括文字工具
+            if (btn) {
+                btn.querySelector('.tool-icon-container').classList.add('tool-active');
+            }
+
+            const toolbars = ['toolbar-default', 'toolbar-text', 'toolbar-sticker', 'toolbar-upload', 'toolbar-brush', 'toolbar-filter', 'toolbar-accent', 'toolbar-stand'];
+            const targetToolbar = 'toolbar-' + toolType;
+
+            toolbars.forEach(id => {
+                const tb = document.getElementById(id);
+                if (tb) {
+                    if (id === targetToolbar) {
+                        tb.classList.remove('hidden');
+                        tb.classList.add('flex');
+                    } else {
+                        tb.classList.add('hidden');
+                        tb.classList.remove('flex');
+                    }
+                }
+            });
+        }
+
+        let currentTextLayer = null;
+
+        function handleTextToolClick(e) {
+            if (currentTool !== 'text' || textToolUsed) return;
+
+            // 标记文字工具已使用，防止再次点击创建文本框
+            textToolUsed = true;
+
+            // 去掉文字工具的高亮显示
+            if (textToolBtn) {
+                textToolBtn.querySelector('.tool-icon-container').classList.remove('tool-active');
+            }
+
+            const zoomTarget = document.getElementById('zoom-target');
+            const canvas = zoomTarget.querySelector('.w-full.h-full');
+            if (!canvas) return;
+
+            // 计算点击位置相对于canvas的坐标
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // 创建文本元素
+            const textLayerId = 'text-layer-' + Date.now();
+            const textLayer = document.createElement('div');
+            textLayer.id = textLayerId;
+            textLayer.className = 'canvas-layer group';
+            textLayer.style.width = '200px';
+            textLayer.style.minHeight = '40px';
+            textLayer.style.top = y + 'px';
+            textLayer.style.left = x + 'px';
+            textLayer.style.zIndex = '10';
+            textLayer.style.backgroundColor = 'transparent';
+
+            // 创建可编辑的文本内容
+            textLayer.innerHTML = `
+                <div class="w-full h-full" style="position: relative;">
+                    <div class="w-full h-full p-2" contenteditable="true" style="outline: none; font-size: 24px; font-family: 'Quicksand', sans-serif; color: #000000;" onmousedown="event.stopPropagation();" ontouchstart="event.stopPropagation();" onclick="selectTextLayer('${textLayerId}')">
+                        输入文字
+                    </div>
+                </div>
+                <div class="layer-controls">
+                    <div class="layer-btn layer-close" onclick="removeLayer('${textLayerId}')">
+                        <span class="material-symbols-outlined">close</span>
+                    </div>
+                    <div class="layer-btn layer-resize" onmousedown="resizeLayer(event, '${textLayerId}')">
+                        <span class="material-symbols-outlined">resize</span>
+                    </div>
+                </div>
+            `;
+
+            canvas.appendChild(textLayer);
+            bindLayerEvents(textLayer);
+
+            // 设置当前文本图层
+            currentTextLayer = textLayer;
+
+            // 自动聚焦到文本框
+            const editableDiv = textLayer.querySelector('[contenteditable]');
+            if (editableDiv) {
+                editableDiv.focus();
+                // 选择所有文本以便用户直接输入
+                const range = document.createRange();
+                const selection = window.getSelection();
+                range.selectNodeContents(editableDiv);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+
+            saveState();
+        }
+
+        // 选择文本图层
+        function selectTextLayer(layerId) {
+            currentTextLayer = document.getElementById(layerId);
+            // 更新工具栏显示
+            if (currentTextLayer) {
+                const editableDiv = currentTextLayer.querySelector('[contenteditable]');
+                if (editableDiv) {
+                    // 更新字体大小显示
+                    const fontSize = parseInt(editableDiv.style.fontSize) || 24;
+                    document.getElementById('font-size-display').textContent = fontSize;
+                    // 更新字体颜色显示
+                    const fontColor = editableDiv.style.color || '#000000';
+                    document.getElementById('font-color-picker').value = fontColor;
+                    // 更新字体选择器显示
+                    const fontFamily = editableDiv.style.fontFamily;
+                    if (fontFamily) {
+                        const fontName = fontFamily.replace(/['"]/g, '').replace(', sans-serif', '');
+                        const valueSpan = document.getElementById('font-selector-value');
+                        if (valueSpan) {
+                            valueSpan.textContent = fontName;
+                            // 更新字体样式类
+                            valueSpan.className = '';
+                            if (fontName === 'Quicksand') {
+                                valueSpan.classList.add('font-playful');
+                            } else if (fontName === 'Pacifico') {
+                                valueSpan.classList.add('font-script');
+                            } else if (fontName === 'Fredoka One') {
+                                valueSpan.classList.add('font-bold');
+                            } else if (fontName === 'Plus Jakarta Sans') {
+                                valueSpan.classList.add('font-headline');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 更改字体
+        function changeFont(fontName) {
+            if (currentTextLayer) {
+                const editableDiv = currentTextLayer.querySelector('[contenteditable]');
+                if (editableDiv) {
+                    editableDiv.style.fontFamily = `'${fontName}', sans-serif`;
+                    saveState();
+                }
+            }
+        }
+
+        // 切换字体选择器下拉菜单
+        function toggleFontSelector() {
+            const dropdown = document.getElementById('font-selector-dropdown');
+            const arrow = document.getElementById('font-selector-arrow');
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                dropdown.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // 选择字体
+        function selectFont(fontName) {
+            const valueSpan = document.getElementById('font-selector-value');
+            valueSpan.textContent = fontName;
+            changeFont(fontName);
+            toggleFontSelector();
+        }
+
+        // 点击外部关闭字体选择器下拉菜单
+        document.addEventListener('click', function (e) {
+            const trigger = document.getElementById('font-selector-trigger');
+            const dropdown = document.getElementById('font-selector-dropdown');
+            if (trigger && dropdown && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+                const arrow = document.getElementById('font-selector-arrow');
+                if (arrow) {
+                    arrow.style.transform = 'rotate(0deg)';
+                }
+            }
+        });
+
+        // 更改字体大小
+        function changeFontSize(delta) {
+            if (currentTextLayer) {
+                const editableDiv = currentTextLayer.querySelector('[contenteditable]');
+                if (editableDiv) {
+                    const currentSize = parseInt(editableDiv.style.fontSize) || 24;
+                    const newSize = Math.max(8, Math.min(72, currentSize + delta));
+                    editableDiv.style.fontSize = newSize + 'px';
+                    document.getElementById('font-size-display').textContent = newSize;
+                    saveState();
+                }
+            }
+        }
+
+        // 更改字体颜色
+        function changeFontColor(color) {
+            if (currentTextLayer) {
+                const editableDiv = currentTextLayer.querySelector('[contenteditable]');
+                if (editableDiv) {
+                    editableDiv.style.color = color;
+                    saveState();
+                }
+            }
+        }
+
+        function removeLayer(layerId) {
+            const layer = document.getElementById(layerId);
+            if (layer) {
+                layer.remove();
+                saveState();
+            }
+        }
+
+        function resizeLayer(e, layerId) {
+            e.stopPropagation();
+            e.preventDefault();
+            const layer = document.getElementById(layerId);
+            if (!layer) return;
+
+            let startX = e.clientX;
+            let startY = e.clientY;
+            let startWidth = layer.offsetWidth;
+            let startHeight = layer.offsetHeight;
+
+            // 改变鼠标指针样式
+            document.body.style.cursor = 'nwse-resize';
+
+            // 定义事件处理函数
+            function handleMouseMove(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+
+                // 只允许向右和向下调整大小
+                const newWidth = Math.max(50, startWidth + deltaX);
+                const newHeight = Math.max(30, startHeight + deltaY);
+
+                layer.style.width = newWidth + 'px';
+                layer.style.height = newHeight + 'px';
+
+                // 调整文本编辑区域的大小
+                const editableDiv = layer.querySelector('[contenteditable]');
+                if (editableDiv) {
+                    editableDiv.style.width = '100%';
+                    editableDiv.style.height = '100%';
+                }
+            }
+
+            function handleMouseUp(e) {
+                e.stopPropagation();
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+                // 恢复鼠标指针样式
+                document.body.style.cursor = '';
+                saveState();
+            }
+
+            // 添加事件监听器
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+        }
+
+        function toggle3DMode() {
+            const canvasSection = document.getElementById('canvas-section');
+            const btn3D = document.getElementById('btn-3d-preview');
+            is3DMode = !is3DMode;
+
+            if (is3DMode) {
+                canvasSection.classList.add('preview-active');
+                btn3D.classList.add('bg-primary', 'text-white');
+                btn3D.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+                update3DContent();
+            } else {
+                canvasSection.classList.remove('preview-active');
+                btn3D.classList.remove('bg-primary', 'text-white');
+                btn3D.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 0";
+                reset3DRotation();
+            }
+        }
+
+        function update3DContent() {
+            const zoomTarget = document.getElementById('zoom-target');
+            if (!zoomTarget) return;
+
+            const contentContainer = zoomTarget.querySelector('.w-full.h-full');
+            if (!contentContainer) return;
+
+            let contentHTML = contentContainer.innerHTML;
+            
+            // 处理画笔图层：将canvas转换为img元素
+            const brushLayers = contentContainer.querySelectorAll('.brush-layer-container');
+            brushLayers.forEach(layer => {
+                const canvas = layer.querySelector('.brush-layer-canvas');
+                if (canvas) {
+                    // 将canvas内容转换为base64图片
+                    const dataURL = canvas.toDataURL();
+                    // 创建img元素替换canvas
+                    const img = document.createElement('img');
+                    img.src = dataURL;
+                    img.className = canvas.className;
+                    img.style.width = canvas.style.width;
+                    img.style.height = canvas.style.height;
+                    img.style.position = 'absolute';
+                    img.style.top = '0';
+                    img.style.left = '0';
+                    img.style.pointerEvents = 'none';
+                    
+                    // 在HTML中替换canvas为img
+                    const canvasHTML = canvas.outerHTML;
+                    contentHTML = contentHTML.replace(canvasHTML, img.outerHTML);
+                }
+            });
+
+            const camera = zoomTarget.querySelector('.absolute.top-7').outerHTML;
+            const target = document.getElementById('phone-content-3d');
+            if (target) {
+                target.innerHTML = contentHTML + camera;
+            }
+        }
+
+        let rotationX = 0;
+        let rotationY = 0;
+        function reset3DRotation() {
+            rotationX = 0;
+            rotationY = 0;
+            const phone = document.getElementById('phone-container');
+            if (phone) phone.style.transform = `rotateX(0deg) rotateY(0deg)`;
+        }
+
+        function init3DInteraction() {
+            const container = document.getElementById('scene-3d');
+            const phone = document.getElementById('phone-container');
+            let isDragging = false;
+            let lastMouseX, lastMouseY;
+
+            container.addEventListener('mousedown', (e) => {
+                if (!is3DMode) return;
+                isDragging = true;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging || !is3DMode) return;
+                const deltaX = e.clientX - lastMouseX;
+                const deltaY = e.clientY - lastMouseY;
+
+                rotationY += deltaX * 0.5;
+                rotationX -= deltaY * 0.5;
+
+                phone.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            });
+
+            window.addEventListener('mouseup', () => isDragging = false);
+
+            // Touch support for 3D
+            container.addEventListener('touchstart', (e) => {
+                if (!is3DMode) return;
+                isDragging = true;
+                lastMouseX = e.touches[0].clientX;
+                lastMouseY = e.touches[0].clientY;
+            });
+
+            window.addEventListener('touchmove', (e) => {
+                if (!isDragging || !is3DMode) return;
+                const deltaX = e.touches[0].clientX - lastMouseX;
+                const deltaY = e.touches[0].clientY - lastMouseY;
+                rotationY += deltaX * 0.5;
+                rotationX -= deltaY * 0.5;
+                phone.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+                lastMouseX = e.touches[0].clientX;
+                lastMouseY = e.touches[0].clientY;
+            });
+
+            window.addEventListener('touchend', () => isDragging = false);
+        }
+
+        function initDraggableToolbar() {
+            const toolbar = document.getElementById('draggable-toolbar');
+            const handle = document.getElementById('toolbar-handle');
+            let isDragging = false;
+            let offsetLeft, offsetTop;
+
+            handle.onmousedown = function (e) {
+                isDragging = true;
+                offsetLeft = e.clientX - toolbar.getBoundingClientRect().left;
+                offsetTop = e.clientY - toolbar.getBoundingClientRect().top;
+
+                document.onmousemove = function (e) {
+                    if (!isDragging) return;
+                    toolbar.style.left = (e.clientX - offsetLeft) + 'px';
+                    toolbar.style.top = (e.clientY - offsetTop) + 'px';
+                    toolbar.style.bottom = 'auto';
+                    toolbar.style.right = 'auto';
+                    toolbar.style.transform = 'none';
+                    toolbar.style.position = 'fixed';
+                };
+
+                document.onmouseup = function () {
+                    isDragging = false;
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                };
+            };
+
+            // Mobile touch support
+            handle.ontouchstart = function (e) {
+                isDragging = true;
+                const touch = e.touches[0];
+                offsetLeft = touch.clientX - toolbar.getBoundingClientRect().left;
+                offsetTop = touch.clientY - toolbar.getBoundingClientRect().top;
+
+                document.ontouchmove = function (e) {
+                    if (!isDragging) return;
+                    const touch = e.touches[0];
+                    toolbar.style.left = (touch.clientX - offsetLeft) + 'px';
+                    toolbar.style.top = (touch.clientY - offsetTop) + 'px';
+                    toolbar.style.bottom = 'auto';
+                    toolbar.style.right = 'auto';
+                    toolbar.style.transform = 'none';
+                    toolbar.style.position = 'fixed';
+                };
+
+                document.ontouchend = function () {
+                    isDragging = false;
+                    document.ontouchmove = null;
+                    document.ontouchend = null;
+                };
+            };
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            saveState();
+            init3DInteraction();
+            initDraggableToolbar();
+        });
+    </script>
+</head>
+
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container overflow-hidden">
+    <!-- Top Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 z-40 bg-[#f6f6f6]/95 backdrop-blur-sm px-4 py-3 flex items-center h-16">
+        <div class="flex items-center gap-3 relative z-10">
+            <button class="w-10 h-10 flex items-center justify-center hover:bg-yellow-50/50 rounded-full transition-all"
+                onclick="window.history.back()">
+                <span class="material-symbols-outlined text-on-surface">close</span>
+            </button>
+            <h1
+                class="font-headline font-black italic text-xl text-yellow-500 tracking-tighter drop-shadow-sm whitespace-nowrap">
+                CaseCraft</h1>
+        </div>
+        <!-- Draggable Toolbar -->
+        <div class="absolute inset-x-0 top-0 bottom-0 flex items-center justify-center pointer-events-none">
+            <div class="glass-toolbar rounded-full px-2 py-1 flex items-center gap-0.5 shadow-md border border-white/60 pointer-events-auto z-[9999]"
+                id="draggable-toolbar">
+                <div class="p-2 cursor-grab active:cursor-grabbing flex items-center justify-center group"
+                    id="toolbar-handle">
+                    <span
+                        class="material-symbols-outlined text-on-surface-variant/40 group-hover:text-primary">drag_indicator</span>
+                </div>
+                <div class="w-px h-5 bg-outline-variant/30 mx-0.5"></div>
+                <button
+                    class="p-2 hover:bg-surface-container-high rounded-full transition-all flex items-center justify-center group"
+                    onclick="undo()" title="撤销">
+                    <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">undo</span>
+                </button>
+                <button
+                    class="p-2 hover:bg-surface-container-high rounded-full transition-all flex items-center justify-center group"
+                    onclick="redo()" title="重做">
+                    <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">redo</span>
+                </button>
+                <div class="w-px h-5 bg-outline-variant/30 mx-1"></div>
+                <button
+                    class="p-2 hover:bg-surface-container-high rounded-full transition-all flex items-center justify-center group"
+                    onclick="zoomCanvas(0.1)" title="放大">
+                    <span
+                        class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">zoom_in</span>
+                </button>
+                <button
+                    class="p-2 hover:bg-surface-container-high rounded-full transition-all flex items-center justify-center group"
+                    onclick="zoomCanvas(-0.1)" title="缩小">
+                    <span
+                        class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">zoom_out</span>
+                </button>
+                <div class="w-px h-5 bg-outline-variant/30 mx-1"></div>
+                <button
+                    class="p-2 hover:bg-surface-container-high rounded-full transition-all flex items-center justify-center group"
+                    onclick="const canvas = document.querySelector('#zoom-target &gt; div &gt; div'); if(canvas) { canvas.innerHTML = ''; saveState(); }"
+                    title="清空">
+                    <span
+                        class="material-symbols-outlined text-on-surface-variant group-hover:text-error">delete_sweep</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <!-- Main Workspace -->
+    <main class="h-screen pt-16 pb-28 flex overflow-hidden relative">
+        <!-- Collapsible Sidebars Container -->
+        <div class="absolute top-36 left-0 bottom-32 z-30 flex flex-col gap-4 pointer-events-none">
+            <!-- Drawer 1: Layout Design -->
+            <div class="relative flex items-start pointer-events-auto" id="drawer-layout">
+                <button
+                    class="w-10 h-40 bg-white/90 glass-toolbar border border-white/40 border-l-0 rounded-r-2xl flex flex-col items-center justify-center gap-3 shadow-sm hover:bg-white transition-all duration-300 relative z-10"
+                    onclick="toggleDrawer('drawer-layout')">
+                    <span class="material-symbols-outlined text-on-surface-variant text-lg">dashboard</span>
+                    <span
+                        class="vertical-text font-label text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">版面设计</span>
+                </button>
+                <div class="absolute left-0 top-0 w-[84px] bg-white glass-toolbar rounded-r-3xl border border-white/40 shadow-xl transition-all duration-300 transform -translate-x-full opacity-0 flex flex-col items-center py-4 gap-4 z-20 ease-in-out"
+                    id="panel-layout">
+                    <div class="w-full flex justify-end px-2 mb-1">
+                        <span
+                            class="material-symbols-outlined text-on-surface-variant/40 text-sm hover:text-primary cursor-pointer rotate-180"
+                            onclick="toggleDrawer('drawer-layout')">arrow_forward_ios</span>
+                    </div>
+                    <button class="flex flex-col items-center gap-1 group" id="tool-text"
+                        onclick="selectTool(this, 'text')">
+                        <div
+                            class="w-14 h-14 bg-surface rounded-xl flex items-center justify-center transition-all group-hover:bg-primary-container group-hover:rounded-full tool-icon-container">
+                            <span
+                                class="material-symbols-outlined text-on-surface-variant group-hover:text-on-primary-container">text_fields</span>
+                        </div>
+                        <span class="font-label text-[11px] font-semibold text-on-surface-variant">文字</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-1 group" onclick="selectTool(this, 'sticker')">
+                        <div
+                            class="w-14 h-14 bg-surface rounded-xl flex items-center justify-center transition-all group-hover:bg-primary-container group-hover:rounded-full tool-icon-container">
+                            <span
+                                class="material-symbols-outlined text-on-surface-variant group-hover:text-on-primary-container">auto_awesome</span>
+                        </div>
+                        <span class="font-label text-[11px] font-semibold text-on-surface-variant">贴纸</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-1 group" onclick="selectTool(this, 'filter')">
+                        <div
+                            class="w-14 h-14 bg-surface rounded-xl flex items-center justify-center transition-all group-hover:bg-primary-container group-hover:rounded-full tool-icon-container">
+                            <span
+                                class="material-symbols-outlined text-on-surface-variant group-hover:text-on-primary-container">filter_vintage</span>
+                        </div>
+                        <span class="font-label text-[11px] font-semibold text-on-surface-variant">滤镜</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-1 group" onclick="selectTool(this, 'brush')">
+                        <div
+                            class="w-14 h-14 bg-surface rounded-xl flex items-center justify-center transition-all group-hover:bg-primary-container group-hover:rounded-full tool-icon-container">
+                            <span
+                                class="material-symbols-outlined text-on-surface-variant group-hover:text-on-primary-container">brush</span>
+                        </div>
+                        <span class="font-label text-[11px] font-semibold text-on-surface-variant">画笔</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-1 group" onclick="selectTool(this, 'upload')">
+                        <div
+                            class="w-14 h-14 bg-secondary-container/20 rounded-xl flex items-center justify-center transition-all group-hover:bg-secondary-container group-hover:scale-105 tool-icon-container">
+                            <span class="material-symbols-outlined text-on-secondary-container">cloud_upload</span>
+                        </div>
+                        <span class="font-label text-[11px] font-semibold text-on-secondary-container">上传</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Drawer 2: Decoration -->
+            <div class="relative flex items-start pointer-events-auto" id="drawer-deco">
+                <button
+                    class="w-10 h-32 bg-white/90 glass-toolbar border border-white/40 border-l-0 rounded-r-2xl flex flex-col items-center justify-center gap-3 shadow-sm hover:bg-white transition-all duration-300 relative z-10"
+                    onclick="toggleDrawer('drawer-deco')">
+                    <span class="material-symbols-outlined text-on-surface-variant text-lg">category</span>
+                    <span
+                        class="vertical-text font-label text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">装饰布置</span>
+                </button>
+                <div class="absolute left-0 top-0 w-[84px] bg-white glass-toolbar rounded-r-3xl border border-white/40 shadow-xl transition-all duration-300 transform -translate-x-full opacity-0 flex flex-col items-center py-4 gap-4 z-20 ease-in-out"
+                    id="panel-deco">
+                    <div class="w-full flex justify-end px-2 mb-1">
+                        <span
+                            class="material-symbols-outlined text-on-surface-variant/40 text-sm hover:text-primary cursor-pointer rotate-180"
+                            onclick="toggleDrawer('drawer-deco')">arrow_forward_ios</span>
+                    </div>
+                    <button class="flex flex-col items-center gap-1 group" onclick="selectTool(this, 'accent')">
+                        <div
+                            class="w-14 h-14 bg-surface rounded-xl flex items-center justify-center transition-all group-hover:bg-primary-container group-hover:rounded-full tool-icon-container">
+                            <span
+                                class="material-symbols-outlined text-on-surface-variant group-hover:text-on-primary-container">blur_on</span>
+                        </div>
+                        <span class="font-label text-[11px] font-semibold text-on-surface-variant">点缀</span>
+                    </button>
+                    <button class="flex flex-col items-center gap-1 group" onclick="selectTool(this, 'stand')">
+                        <div
+                            class="w-14 h-14 bg-surface rounded-xl flex items-center justify-center transition-all group-hover:bg-primary-container group-hover:rounded-full tool-icon-container">
+                            <span
+                                class="material-symbols-outlined text-on-surface-variant group-hover:text-on-primary-container">stay_primary_portrait</span>
+                        </div>
+                        <span class="font-label text-[11px] font-semibold text-on-surface-variant">支架</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Canvas Area -->
+        <section class="flex-1 canvas-grid relative flex items-center justify-center overflow-hidden"
+            id="canvas-section">
+            <!-- Decorative Scribbles -->
+            <div class="absolute top-10 right-20 opacity-20 rotate-12 pointer-events-none">
+                <span class="material-symbols-outlined text-[120px] text-primary">draw</span>
+            </div>
+            <div class="absolute bottom-40 left-10 opacity-10 -rotate-12 pointer-events-none">
+                <span class="material-symbols-outlined text-[80px] text-secondary">flare</span>
+            </div>
+            <!-- 3D Scene -->
+            <div class="absolute inset-0 opacity-0 pointer-events-none z-10" id="scene-3d">
+                <!-- Functional Exit Icon for 3D mode -->
+                <button
+                    class="absolute top-6 left-6 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center z-50 hover:bg-surface-container-high transition-all pointer-events-auto"
+                    onclick="toggle3DMode()">
+                    <span class="material-symbols-outlined text-on-surface-variant">arrow_back</span>
+                </button>
+                <div id="phone-container">
+                    <!-- High Quality 3D Edges with Seamless R-Angles -->
+                    <div class="phone-edge-container">
+                        <div class="phone-face-middle"></div>
+                        <div class="phone-side phone-edge-right"></div>
+                        <div class="phone-side phone-edge-left"></div>
+                        <div class="phone-side phone-edge-top"></div>
+                        <div class="phone-side phone-edge-bottom"></div>
+                        <div class="corner-3d corner-tl"></div>
+                        <div class="corner-3d corner-tr"></div>
+                        <div class="corner-3d corner-bl"></div>
+                        <div class="corner-3d corner-br"></div>
+                    </div>
+                    <!-- Back Face (Where design is visible) -->
+                    <div class="phone-face phone-back" id="phone-content-3d">
+                        <!-- Dynamic content from canvas -->
+                    </div>
+                    <!-- Front Face (Screen side) -->
+                    <div class="phone-face phone-front">
+                        <div class="w-1 h-8 bg-white/20 rounded-full absolute top-10"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- 2D Case Layout Container (Borderless for 3.5rem rounded case look) -->
+            <div class="relative bg-white w-[280px] h-[560px] rounded-[3.5rem] border-0 overflow-hidden transition-all duration-500 hover:scale-[1.02] mt-4 shadow-xl z-20"
+                id="zoom-target">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-full h-full p-4 flex flex-col items-center justify-center gap-4 relative">
+                        <!-- Default Placeholder -->
+                        <!-- <img alt="Design Mockup" class="w-40 h-40 rounded-lg object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1Z13JTBZJEONHprvLcwMNIvcrPIkTgknkioGY2HbxXJlnfPgyPkUL5a9AA2OLjpAdr0HYXvCo5s824JNNPkDlFdelwAQd7HWqbW2NDam_l1Qb2pGDyDvGHr9AGNJD-k5OqgoyE2k3kInC21PcW5ITA717n_u8Apd1DuSIltrMaa1mgtiH9m_PCoDnkcNH2D-hclE57Oq5GBFnLjxAshyCEvX24CdKD8FTSZ1eOeP-dAglt3uW83uk07b5PrbE8rS1k6jS8qNdLaA"/>
+<span class="font-headline text-xl font-bold tracking-tight text-on-surface/40 select-none">DESIGN HERE</span> -->
+                    </div>
+                </div>
+                <!-- Camera Module -->
+                <div
+                    class="absolute top-7 left-7 w-20 h-20 bg-surface-dim rounded-[1.5rem] flex items-center justify-center overflow-hidden z-30">
+                    <div class="grid grid-cols-2 gap-2 p-2.5">
+                        <div class="w-5 h-5 rounded-full bg-on-surface/20"></div>
+                        <div class="w-5 h-5 rounded-full bg-on-surface/20"></div>
+                        <div class="w-5 h-5 rounded-full bg-on-surface/20"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-on-surface/20 self-center justify-self-center"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Preview Button -->
+            <div class="absolute right-6 top-36 pointer-events-auto z-40">
+                <button
+                    class="w-12 h-12 bg-white rounded-full shadow-lg border border-surface-container-highest flex items-center justify-center hover:bg-surface-container-low transition-all group"
+                    id="btn-3d-preview" onclick="toggle3DMode()" title="3D预览">
+                    <span
+                        class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">view_in_ar</span>
+                </button>
+            </div>
+        </section>
+    </main>
+    <!-- Bottom Controls - Hidden by default (footer-hidden class) -->
+    <footer
+        class="fixed bottom-0 left-0 right-0 h-28 bg-surface-container-lowest/90 backdrop-blur-xl z-50 flex items-center px-6 transition-all duration-300 footer-hidden">
+        <!-- Default Color Toolbar -->
+        <div class="w-full hidden items-center gap-6" id="toolbar-default">
+            <div class="flex flex-col gap-1 min-w-[100px]">
+                <span
+                    class="font-label text-[10px] font-extrabold uppercase tracking-[0.2em] text-on-surface-variant">底色</span>
+                <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 rounded-full bg-secondary"></div>
+                    <span class="font-bold text-xs">深林绿</span>
+                </div>
+            </div>
+            <div class="flex-1 flex items-center gap-3 overflow-x-auto no-scrollbar pb-1">
+                <button
+                    class="flex-shrink-0 w-10 h-10 rounded-full bg-white border-[3px] border-secondary p-0.5 shadow-md">
+                    <div class="w-full h-full rounded-full bg-white"></div>
+                </button>
+                <button class="flex-shrink-0 w-9 h-9 rounded-full bg-[#FFD700] hover:scale-110 transition-all"></button>
+                <button class="flex-shrink-0 w-9 h-9 rounded-full bg-[#166665] hover:scale-110 transition-all"></button>
+                <button class="flex-shrink-0 w-9 h-9 rounded-full bg-[#ffaebc] hover:scale-110 transition-all"></button>
+                <button class="flex-shrink-0 w-9 h-9 rounded-full bg-[#a8efed] hover:scale-110 transition-all"></button>
+                <button class="flex-shrink-0 w-9 h-9 rounded-full bg-[#efc900] hover:scale-110 transition-all"></button>
+                <button
+                    class="flex-shrink-0 w-9 h-9 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center hover:bg-surface transition-all">
+                    <span class="material-symbols-outlined text-outline text-lg">colorize</span>
+                </button>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="flex flex-col items-end">
+                    <span class="text-[10px] font-label font-bold text-on-surface-variant">不透明度</span>
+                    <input
+                        class="w-20 h-1.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary"
+                        type="range" />
+                </div>
+                <div class="w-px h-8 bg-outline-variant/20 mx-1"></div>
+                <button class="bg-primary p-3 rounded-full text-white shadow-lg hover:scale-105 transition-all"
+                    onclick="selectTool(null, 'default')">
+                    <span class="material-symbols-outlined">check</span>
+                </button>
+            </div>
+        </div>
+        <!-- Toolbar: Text -->
+        <div class="w-full hidden items-center justify-between gap-4" id="toolbar-text">
+            <div class="flex flex-col gap-1 min-w-[120px]">
+                <span
+                    class="font-label text-[10px] font-extrabold uppercase tracking-[0.2em] text-on-surface-variant">字体选择器</span>
+                <div class="relative">
+                    <div id="font-selector-trigger"
+                        class="flex-1 w-full bg-white border border-outline-variant/30 rounded-xl px-3 py-2 text-sm cursor-pointer hover:border-primary/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all pr-8 flex items-center justify-between"
+                        onclick="toggleFontSelector()">
+                        <span id="font-selector-value" class="font-playful truncate max-w-[100px]">Quicksand</span>
+                        <span class="material-symbols-outlined text-sm text-on-surface-variant transition-transform"
+                            id="font-selector-arrow">expand_less</span>
+                    </div>
+                    <div id="font-selector-dropdown"
+                        class="absolute bottom-full left-0 right-0 mb-1 bg-white border border-outline-variant/30 rounded-xl shadow-lg z-50 hidden">
+                        <div class="py-1">
+                            <div class="px-3 py-2 text-sm cursor-pointer hover:bg-primary/10 transition-colors font-playful"
+                                onclick="selectFont('Quicksand')">Quicksand</div>
+                            <div class="px-3 py-2 text-sm cursor-pointer hover:bg-primary/10 transition-colors font-script"
+                                onclick="selectFont('Pacifico')">Pacifico</div>
+                            <div class="px-3 py-2 text-sm cursor-pointer hover:bg-primary/10 transition-colors font-bold"
+                                onclick="selectFont('Fredoka One')">Fredoka One</div>
+                            <div class="px-3 py-2 text-sm cursor-pointer hover:bg-primary/10 transition-colors font-headline"
+                                onclick="selectFont('Plus Jakarta Sans')">Plus Jakarta Sans</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-1 items-center">
+                <span
+                    class="font-label text-[10px] font-extrabold uppercase tracking-[0.2em] text-on-surface-variant">字体大小</span>
+                <div class="flex items-center bg-white rounded-full p-1 shadow-sm border border-outline-variant/20">
+                    <button
+                        class="w-8 h-8 flex items-center justify-center hover:bg-surface rounded-full transition-all"
+                        onclick="changeFontSize(-2)"><span
+                            class="material-symbols-outlined text-lg">remove</span></button>
+                    <span class="w-10 text-center font-bold text-sm" id="font-size-display">24</span>
+                    <button
+                        class="w-8 h-8 bg-primary-container text-on-primary-container flex items-center justify-center rounded-full shadow-sm"
+                        onclick="changeFontSize(2)"><span
+                            class="material-symbols-outlined text-lg font-bold">add</span></button>
+                </div>
+            </div>
+            <div class="flex flex-col gap-1 items-center">
+                <span
+                    class="font-label text-[10px] font-extrabold uppercase tracking-[0.2em] text-on-surface-variant">字体颜色</span>
+                <div class="flex items-center gap-2">
+                    <input type="color" id="font-color-picker" value="#000000"
+                        class="w-10 h-10 rounded-full border border-outline-variant/20 cursor-pointer"
+                        onchange="changeFontColor(this.value)">
+                </div>
+            </div>
+            <button class="bg-primary p-3 rounded-full text-white shadow-lg hover:scale-105 transition-all"
+                onclick="selectTool(null, 'default')">
+                <span class="material-symbols-outlined">check</span>
+            </button>
+        </div>
+        <!-- Toolbar: Sticker -->
+        <div class="w-full hidden items-center gap-4" id="toolbar-sticker">
+            <div class="flex-1 flex items-center gap-4 overflow-x-auto no-scrollbar py-1 scroll-smooth">
+                <button
+                    class="flex-shrink-0 w-14 h-14 bg-surface rounded-2xl flex items-center justify-center hover:bg-primary-container transition-all active:scale-95 group">
+                    <span
+                        class="material-symbols-outlined text-3xl text-on-surface-variant group-hover:text-on-primary-container">pets</span>
+                </button>
+                <button
+                    class="flex-shrink-0 w-14 h-14 bg-surface rounded-2xl flex items-center justify-center hover:bg-primary-container transition-all active:scale-95 group">
+                    <span
+                        class="material-symbols-outlined text-3xl text-on-surface-variant group-hover:text-on-primary-container">favorite</span>
+                </button>
+                <button
+                    class="flex-shrink-0 w-14 h-14 bg-surface rounded-2xl flex items-center justify-center hover:bg-primary-container transition-all active:scale-95 group">
+                    <span
+                        class="material-symbols-outlined text-3xl text-on-surface-variant group-hover:text-on-primary-container">star</span>
+                </button>
+            </div>
+            <button class="bg-primary p-3 rounded-full text-white shadow-lg hover:scale-105 transition-all"
+                onclick="selectTool(null, 'default')">
+                <span class="material-symbols-outlined">check</span>
+            </button>
+        </div>
+        <!-- Toolbar: Upload -->
+        <div class="w-full hidden items-center gap-6" id="toolbar-upload">
+            <div class="flex gap-2 flex-shrink-0">
+                <button
+                    class="flex flex-col items-center justify-center w-20 h-16 bg-primary-container/30 border-2 border-dashed border-primary/50 rounded-2xl hover:bg-primary-container/50 transition-all">
+                    <span class="material-symbols-outlined text-primary">add_photo_alternate</span>
+                    <span class="text-[10px] font-bold mt-1">本地图片</span>
+                </button>
+            </div>
+            <div class="flex-1 flex flex-col gap-1">
+                <div class="flex items-center gap-3 overflow-x-auto no-scrollbar py-1">
+                    <div
+                        class="w-14 h-14 bg-surface-container rounded-xl flex-shrink-0 overflow-hidden hover:scale-105 transition-all cursor-pointer">
+                        <img alt="Abstract 1" class="w-full h-full object-cover" onclick="addImageToCanvas(this.src)"
+                            src="./images/2025-7-14-11-47.png" />
+                    </div>
+                </div>
+            </div>
+            <button
+                class="bg-primary p-3 rounded-full text-white shadow-lg hover:scale-105 transition-all flex-shrink-0"
+                onclick="selectTool(null, 'default')">
+                <span class="material-symbols-outlined">check</span>
+            </button>
+        </div>
+        <!-- Toolbar: Brush -->
+        <div class="w-full hidden items-center gap-6" id="toolbar-brush">
+            <div class="flex flex-col gap-1 min-w-[80px]">
+                <span
+                    class="font-label text-[10px] font-extrabold uppercase tracking-[0.2em] text-on-surface-variant">笔刷颜色</span>
+                <div class="flex gap-2">
+                    <div class="w-6 h-6 rounded-full bg-black ring-2 ring-offset-2 ring-black cursor-pointer" onclick="setBrushColor('#000000')"></div>
+                    <div class="w-6 h-6 rounded-full bg-blue-500 cursor-pointer" onclick="setBrushColor('#3b82f6')"></div>
+                    <div class="w-6 h-6 rounded-full bg-red-500 cursor-pointer" onclick="setBrushColor('#ef4444')"></div>
+                    <div class="w-6 h-6 rounded-full bg-green-500 cursor-pointer" onclick="setBrushColor('#22c55e')"></div>
+                    <div class="w-6 h-6 rounded-full bg-yellow-500 cursor-pointer" onclick="setBrushColor('#eab308')"></div>
+                </div>
+            </div>
+            <div class="flex-1 flex flex-col gap-1">
+                <span class="text-[10px] font-label font-bold text-on-surface-variant">笔触粗细</span>
+                <input
+                    class="w-full h-1.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary"
+                    type="range" min="1" max="20" value="5" oninput="setBrushSize(this.value)" />
+            </div>
+            <div class="flex flex-col gap-1 min-w-[80px]">
+                <span
+                    class="font-label text-[10px] font-extrabold uppercase tracking-[0.2em] text-on-surface-variant">工具</span>
+                <div class="flex gap-2">
+                    <div class="w-6 h-6 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center cursor-pointer" onclick="setBrushMode('draw')">
+                        <span class="material-symbols-outlined text-xs">brush</span>
+                    </div>
+                    <div class="w-6 h-6 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center cursor-pointer" onclick="setBrushMode('erase')">
+                        <span class="material-symbols-outlined text-xs">delete</span>
+                    </div>
+                </div>
+            </div>
+            <button class="bg-primary p-3 rounded-full text-white shadow-lg hover:scale-105 transition-all"
+                onclick="selectTool(null, 'default')">
+                <span class="material-symbols-outlined">check</span>
+            </button>
+        </div>
+        <!-- Toolbar: Filter -->
+        <div class="w-full hidden items-center gap-4" id="toolbar-filter">
+            <div class="flex-1 flex items-center gap-4 overflow-x-auto no-scrollbar py-1">
+                <div
+                    class="flex-shrink-0 w-16 h-20 bg-surface rounded-lg flex flex-col items-center justify-center gap-1 border-2 border-primary">
+                    <div class="w-10 h-10 rounded bg-gray-400 grayscale"></div>
+                    <span class="text-[10px] font-bold">黑白</span>
+                </div>
+                <div
+                    class="flex-shrink-0 w-16 h-20 bg-surface rounded-lg flex flex-col items-center justify-center gap-1">
+                    <div class="w-10 h-10 rounded bg-orange-200 contrast-125"></div>
+                    <span class="text-[10px] font-bold">暖阳</span>
+                </div>
+            </div>
+            <button class="bg-primary p-3 rounded-full text-white shadow-lg hover:scale-105 transition-all"
+                onclick="selectTool(null, 'default')">
+                <span class="material-symbols-outlined">check</span>
+            </button>
+        </div>
+    </footer>
+    <script>
+        function bindLayerEvents(layer) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            let isDragging = false;
+            let dragStartX, dragStartY;
+
+            // 确保layer有position:absolute样式
+            if (layer.style.position !== 'absolute') {
+                layer.style.position = 'absolute';
+            }
+
+            // 为整个图层添加鼠标按下事件
+            layer.onmousedown = function (e) {
+                // 排除按钮的点击
+                if (e.target.closest('.layer-btn')) return;
+
+                // 记录初始位置
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                isDragging = false;
+
+                // 鼠标移动事件
+                document.onmousemove = (e) => {
+                    // 计算移动距离
+                    const deltaX = Math.abs(e.clientX - dragStartX);
+                    const deltaY = Math.abs(e.clientY - dragStartY);
+
+                    // 如果移动距离超过5px，开始拖拽
+                    if (deltaX > 5 || deltaY > 5) {
+                        isDragging = true;
+                        // 防止文本选择
+                        e.preventDefault();
+                        pos1 = pos3 - e.clientX;
+                        pos2 = pos4 - e.clientY;
+                        pos3 = e.clientX;
+                        pos4 = e.clientY;
+                        layer.style.top = (layer.offsetTop - pos2) + "px";
+                        layer.style.left = (layer.offsetLeft - pos1) + "px";
+                    }
+                };
+
+                // 鼠标释放事件
+                document.onmouseup = () => {
+                    if (isDragging) {
+                        saveState();
+                    }
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                };
+            };
+
+            // 为文本编辑区域添加双击事件，确保可以编辑文本
+            const editableDiv = layer.querySelector('[contenteditable]');
+            if (editableDiv) {
+                editableDiv.ondblclick = function (e) {
+                    e.stopPropagation();
+                    this.focus();
+                };
+
+                // 为文本编辑区域添加鼠标按下事件，支持拖拽
+                editableDiv.onmousedown = function (e) {
+                    e.stopPropagation();
+                    // 触发layer的mousedown事件
+                    const event = new MouseEvent('mousedown', {
+                        clientX: e.clientX,
+                        clientY: e.clientY,
+                        bubbles: true,
+                        cancelable: true
+                    });
+                    layer.dispatchEvent(event);
+                };
+            }
+
+            // Touch support for layers
+            layer.ontouchstart = function (e) {
+                if (e.target.closest('.layer-btn')) return;
+                const touch = e.touches[0];
+                pos3 = touch.clientX;
+                pos4 = touch.clientY;
+                document.ontouchend = () => {
+                    document.ontouchend = null;
+                    document.ontouchmove = null;
+                    saveState();
+                };
+                document.ontouchmove = (e) => {
+                    const touch = e.touches[0];
+                    pos1 = pos3 - touch.clientX;
+                    pos2 = pos4 - touch.clientY;
+                    pos3 = touch.clientX;
+                    pos4 = touch.clientY;
+                    layer.style.top = (layer.offsetTop - pos2) + "px";
+                    layer.style.left = (layer.offsetLeft - pos1) + "px";
+                };
+            };
+        }
+
+        function addImageToCanvas(src) {
+            const canvas = document.querySelector('#zoom-target > div > div');
+            if (!canvas) return;
+
+            const layerId = 'layer-' + Date.now();
+            const layer = document.createElement('div');
+            layer.id = layerId;
+            layer.className = 'canvas-layer group';
+            layer.style.width = '120px';
+            layer.style.top = '20%';
+            layer.style.left = '20%';
+            layer.style.zIndex = '10';
+
+            layer.innerHTML = `
+            <img class="w-full h-auto rounded-md shadow-sm pointer-events-none" src="${src}"/>
+            <div class="layer-controls">
+                <div class="layer-btn layer-close" onclick="document.getElementById('${layerId}').remove(); saveState();">
+                    <span class="material-symbols-outlined text-sm">close</span>
+                </div>
+                <div class="layer-btn layer-resize" onmousedown="initResize(event, '${layerId}')" ontouchstart="initResize(event, '${layerId}')">
+                    <span class="material-symbols-outlined text-sm">open_in_full</span>
+                </div>
+            </div>
+        `;
+
+            bindLayerEvents(layer);
+            canvas.appendChild(layer);
+            saveState();
+        }
+
+        function initResize(e, id) {
+            e.preventDefault();
+            e.stopPropagation();
+            const element = document.getElementById(id);
+            const startWidth = element.offsetWidth;
+            const startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+
+            function stopResize() {
+                window.removeEventListener('mousemove', resize);
+                window.removeEventListener('mouseup', stopResize);
+                window.removeEventListener('touchmove', resize);
+                window.removeEventListener('touchend', stopResize);
+                saveState();
+            }
+
+            function resize(e) {
+                const currentX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                const width = startWidth + (currentX - startX);
+                if (width > 40) {
+                    element.style.width = width + 'px';
+                }
+            }
+
+            window.addEventListener('mousemove', resize);
+            window.addEventListener('mouseup', stopResize);
+            window.addEventListener('touchmove', resize, { passive: false });
+            window.addEventListener('touchend', stopResize);
+        }
+    </script>
+</body>
+
+</html>
