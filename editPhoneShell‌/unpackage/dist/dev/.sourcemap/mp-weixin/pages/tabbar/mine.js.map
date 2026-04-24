@@ -1,0 +1,1 @@
+{"version":3,"file":"mine.js","sources":["C:/Users/Administrator/Desktop/HBuilderX.5.07.2026041006/HBuilderX/plugins/uniapp-cli-vite/uniPage:/cGFnZXMvdGFiYmFyL21pbmUudnVl"],"sourcesContent":["import MiniProgramPage from 'D:/phonePrintUI/editPhoneShell‌/pages/tabbar/mine.vue'\nwx.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;AACA,GAAG,WAAW,eAAe;"}

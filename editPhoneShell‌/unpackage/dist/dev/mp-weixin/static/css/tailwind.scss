@@ -1,0 +1,322 @@
+
+/* 宽度 */
+@for $x from 0 through 750 {.w-#{$x} {width:$x + rpx}}
+@for $x from 0 through 100 {.w-#{$x}vw {width:$x + vw}}
+
+/* 高度 */
+@for $x from 0 through 1000 {.h-#{$x} {height:$x + rpx}}
+@for $x from 0 through 100 {.h-#{$x}vh {height:$x + vh}}
+
+/* 内边距 */
+@for $x from 0 through 400 {.p-#{$x} {padding: $x + rpx}}
+@for $x from 0 through 400 {.pt-#{$x} {padding-top: $x + rpx}}
+@for $x from 0 through 400 {.pb-#{$x} {padding-bottom: $x + rpx}}
+@for $x from 0 through 400 {.pl-#{$x} {padding-left: $x + rpx}}
+@for $x from 0 through 400 {.pr-#{$x} {padding-right: $x + rpx}}
+@for $x from 0 through 400 {.px-#{$x} {padding-left: $x + rpx; padding-right: $x + rpx}}
+@for $x from 0 through 400 {.py-#{$x} {padding-top: $x + rpx; padding-bottom: $x + rpx}}
+
+/* 外边距 */
+@for $x from 0 through 400 {.m-#{$x} {margin: $x + rpx}}
+@for $x from 0 through 400 {.mt-#{$x} {margin-top: $x + rpx}}
+@for $x from 0 through 400 {.mb-#{$x} {margin-bottom: $x + rpx}}
+@for $x from 0 through 400 {.ml-#{$x} {margin-left: $x + rpx}}
+@for $x from 0 through 400 {.mr-#{$x} {margin-right: $x + rpx}}
+@for $x from 0 through 400 {.mx-#{$x} {margin-left: $x + rpx; margin-right: $x + rpx}}
+@for $x from 0 through 400 {.my-#{$x} {margin-top: $x + rpx; margin-bottom: $x + rpx}}
+
+
+/* 行高,1rpx-1000rpx */
+@for $x from 1 through 1000 {.lh-#{$x} {line-height:$x + rpx}}
+/* 字体大小,2rpx-60rpx */
+@for $x from 1 through 100 {.fs-#{$x} {font-size: $x + rpx}}
+/* 字体粗细，100-900,粒度为100 */
+@for $x from 1 through 9 {.fw-#{$x * 100} {font-weight: $x * 100}}
+
+/* uniapp内置字体 */
+.ff-1 {font-family: 'Courier New', Courier, monospace}
+.ff-2 {font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif}
+.ff-3 {font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif}
+.ff-4 {font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif}
+.ff-5 {font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif}
+.ff-6 {font-family: 'Times New Roman', Times, serif}
+.ff-7 {font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif}
+.ff-8 {font-family: Arial, Helvetica, sans-serif}
+.ff-9 {font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif}
+.ff-10 {font-family: Georgia, 'Times New Roman', Times, serif}
+.ff-11 {font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif}
+.ff-12 {font-family: Verdana, Geneva, Tahoma, sans-serif}
+.ff-13 {font-family: cursive}
+.ff-14 {font-family: emoji}
+.ff-15 {font-family: fangsong}
+.ff-16 {font-family: fantasy}
+.ff-17 {font-family: inherit}
+.ff-18 {font-family: initial}
+.ff-19 {font-family: math}
+.ff-20 {font-family: monospace}
+.ff-21 {font-family: sans-serif}
+.ff-22 {font-family: serif}
+.ff-23 {font-family: system-ui}
+.ff-24 {font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif}
+.ff-25 {font-family: ui-monospace}
+.ff-26 {font-family: ui-rounded}
+.ff-27 {font-family: ui-sans-serif}
+.ff-28 {font-family: ui-serif}
+.ff-29 {font-family: unset}
+
+/* 文本对齐 */
+.text-left {text-align: left}
+.text-center {text-align: center}
+.text-right {text-align: right}
+
+/* 文本颜色,完整循环有16777216种颜色,这里只列出基础色,可以根据项目自行加入常用色 */
+.c-ffffff{color: #ffffff}
+.c-eeeeee{color: #eeeeee}
+.c-dddddd{color: #dddddd}
+.c-cccccc{color: #cccccc}
+.c-bbbbbb{color: #bbbbbb}
+.c-aaaaaa{color: #aaaaaa}
+.c-999999{color: #999999}
+.c-888888{color: #888888}
+.c-777777{color: #777777}
+.c-666666{color: #666666}
+.c-555555{color: #555555}
+.c-444444{color: #444444}
+.c-333333{color: #333333}
+.c-222222{color: #222222}
+.c-111111{color: #111111}
+.c-000000{color: #000000}
+
+/* 背景颜色,完整循环有16777216种颜色,这里只列出基础色,可以根据项目自行加入常用色 */
+.bgc-ffffff{background: #ffffff}
+.bgc-eeeeee{background: #eeeeee}
+.bgc-dddddd{background: #dddddd}
+.bgc-cccccc{background: #cccccc}
+.bgc-bbbbbb{background: #bbbbbb}
+.bgc-aaaaaa{background: #aaaaaa}
+.bgc-999999{background: #999999}
+.bgc-888888{background: #888888}
+.bgc-777777{background: #777777}
+.bgc-666666{background: #666666}
+.bgc-555555{background: #555555}
+.bgc-444444{background: #444444}
+.bgc-333333{background: #333333}
+.bgc-222222{background: #222222}
+.bgc-111111{background: #111111}
+.bgc-000000{background: #000000}
+.bgc-0000ff{background: #0000ff}
+.bgc-00ff00{background: #00ff00}
+.bgc-ff0000{background: #ff0000}
+.bgc-ffff00{background: #ffff00}
+.bgc-ff00ff{background: #ff00ff}
+.bgc-00ffff{background: #00ffff}
+
+/* 背景色渐变 */
+.bgc-f3b595-e25932{background:linear-gradient(to right bottom,#f3b595,#e25932)}
+.bgc-aac53c-50aa3f{background:linear-gradient(to right,#aac53c,#50aa3f)}
+.bgc-mask{background: rgba(0,0,0,.5)}
+
+/* z-index层级 -10~10 */
+@for $x from -10 through 10 {.z-#{$x} {z-index: $x}}
+
+/* 透明度 */
+.opacity-0 {opacity: 0}
+.opacity-5 {opacity: 0.05}
+.opacity-10 {opacity: 0.1}
+.opacity-20 {opacity: 0.2}
+.opacity-25 {opacity: 0.25}
+.opacity-30 {opacity: 0.3}
+.opacity-40 {opacity: 0.4}
+.opacity-50 {opacity: 0.5}
+.opacity-60 {opacity: 0.6}
+.opacity-70 {opacity: 0.7}
+.opacity-75 {opacity: 0.75}
+.opacity-80 {opacity: 0.8}
+.opacity-90 {opacity: 0.9}
+.opacity-95 {opacity: 0.95}
+.opacity-100 {opacity: 1}
+
+/* 阴影 */
+.shadow{box-shadow:10rpx 10rpx 20rpx 0rpx rgba(0,0,0,.3)}
+.shadow-s{box-shadow:10rpx 10rpx 40rpx 0rpx rgba(0,0,0,.1)}
+/* 边框线，调试用 */
+.br{border: 1rpx solid red;box-sizing: border-box;}
+.bb{border: 1rpx solid blue;box-sizing: border-box;}
+.bg{border: 1rpx solid green;box-sizing: border-box;}
+/* 清除所有样式,&::after主要是针对button */
+.clearAll{all:unset;&::after {all: unset}}
+
+/* Box Sizing */
+.box-border {box-sizing: border-box}
+.box-content {box-sizing: content-box}
+/* Display */
+.block {display: block}
+.inline-block {display: inline-block}
+.inline {display: inline}
+.flex {display: flex}
+.inline-flex {display: inline-flex}
+.hidden {display: none}
+/* 溢出 */
+.overflow-auto {overflow: auto}
+.overflow-hidden {overflow: hidden}
+.overflow-visible {overflow: visible}
+.overflow-scroll {overflow: scroll; -webkit-overflow-scrolling: touch;}
+.overflow-x-auto {overflow-x: auto}
+.overflow-y-auto {overflow-y: auto}
+.overflow-x-hidden {overflow-x: hidden}
+.overflow-y-hidden {overflow-y: hidden}
+.overflow-x-visible {overflow-x: visible}
+.overflow-y-visible {overflow-y: visible}
+.overflow-x-scroll {overflow-x: scroll; -webkit-overflow-scrolling: touch;}
+.overflow-y-scroll {overflow-y: scroll; -webkit-overflow-scrolling: touch;}
+/* 定位 */
+.static {position: static}
+.fixed {position: fixed}
+.absolute {position: absolute}
+.relative {position: relative}
+.sticky {position: sticky;top: 0rpx}
+/* Top/Right/Bottom/Left */
+@for $x from -50 through 200 {.top-#{$x} {top: $x + rpx}}
+@for $x from -50 through 200 {.bottom-#{$x} {bottom: $x + rpx}}
+@for $x from -50 through 200 {.left-#{$x} {left: $x + rpx}}
+@for $x from -50 through 200 {.right-#{$x} {right: $x + rpx}}
+/* 可见性 */
+.visible {visibility: visible}
+.invisible {visibility: hidden}
+
+/* Flex Direction */
+.flex-row {flex-direction: row}
+.flex-row-reverse {flex-direction: row-reverse}
+.flex-col {flex-direction: column}
+.flex-col-reverse {flex-direction: column-reverse}
+/* Flex Wrap */
+.flex-wrap {flex-wrap: wrap}
+.flex-wrap-reverse {flex-wrap: wrap-reverse}
+.flex-nowrap {flex-wrap: nowrap}
+/* Flex */
+.flex-1 {flex: 1 1 0%}
+.flex-auto {flex: 1 1 auto}
+.flex-initial {flex: 0 1 auto}
+.flex-none {flex: none}
+/* Flex Grow */
+.flex-grow-0 {flex-grow: 0}
+.flex-grow {flex-grow: 1}
+/* Flex Shrink */
+.flex-shrink-0 {flex-shrink: 0}
+.flex-shrink {flex-shrink: 1}
+/* Order */
+.order-1 {order: 1}
+.order-2 {order: 2}
+.order-3 {order: 3}
+.order-4 {order: 4}
+.order-5 {order: 5}
+.order-6 {order: 6}
+.order-7 {order: 7}
+.order-8 {order: 8}
+.order-9 {order: 9}
+.order-10 {order: 10}
+.order-11 {order: 11}
+.order-12 {order: 12}
+.order-first {order: -9999}
+.order-last {order: 9999}
+.order-none {order: 0}
+/* Justify Content */
+.justify-start {justify-content: flex-start}
+.justify-end {justify-content: flex-end}
+.justify-center {justify-content: center}
+.justify-between {justify-content: space-between}
+.justify-around {justify-content: space-around}
+.justify-evenly {justify-content: space-evenly}
+/* Justify Items */
+.justify-items-start {justify-items: start}
+.justify-items-end {justify-items: end}
+.justify-items-center {justify-items: center}
+.justify-items-stretch {justify-items: stretch}
+/* Justify Self */
+.justify-self-auto {justify-self: auto}
+.justify-self-start {justify-self: start}
+.justify-self-end {justify-self: end}
+.justify-self-center {justify-self: center}
+.justify-self-stretch {justify-self: stretch}
+/* Align Content */
+.content-center {align-content: center}
+.content-start {align-content: flex-start}
+.content-end {align-content: flex-end}
+.content-between {align-content: space-between}
+.content-around {align-content: space-around}
+.content-evenly {align-content: space-evenly}
+/* Align Items */
+.items-start {align-items: flex-start}
+.items-end {align-items: flex-end}
+.items-center {align-items: center}
+.items-baseline {align-items: baseline}
+.items-stretch {align-items: stretch}
+/* Align Self */
+.self-auto {align-self: auto}
+.self-start {align-self: flex-start}
+.self-end {align-self: flex-end}
+.self-center {align-self: center}
+.self-stretch {align-self: stretch}
+.self-baseline {align-self: baseline}
+
+/* 文本装饰 */
+.underline {text-decoration: underline}
+.line-through {text-decoration: line-through}
+.no-underline {text-decoration: none}
+/* 文本转换 */
+.uppercase {text-transform: uppercase}
+.lowercase {text-transform: lowercase}
+.capitalize {text-transform: capitalize}
+.normal-case {text-transform: none}
+.break-word {white-space:pre-wrap;word-wrap:break-word;}//强制换行,保留空格
+/* 文本溢出 */
+.text-hidden-1 {overflow: hidden; white-space: nowrap; text-overflow: ellipsis}
+.text-hidden-2 {overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; word-break: break-all}
+.text-nowrap {white-space: nowrap}
+
+/* 下边框 */
+.border-t{border-top: 1px solid #eee;box-sizing: border-box;}
+.border-l{border-left: 1px solid #eee;box-sizing: border-box;}
+.border-r{border-right: 1px solid #eee;box-sizing: border-box;}
+.border-b{border-bottom: 1px solid #eee;box-sizing: border-box;}
+.border-0{border: 0}
+/* 圆角,支持50%,支持0-40的偶数 */
+.rounded{border-radius: 50%}
+@for $x from 0 through 40 {.rounded-#{$x * 2} {border-radius: $x * 2 + rpx}}
+
+/* 旋转 */
+.rotate-45{transform: rotate(45deg)}
+.rotate-90{transform: rotate(90deg)}
+.rotate-135{transform: rotate(135deg)}
+.rotate-180{transform: rotate(180deg)}
+.rotate--45{transform: rotate(-45deg)}
+.rotate--90{transform: rotate(-90deg)}
+.rotate--135{transform: rotate(-135deg)}
+.rotate--180{transform: rotate(-180deg)}
+/* 过渡 */
+.transition-10{transition: all .01s}
+.transition-100{transition: all .1s}
+.transition-200{transition: all .2s}
+.transition-250{transition: all .25s}
+.transition-300{transition: all .3s}
+.transition-400{transition: all .4s}
+.transition-500{transition: all .5s}
+.transition-1000{transition: all 1s}
+/* 旋转 */
+@keyframes spin {from {transform: rotate(0deg)} to {transform: rotate(360deg)}}
+.animate-spin {animation: spin 1s linear infinite}
+/* 波纹 */
+ @keyframes ping {75%, 100% {transform: scale(2); opacity: 0}}
+.animate-ping {animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite}
+/* 脉冲 */
+@keyframes pulse { 0%, 100% {opacity: 1} 50% {opacity: .5}}
+.animate-pulse {animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite}
+/* 反弹 */
+@keyframes bounce {
+ 0%, 100% {transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1)}
+ 50% {transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1)}
+}
+.animate-bounce {animation: bounce 1s infinite}
+/* 大小 */
+ @keyframes shrink {0%, 100% {transform: scale(.5)} 50% {transform: scale(1.2)}  }
+.animate-shrink {animation: shrink 0.1s linear infinite}

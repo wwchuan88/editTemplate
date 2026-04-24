@@ -1,0 +1,34 @@
+{
+  "pages": [
+    "pages/editTemplate/editTemplate",
+    "pages/index/index",
+    "pages/tabbar/mine"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#748094",
+    "selectedColor": "#182433",
+    "backgroundColor": "#F8FAFD",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/editTemplate/editTemplate",
+        "text": "编辑模板"
+      },
+      {
+        "pagePath": "pages/tabbar/mine",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {}
+}
