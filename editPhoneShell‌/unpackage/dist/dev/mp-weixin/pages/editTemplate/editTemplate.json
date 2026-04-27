@@ -2,7 +2,6 @@
   "navigationBarTitleText": "店管家手机端",
   "usingComponents": {
     "up-button": "../../uni_modules/uview-plus_3.8.9/components/u-button/u-button",
-    "u-button": "../../uni_modules/uview-plus_3.8.9/components/u-button/u-button",
     "side-drawers": "./components/SideDrawers",
     "decor-side-drawers": "./components/DecorSideDrawers",
     "canvas-area": "./components/CanvasArea",

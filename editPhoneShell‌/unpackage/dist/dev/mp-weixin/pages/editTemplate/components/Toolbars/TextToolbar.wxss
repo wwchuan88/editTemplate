@@ -77,13 +77,18 @@
 }
 
 /* 输入框样式 */
+.text-input-container.data-v-bb3d09ea {
+	margin-bottom: 20rpx;
+}
 .text-input.data-v-bb3d09ea {
 	width: 100%;
 	padding: 16rpx;
 	border: 1rpx solid #f2e7da;
 	border-radius: 16rpx;
 	font-size: 28rpx;
-	margin-bottom: 20rpx;
+}
+.submit-button-container.data-v-bb3d09ea {
+	margin-top: 20rpx;
 }
 
 /* 按钮样式 */

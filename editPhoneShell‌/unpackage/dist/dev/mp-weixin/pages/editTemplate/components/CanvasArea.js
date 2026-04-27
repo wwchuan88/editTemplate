@@ -18,12 +18,27 @@ const _sfc_main = {
     scale: {
       type: Number,
       default: 1
+    },
+    currentTool: {
+      type: String,
+      default: ""
     }
   },
-  emits: ["select-layer", "move-layer"],
+  emits: ["select-layer", "move-layer", "add-text-layer", "update-text", "clear-tool"],
   setup(__props, { emit: __emit }) {
     const props = __props;
     const emit = __emit;
+    const editingLayerId = common_vendor.ref("");
+    const editingText = common_vendor.ref("");
+    const textInputRefs = common_vendor.ref({});
+    common_vendor.watch(() => props.selectedLayerId, (newId) => {
+      if (props.currentTool === "text" && newId) {
+        const layer = props.layers.find((l) => l.id === newId);
+        if (layer && layer.type === "text") {
+          startEditing(layer);
+        }
+      }
+    });
     common_vendor.computed(() => {
       const map = {
         none: "滤镜：原图",
@@ -61,36 +76,60 @@ const _sfc_main = {
       };
     });
     function emitMove(id, event) {
-      emit("move-layer", {
-        id,
-        x: event.detail.x,
-        y: event.detail.y
+      emit("move-layer", id, event.detail.x, event.detail.y);
+    }
+    function handleScreenClick() {
+      if (props.currentTool === "text") {
+        emit("add-text-layer");
+      } else {
+        emit("clear-tool");
+      }
+    }
+    function handleLayerClick(layer) {
+      if (layer.type === "text") {
+        startEditing(layer);
+      } else {
+        emit("select-layer", layer.id);
+      }
+    }
+    function startEditing(layer) {
+      editingLayerId.value = layer.id;
+      editingText.value = layer.text || "";
+      emit("select-layer", layer.id);
+      common_vendor.nextTick$1(() => {
+        if (textInputRefs.value[layer.id]) {
+          textInputRefs.value[layer.id].focus();
+        }
       });
+    }
+    function handleTextBlur(layerId) {
+      emit("update-text", layerId, editingText.value || "输入文字");
+      editingLayerId.value = "";
+      emit("clear-tool");
     }
     function getLayerBoxStyle(layer) {
       return {
-        width: `${layer.width}px`,
-        height: `${layer.height}px`
+        width: layer.width + "rpx",
+        height: layer.height + "rpx"
       };
     }
     function getTextStyle(layer) {
       return {
+        fontSize: layer.size + "rpx",
         color: layer.color,
-        fontSize: `${layer.size}px`,
-        fontFamily: layer.font || "Microsoft YaHei"
+        fontFamily: layer.font
       };
     }
     function getIconStyle(layer) {
       return {
-        color: layer.color,
-        fontSize: `${layer.size}px`
+        fontSize: layer.size + "rpx",
+        color: layer.color
       };
     }
     function getBrushStyle(layer) {
       return {
-        backgroundColor: layer.color,
-        width: `${layer.width}px`,
-        height: `${layer.height}px`
+        background: layer.color,
+        borderRadius: "50%"
       };
     }
     return (_ctx, _cache) => {
@@ -98,36 +137,46 @@ const _sfc_main = {
         a: common_vendor.f(__props.layers, (layer, k0, i0) => {
           return common_vendor.e({
             a: layer.type === "text"
-          }, layer.type === "text" ? {
-            b: common_vendor.t(layer.text || "输入文字"),
-            c: common_vendor.s(getTextStyle(layer))
-          } : layer.type === "icon" ? {
-            e: common_vendor.t(layer.text),
-            f: common_vendor.s(getIconStyle(layer))
+          }, layer.type === "text" ? common_vendor.e({
+            b: editingLayerId.value !== layer.id
+          }, editingLayerId.value !== layer.id ? {
+            c: common_vendor.t(layer.text || "输入文字"),
+            d: common_vendor.s(getTextStyle(layer))
+          } : {
+            e: common_vendor.s(getTextStyle(layer)),
+            f: common_vendor.o(($event) => handleTextBlur(layer.id), layer.id),
+            g: common_vendor.o(($event) => handleTextBlur(layer.id), layer.id),
+            h: (el) => textInputRefs.value[layer.id] = el,
+            i: editingText.value,
+            j: common_vendor.o(($event) => editingText.value = $event.detail.value, layer.id)
+          }) : layer.type === "icon" ? {
+            l: common_vendor.t(layer.text),
+            m: common_vendor.s(getIconStyle(layer))
           } : layer.type === "image" ? {
-            h: layer.url
+            o: layer.url
           } : layer.type === "brush" ? {
-            j: common_vendor.s(getBrushStyle(layer))
+            q: common_vendor.s(getBrushStyle(layer))
           } : {}, {
-            d: layer.type === "icon",
-            g: layer.type === "image",
-            i: layer.type === "brush",
-            k: layer.id,
-            l: __props.selectedLayerId === layer.id ? 1 : "",
-            m: layer.x,
-            n: layer.y,
-            o: layer.locked ? "none" : "all",
-            p: common_vendor.s(getLayerBoxStyle(layer)),
-            q: common_vendor.o(($event) => emitMove(layer.id, $event), layer.id),
-            r: common_vendor.o(($event) => _ctx.$emit("select-layer", layer.id), layer.id)
+            k: layer.type === "icon",
+            n: layer.type === "image",
+            p: layer.type === "brush",
+            r: layer.id,
+            s: __props.selectedLayerId === layer.id ? 1 : "",
+            t: layer.x,
+            v: layer.y,
+            w: layer.locked ? "none" : "all",
+            x: common_vendor.s(getLayerBoxStyle(layer)),
+            y: common_vendor.o(($event) => emitMove(layer.id, $event), layer.id),
+            z: common_vendor.o(($event) => handleLayerClick(layer), layer.id)
           });
         }),
-        b: filterOverlay.value
+        b: common_vendor.o(handleScreenClick, "5c"),
+        c: filterOverlay.value
       }, filterOverlay.value ? {
-        c: common_vendor.s(filterOverlay.value)
+        d: common_vendor.s(filterOverlay.value)
       } : {}, {
-        d: common_vendor.s(screenStyle.value),
-        e: `scale(${__props.scale})`
+        e: common_vendor.s(screenStyle.value),
+        f: `scale(${__props.scale})`
       });
     };
   }

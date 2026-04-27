@@ -4,7 +4,7 @@
 		<view class="phone-frame" :style="{ transform: `scale(${scale})`, transformOrigin: 'center center' }">
 			<view class="phone-camera"></view>
 			<view class="phone-screen" :style="screenStyle">
-				<movable-area class="canvas-area">
+				<movable-area class="canvas-area" @click="handleScreenClick">
 					<movable-view
 						v-for="layer in layers"
 						:key="layer.id"
@@ -16,11 +16,22 @@
 						:damping="30"
 						:style="getLayerBoxStyle(layer)"
 						@change="emitMove(layer.id, $event)"
-						@click="$emit('select-layer', layer.id)"
+						@click.stop="handleLayerClick(layer)"
 					>
-						<view v-if="layer.type === 'text'" class="layer__text" :style="getTextStyle(layer)">
-							{{ layer.text || '输入文字' }}
-						</view>
+						<template v-if="layer.type === 'text'">
+							<view v-if="editingLayerId !== layer.id" class="layer__text" :style="getTextStyle(layer)">
+								{{ layer.text || '输入文字' }}
+							</view>
+							<input 
+								v-else 
+								class="layer__text-input" 
+								v-model="editingText" 
+								:style="getTextStyle(layer)"
+								@blur="handleTextBlur(layer.id)"
+								@keyup.enter="handleTextBlur(layer.id)"
+								:ref="el => textInputRefs[layer.id] = el"
+							/>
+						</template>
 						<view v-else-if="layer.type === 'icon'" class="layer__icon" :style="getIconStyle(layer)">
 							{{ layer.text }}
 						</view>
@@ -35,7 +46,7 @@
 </template>
 
 <script setup>
-	import { computed } from 'vue'
+	import { computed, ref, nextTick, watch } from 'vue'
 
 	const props = defineProps({
 		layers: {
@@ -53,10 +64,28 @@
 		scale: {
 			type: Number,
 			default: 1
+		},
+		currentTool: {
+			type: String,
+			default: ''
 		}
 	})
 
-	const emit = defineEmits(['select-layer', 'move-layer'])
+	const emit = defineEmits(['select-layer', 'move-layer', 'add-text-layer', 'update-text', 'clear-tool'])
+
+	const editingLayerId = ref('')
+	const editingText = ref('')
+	const textInputRefs = ref({})
+
+	// 监听选中图层变化，当选择文字工具时自动开始编辑
+	watch(() => props.selectedLayerId, (newId) => {
+		if (props.currentTool === 'text' && newId) {
+			const layer = props.layers.find(l => l.id === newId)
+			if (layer && layer.type === 'text') {
+				startEditing(layer)
+			}
+		}
+	})
 
 	const activeFilterLabel = computed(() => {
 		const map = {
@@ -98,147 +127,174 @@
 	})
 
 	function emitMove(id, event) {
-		emit('move-layer', {
-			id,
-			x: event.detail.x,
-			y: event.detail.y
+		emit('move-layer', id, event.detail.x, event.detail.y)
+	}
+
+	function handleScreenClick() {
+		if (props.currentTool === 'text') {
+			// 当选择了文字工具时，点击画布添加文字图层
+			emit('add-text-layer')
+		} else {
+			// 点击画布空白区域时，取消工具选择
+			emit('clear-tool')
+		}
+	}
+
+	function handleLayerClick(layer) {
+		if (layer.type === 'text') {
+			startEditing(layer)
+		} else {
+			emit('select-layer', layer.id)
+		}
+	}
+
+	function startEditing(layer) {
+		editingLayerId.value = layer.id
+		editingText.value = layer.text || ''
+		emit('select-layer', layer.id)
+		nextTick(() => {
+			if (textInputRefs.value[layer.id]) {
+				textInputRefs.value[layer.id].focus()
+			}
 		})
+	}
+
+	function handleTextBlur(layerId) {
+		emit('update-text', layerId, editingText.value || '输入文字')
+		editingLayerId.value = ''
+		// 完成文字输入后，取消文字工具的选择
+		emit('clear-tool')
 	}
 
 	function getLayerBoxStyle(layer) {
 		return {
-			width: `${layer.width}px`,
-			height: `${layer.height}px`
+			width: layer.width + 'rpx',
+			height: layer.height + 'rpx'
 		}
 	}
 
 	function getTextStyle(layer) {
 		return {
+			fontSize: layer.size + 'rpx',
 			color: layer.color,
-			fontSize: `${layer.size}px`,
-			fontFamily: layer.font || 'Microsoft YaHei'
+			fontFamily: layer.font
 		}
 	}
 
 	function getIconStyle(layer) {
 		return {
-			color: layer.color,
-			fontSize: `${layer.size}px`
+			fontSize: layer.size + 'rpx',
+			color: layer.color
 		}
 	}
 
 	function getBrushStyle(layer) {
 		return {
-			backgroundColor: layer.color,
-			width: `${layer.width}px`,
-			height: `${layer.height}px`
+			background: layer.color,
+			borderRadius: '50%'
 		}
 	}
 </script>
 
 <style scoped>
-	.stage-card {
-		padding: 24rpx;
-		padding-top: 150rpx;
-		border-radius: 32rpx;
-		box-shadow: 0 20rpx 60rpx rgba(80, 56, 30, 0.08);
-	}
 
-	.stage-card__head {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 20rpx;
-	}
+.phone-frame {
+	width: 375rpx;
+	height: 812rpx;
+	background: #292929;
+	border-radius: 64rpx;
+	position: relative;
+	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.2);
+}
 
-	.stage-card__title {
-		font-size: 30rpx;
-		font-weight: 700;
-		color: #2f241f;
-	}
+.phone-camera {
+	width: 60rpx;
+	height: 60rpx;
+	background: #111;
+	border-radius: 50%;
+	position: absolute;
+	top: 20rpx;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 1;
+}
 
-	.stage-card__meta {
-		font-size: 22rpx;
-		color: #876652;
-	}
+.phone-screen {
+	width: 345rpx;
+	height: 692rpx;
+	background: #fffdf8;
+	position: absolute;
+	top: 60rpx;
+	left: 15rpx;
+	border-radius: 20rpx;
+	overflow: hidden;
+}
 
-	.phone-frame {
-		position: relative;
-		width: 450rpx;
-		height: 900rpx;
-		margin: 0 auto;
-		padding: 18rpx;
-		border-radius: 56rpx;
-		background: linear-gradient(135deg, #2d2d33 0%, #575761 100%);
-		box-shadow: 0 28rpx 80rpx rgba(33, 27, 22, 0.22);
-	}
+.canvas-area {
+	width: 100%;
+	height: 100%;
+}
 
-	.phone-camera {
-		position: absolute;
-		top: 28rpx;
-		left: 28rpx;
-		width: 112rpx;
-		height: 112rpx;
-		border-radius: 28rpx;
-		background: rgba(18, 18, 20, 0.75);
-		z-index: 4;
-	}
+.layer {
+	position: absolute;
+	z-index: 1;
+}
 
-	.phone-screen {
-		position: relative;
-		width: 100%;
-		height: 100%;
-		border-radius: 42rpx;
-		overflow: hidden;
-	}
+.layer--selected {
+	border: 2rpx solid #d86e33;
+	border-radius: 8rpx;
+}
 
-	.canvas-area {
-		position: relative;
-		width: 100%;
-		height: 100%;
-		z-index: 2;
-	}
+.layer__text {
+	padding: 10rpx;
+	text-align: center;
+	word-break: break-word;
+}
 
-	.layer {
-		border: 2rpx dashed transparent;
-	}
+.layer__text-input {
+	width: 100%;
+	padding: 10rpx;
+	border: none;
+	outline: none;
+	background: transparent;
+	text-align: center;
+	word-break: break-word;
+}
 
-	.layer--selected {
-		border-color: #e86f2d;
-	}
+.layer__icon {
+	font-size: 64rpx;
+	text-align: center;
+	padding: 10rpx;
+}
 
-	.layer__text,
-	.layer__icon {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		text-align: center;
-		font-weight: 700;
-	}
+.layer__image {
+	width: 100%;
+	height: 100%;
+}
 
-	.layer__text {
-		padding: 8rpx;
-		line-height: 1.35;
-		word-break: break-word;
-	}
+.layer__brush {
+	width: 100%;
+	height: 100%;
+}
 
-	.layer__image {
-		width: 100%;
-		height: 100%;
-		border-radius: 20rpx;
-	}
+.filter-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 10;
+}
 
-	.layer__brush {
-		border-radius: 999rpx;
-		opacity: 0.82;
-	}
-
-	.filter-overlay {
-		position: absolute;
-		inset: 0;
-		pointer-events: none;
-		z-index: 3;
-	}
+/* 提示文字 */
+.hint-text {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 24rpx;
+	color: #999;
+	text-align: center;
+	z-index: 0;
+}
 </style>

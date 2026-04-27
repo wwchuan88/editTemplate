@@ -23,6 +23,16 @@
 
 		<!-- 下层内容 -->
 		<view class="toolbar-bottom">
+			<!-- 文字输入 -->
+			<view class="text-input-container">
+				<input 
+					class="text-input" 
+					:value="textDraft" 
+					@input="$emit('update-draft', $event.target.value)"
+					placeholder="输入文字"
+				/>
+			</view>
+
 			<!-- 字体选择 -->
 			<view v-if="activeNav === 'font'" class="nav-content">
 				<view class="font-scroll-container">
@@ -58,6 +68,13 @@
 				<view class="color-row">
 					<view v-for="item in colors" :key="item" class="color-chip" :style="{ backgroundColor: item }"
 						:class="{ 'color-chip--active': textColor === item }" @click="$emit('pick-color', item)"></view>
+				</view>
+			</view>
+
+			<!-- 确认按钮 -->
+			<view class="submit-button-container">
+				<view class="u-button" @click="$emit('submit')">
+					确认
 				</view>
 			</view>
 		</view>
@@ -213,13 +230,20 @@ function handleSizeChange(e) {
 }
 
 /* 输入框样式 */
+.text-input-container {
+	margin-bottom: 20rpx;
+}
+
 .text-input {
 	width: 100%;
 	padding: 16rpx;
 	border: 1rpx solid #f2e7da;
 	border-radius: 16rpx;
 	font-size: 28rpx;
-	margin-bottom: 20rpx;
+}
+
+.submit-button-container {
+	margin-top: 20rpx;
 }
 
 /* 按钮样式 */

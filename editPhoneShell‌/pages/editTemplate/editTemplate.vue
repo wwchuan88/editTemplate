@@ -42,29 +42,9 @@
 
 			<view class="workspace__main">
 				<view class="stage-card">
-					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter" :scale="phoneFrameScale"
-				@select-layer="selectLayer" @move-layer="handleLayerMove" />
+					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter" :scale="phoneFrameScale" :current-tool="currentTool"
+				@select-layer="selectLayer" @move-layer="handleLayerMove" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" />
 
-				</view>
-
-				<view class="selection-panel">
-					<template v-if="selectedLayer">
-						<view class="selection-panel__head">
-							<text class="selection-panel__title">当前选中</text>
-							<u-button text="删除" plain size="mini" @click="removeSelectedLayer"></u-button>
-						</view>
-						<text class="selection-panel__desc">{{ getLayerSummary(selectedLayer) }}</text>
-						<view class="selection-actions">
-							<u-button text="放大" size="mini" @click="resizeSelectedLayer(12)"></u-button>
-							<u-button text="缩小" size="mini" @click="resizeSelectedLayer(-12)"></u-button>
-							<u-button :text="selectedLayer.locked ? '解锁拖动' : '锁定拖动'" size="mini" plain
-								@click="toggleLayerLock"></u-button>
-						</view>
-					</template>
-					<template v-else>
-						<text class="selection-panel__title">当前未选中元素</text>
-						<text class="selection-panel__desc">点击画布中的图层后，可继续调整内容、大小和拖动状态。</text>
-					</template>
 				</view>
 			</view>
 		</view>
@@ -98,7 +78,6 @@
 		</view>
 	</view>
 </template>
-
 <script setup>
 import { computed, ref } from 'vue'
 import SideDrawers from './components/SideDrawers.vue'
@@ -198,6 +177,15 @@ function addTextLayer() {
 	}
 	layers.value.push(layer)
 	selectedLayerId.value = layer.id
+	// 触发编辑状态
+	emit('edit-text-layer', layer.id)
+}
+
+function handleAddTextLayer() {
+	// 只有当当前工具是文字工具时，点击画布才添加文字图层
+	if (currentTool.value === 'text') {
+		addTextLayer()
+	}
 }
 
 function upsertTextLayer() {
@@ -272,11 +260,20 @@ function addBrushDot() {
 	selectedLayerId.value = layer.id
 }
 
-function handleLayerMove(payload) {
-	const layer = layers.value.find((item) => item.id === payload.id)
+function handleLayerMove(id, x, y) {
+	const layer = layers.value.find((item) => item.id === id)
 	if (!layer) return
-	layer.x = payload.x
-	layer.y = payload.y
+	layer.x = x
+	layer.y = y
+}
+
+function handleUpdateText(id, text) {
+	const layer = layers.value.find((item) => item.id === id)
+	if (!layer) return
+	layer.text = text
+	if (selectedLayerId.value === id) {
+		textDraft.value = text
+	}
 }
 
 function selectLayer(id) {
@@ -288,6 +285,9 @@ function selectLayer(id) {
 		textColor.value = layer.color
 		textSize.value = layer.size
 		currentTool.value = 'text'
+	} else {
+		// 点击非文字图层时，清空工具选择
+		currentTool.value = ''
 	}
 }
 
@@ -456,6 +456,11 @@ function clearAll() {
 	console.log('清空所有内容')
 	layers.value = []
 	selectedLayerId.value = ''
+}
+
+function handleClearTool() {
+	// 清空当前工具选择
+	currentTool.value = ''
 }
 </script>
 

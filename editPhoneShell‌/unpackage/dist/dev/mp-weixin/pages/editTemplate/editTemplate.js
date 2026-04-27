@@ -2,13 +2,11 @@
 const common_vendor = require("../../common/vendor.js");
 if (!Array) {
   const _easycom_up_button2 = common_vendor.resolveComponent("up-button");
-  const _easycom_u_button2 = common_vendor.resolveComponent("u-button");
-  (_easycom_up_button2 + _easycom_u_button2)();
+  _easycom_up_button2();
 }
 const _easycom_up_button = () => "../../uni_modules/uview-plus_3.8.9/components/u-button/u-button.js";
-const _easycom_u_button = () => "../../uni_modules/uview-plus_3.8.9/components/u-button/u-button.js";
 if (!Math) {
-  (_easycom_up_button + SideDrawers + DecorSideDrawers + CanvasArea + _easycom_u_button + TextToolbar + IconToolbar + UploadToolbar + FilterToolbar + BrushToolbar)();
+  (_easycom_up_button + SideDrawers + DecorSideDrawers + CanvasArea + TextToolbar + IconToolbar + UploadToolbar + FilterToolbar + BrushToolbar)();
 }
 const SideDrawers = () => "./components/SideDrawers.js";
 const DecorSideDrawers = () => "./components/DecorSideDrawers.js";
@@ -100,6 +98,12 @@ const _sfc_main = {
       };
       layers.value.push(layer);
       selectedLayerId.value = layer.id;
+      emit("edit-text-layer", layer.id);
+    }
+    function handleAddTextLayer() {
+      if (currentTool.value === "text") {
+        addTextLayer();
+      }
     }
     function upsertTextLayer() {
       if (selectedLayer.value && selectedLayer.value.type === "text") {
@@ -168,12 +172,21 @@ const _sfc_main = {
       layers.value.push(layer);
       selectedLayerId.value = layer.id;
     }
-    function handleLayerMove(payload) {
-      const layer = layers.value.find((item) => item.id === payload.id);
+    function handleLayerMove(id, x, y) {
+      const layer = layers.value.find((item) => item.id === id);
       if (!layer)
         return;
-      layer.x = payload.x;
-      layer.y = payload.y;
+      layer.x = x;
+      layer.y = y;
+    }
+    function handleUpdateText(id, text) {
+      const layer = layers.value.find((item) => item.id === id);
+      if (!layer)
+        return;
+      layer.text = text;
+      if (selectedLayerId.value === id) {
+        textDraft.value = text;
+      }
     }
     function selectLayer(id) {
       selectedLayerId.value = id;
@@ -185,35 +198,9 @@ const _sfc_main = {
         textColor.value = layer.color;
         textSize.value = layer.size;
         currentTool.value = "text";
+      } else {
+        currentTool.value = "";
       }
-    }
-    function resizeSelectedLayer(delta) {
-      const layer = selectedLayer.value;
-      if (!layer)
-        return;
-      if (layer.type === "text" || layer.type === "icon") {
-        layer.size = Math.max(18, layer.size + delta);
-        layer.height = Math.max(48, layer.size + 20);
-        if (layer.type === "icon") {
-          layer.width = Math.max(48, layer.width + delta);
-          layer.height = Math.max(48, layer.height + delta);
-        }
-      }
-      if (layer.type === "image" || layer.type === "brush") {
-        layer.width = Math.max(36, layer.width + delta);
-        layer.height = Math.max(36, layer.height + delta);
-      }
-    }
-    function toggleLayerLock() {
-      if (!selectedLayer.value)
-        return;
-      selectedLayer.value.locked = !selectedLayer.value.locked;
-    }
-    function removeSelectedLayer() {
-      if (!selectedLayerId.value)
-        return;
-      layers.value = layers.value.filter((item) => item.id !== selectedLayerId.value);
-      selectedLayerId.value = "";
     }
     function chooseImage() {
       common_vendor.index.chooseImage({
@@ -245,15 +232,6 @@ const _sfc_main = {
       if (selectedLayer.value && selectedLayer.value.type === "text") {
         selectedLayer.value.font = font;
       }
-    }
-    function getLayerSummary(layer) {
-      if (layer.type === "text")
-        return `文字：${layer.text}`;
-      if (layer.type === "icon")
-        return `图标：${layer.label}`;
-      if (layer.type === "image")
-        return "图片图层";
-      return "笔刷色点";
     }
     function exitTool() {
       currentTool.value = "";
@@ -316,6 +294,9 @@ const _sfc_main = {
       layers.value = [];
       selectedLayerId.value = "";
     }
+    function handleClearTool() {
+      currentTool.value = "";
+    }
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.p({
@@ -354,49 +335,27 @@ const _sfc_main = {
           tools: decorToolList,
           visible: decorSidebarVisible.value
         }),
-        y: common_vendor.o(selectLayer, "b5"),
-        z: common_vendor.o(handleLayerMove, "f4"),
-        A: common_vendor.p({
+        y: common_vendor.o(selectLayer, "48"),
+        z: common_vendor.o(handleLayerMove, "97"),
+        A: common_vendor.o(handleAddTextLayer, "1b"),
+        B: common_vendor.o(handleUpdateText, "f1"),
+        C: common_vendor.o(handleClearTool, "21"),
+        D: common_vendor.p({
           layers: layers.value,
           ["selected-layer-id"]: selectedLayerId.value,
           ["active-filter"]: activeFilter.value,
-          scale: phoneFrameScale.value
+          scale: phoneFrameScale.value,
+          ["current-tool"]: currentTool.value
         }),
-        B: selectedLayer.value
-      }, selectedLayer.value ? {
-        C: common_vendor.o(removeSelectedLayer, "a7"),
-        D: common_vendor.p({
-          text: "删除",
-          plain: true,
-          size: "mini"
-        }),
-        E: common_vendor.t(getLayerSummary(selectedLayer.value)),
-        F: common_vendor.o(($event) => resizeSelectedLayer(12), "30"),
-        G: common_vendor.p({
-          text: "放大",
-          size: "mini"
-        }),
-        H: common_vendor.o(($event) => resizeSelectedLayer(-12), "64"),
-        I: common_vendor.p({
-          text: "缩小",
-          size: "mini"
-        }),
-        J: common_vendor.o(toggleLayerLock, "9e"),
-        K: common_vendor.p({
-          text: selectedLayer.value.locked ? "解锁拖动" : "锁定拖动",
-          size: "mini",
-          plain: true
-        })
-      } : {}, {
-        L: currentTool.value === "text"
+        E: currentTool.value === "text"
       }, currentTool.value === "text" ? {
-        M: common_vendor.o(($event) => textDraft.value = $event, "fa"),
-        N: common_vendor.o(pickTextColor, "ef"),
-        O: common_vendor.o(changeTextSize, "c8"),
-        P: common_vendor.o(pickTextFont, "ea"),
-        Q: common_vendor.o(upsertTextLayer, "7e"),
-        R: common_vendor.o(exitTool, "f0"),
-        S: common_vendor.p({
+        F: common_vendor.o(($event) => textDraft.value = $event, "79"),
+        G: common_vendor.o(pickTextColor, "ea"),
+        H: common_vendor.o(changeTextSize, "d9"),
+        I: common_vendor.o(pickTextFont, "78"),
+        J: common_vendor.o(upsertTextLayer, "63"),
+        K: common_vendor.o(exitTool, "29"),
+        L: common_vendor.p({
           ["text-draft"]: textDraft.value,
           ["text-color"]: textColor.value,
           ["text-size"]: textSize.value,
@@ -405,39 +364,39 @@ const _sfc_main = {
           ["is-editing"]: selectedLayer.value && selectedLayer.value.type === "text"
         })
       } : currentTool.value === "icon" ? {
-        U: common_vendor.o(addIconLayer, "8a"),
-        V: common_vendor.o(exitTool, "6b"),
-        W: common_vendor.p({
+        N: common_vendor.o(addIconLayer, "4d"),
+        O: common_vendor.o(exitTool, "6a"),
+        P: common_vendor.p({
           options: iconOptions
         })
       } : currentTool.value === "upload" ? {
-        Y: common_vendor.o(chooseImage, "ad"),
-        Z: common_vendor.o(addDemoImage, "fb"),
-        aa: common_vendor.o(exitTool, "18")
+        R: common_vendor.o(chooseImage, "e5"),
+        S: common_vendor.o(addDemoImage, "d1"),
+        T: common_vendor.o(exitTool, "80")
       } : currentTool.value === "filter" ? {
-        ac: common_vendor.o(($event) => activeFilter.value = $event, "d6"),
-        ad: common_vendor.o(exitTool, "5f"),
-        ae: common_vendor.p({
+        V: common_vendor.o(($event) => activeFilter.value = $event, "eb"),
+        W: common_vendor.o(exitTool, "7f"),
+        X: common_vendor.p({
           options: filterOptions,
           ["active-filter"]: activeFilter.value
         })
       } : currentTool.value === "brush" ? {
-        ag: common_vendor.o(($event) => brushColor.value = $event, "20"),
-        ah: common_vendor.o(($event) => brushSize.value = $event, "8c"),
-        ai: common_vendor.o(addBrushDot, "e1"),
-        aj: common_vendor.o(exitTool, "f7"),
-        ak: common_vendor.p({
+        Z: common_vendor.o(($event) => brushColor.value = $event, "ab"),
+        aa: common_vendor.o(($event) => brushSize.value = $event, "5f"),
+        ab: common_vendor.o(addBrushDot, "2f"),
+        ac: common_vendor.o(exitTool, "cb"),
+        ad: common_vendor.p({
           colors: brushColors,
           ["brush-color"]: brushColor.value,
           ["brush-size"]: brushSize.value
         })
       } : {}, {
-        T: currentTool.value === "icon",
-        X: currentTool.value === "upload",
-        ab: currentTool.value === "filter",
-        af: currentTool.value === "brush",
-        al: common_vendor.o(toggleSidebar, "5d"),
-        am: common_vendor.o(toggleDecorSidebar, "4d")
+        M: currentTool.value === "icon",
+        Q: currentTool.value === "upload",
+        U: currentTool.value === "filter",
+        Y: currentTool.value === "brush",
+        ae: common_vendor.o(toggleSidebar, "6d"),
+        af: common_vendor.o(toggleDecorSidebar, "a7")
       });
     };
   }
