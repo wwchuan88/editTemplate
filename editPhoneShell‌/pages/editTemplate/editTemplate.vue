@@ -42,8 +42,8 @@
 
 			<view class="workspace__main">
 				<view class="stage-card">
-					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter" :scale="phoneFrameScale" :current-tool="currentTool"
-				@select-layer="selectLayer" @move-layer="handleLayerMove" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" />
+					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter" :scale="phoneFrameScale" :current-tool="currentTool" :editing-layer-id="editingLayerId"
+				@select-layer="selectLayer" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" />
 
 				</view>
 			</view>
@@ -127,6 +127,7 @@ const currentTool = ref('')
 const currentDecorTool = ref('')
 const layers = ref([])
 const selectedLayerId = ref('')
+const editingLayerId = ref('')
 const activeFilter = ref('none')
 const textDraft = ref('店管家')
 const textColor = ref('#2f241f')
@@ -140,6 +141,8 @@ const isDragging = ref(false)
 const toolbarPosition = ref({ left: 20, top: 10 })
 const dragOffset = ref({ x: 0, y: 0 })
 const phoneFrameScale = ref(1)
+
+const emit = defineEmits(['edit-text-layer'])
 
 const selectedLayer = computed(() => layers.value.find((item) => item.id === selectedLayerId.value) || null)
 const activeFilterLabel = computed(() => {
@@ -158,14 +161,24 @@ function getCenterPosition(width, height) {
 	}
 }
 
-function addTextLayer() {
+function addTextLayer(x, y) {
 	const width = 180
 	const height = Math.max(48, textSize.value + 20)
-	const position = getCenterPosition(width, height)
+	let position
+	if (x !== undefined && y !== undefined) {
+		// 使用鼠标点击坐标作为图层位置
+		position = {
+			x: Math.max(12, Math.floor(x - width / 2)),
+			y: Math.max(16, Math.floor(y - height / 2))
+		}
+	} else {
+		// 否则使用中心位置
+		position = getCenterPosition(width, height)
+	}
 	const layer = {
 		id: createId('text'),
 		type: 'text',
-		text: textDraft.value || '输入文字',
+		text: '请输入', // 默认文字改为"请输入"
 		color: textColor.value,
 		size: textSize.value,
 		font: textFont.value,
@@ -178,13 +191,13 @@ function addTextLayer() {
 	layers.value.push(layer)
 	selectedLayerId.value = layer.id
 	// 触发编辑状态
-	emit('edit-text-layer', layer.id)
+	editingLayerId.value = layer.id
 }
 
-function handleAddTextLayer() {
+function handleAddTextLayer(x, y) {
 	// 只有当当前工具是文字工具时，点击画布才添加文字图层
 	if (currentTool.value === 'text') {
-		addTextLayer()
+		addTextLayer(x, y)
 	}
 }
 
@@ -258,13 +271,6 @@ function addBrushDot() {
 	}
 	layers.value.push(layer)
 	selectedLayerId.value = layer.id
-}
-
-function handleLayerMove(id, x, y) {
-	const layer = layers.value.find((item) => item.id === id)
-	if (!layer) return
-	layer.x = x
-	layer.y = y
 }
 
 function handleUpdateText(id, text) {
@@ -461,6 +467,9 @@ function clearAll() {
 function handleClearTool() {
 	// 清空当前工具选择
 	currentTool.value = ''
+	// 清除编辑状态，隐藏输入框
+	editingLayerId.value = ''
+	console.log('清除工具选择，editingLayerId:', editingLayerId.value)
 }
 </script>
 

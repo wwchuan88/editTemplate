@@ -23,16 +23,6 @@
 
 		<!-- 下层内容 -->
 		<view class="toolbar-bottom">
-			<!-- 文字输入 -->
-			<view class="text-input-container">
-				<input 
-					class="text-input" 
-					:value="textDraft" 
-					@input="$emit('update-draft', $event.target.value)"
-					placeholder="输入文字"
-				/>
-			</view>
-
 			<!-- 字体选择 -->
 			<view v-if="activeNav === 'font'" class="nav-content">
 				<view class="font-scroll-container">
@@ -71,12 +61,7 @@
 				</view>
 			</view>
 
-			<!-- 确认按钮 -->
-			<view class="submit-button-container">
-				<view class="u-button" @click="$emit('submit')">
-					确认
-				</view>
-			</view>
+
 		</view>
 	</view>
 </template>
