@@ -2,13 +2,22 @@
 	<view class="phone-frame" :style="{ transform: `scale(${scale})`, transformOrigin: 'center center' }">
 		<view class="phone-camera"></view>
 		<view class="phone-screen" :style="screenStyle">
-			<view class="canvas-area" @click="handleScreenClick">
+			<view 
+				class="canvas-area" 
+				@click="handleScreenClick"
+			>
 				<view
 					v-for="layer in layers"
 					:key="layer.id"
 					class="layer"
-					:class="{ 'layer--selected': selectedLayerId === layer.id }"
+					:class="{ 'layer--selected': selectedLayerId === layer.id, 'layer--dragging': draggingLayerId === layer.id }"
 					:style="getLayerStyle(layer)"
+					@touchstart="handleLayerTouchStart($event, layer)"
+					@touchmove="handleLayerTouchMove($event)"
+					@touchend="handleLayerTouchEnd"
+					@mousedown="handleLayerMouseDown($event, layer)"
+					@mousemove="handleLayerMouseMove($event)"
+					@mouseup="handleLayerMouseUp"
 					@click.stop="handleLayerClick(layer)"
 				>
 					<template v-if="layer.type === 'text'">
@@ -67,10 +76,14 @@
 		}
 	})
 
-	const emit = defineEmits(['select-layer', 'add-text-layer', 'update-text', 'clear-tool'])
+	const emit = defineEmits(['select-layer', 'add-text-layer', 'update-text', 'clear-tool', 'update-layer-position'])
 
 	const editingText = ref('')
 	const textInputRefs = ref({})
+	const draggingLayerId = ref('')
+	const dragStartPos = ref({ x: 0, y: 0 })
+	const layerStartPos = ref({ x: 0, y: 0 })
+	const hasMoved = ref(false)
 
 	// 监听选中图层变化，当选择文字工具时自动开始编辑
 	watch(() => props.selectedLayerId, (newId) => {
@@ -123,56 +136,43 @@
 
 	function handleScreenClick(event) {
 		if (props.currentTool === 'text') {
-			// 获取鼠标点击坐标
-			let clientX, clientY
+			let x, y
 			
-			// 兼容不同事件类型
-			if (event.type === 'click') {
-				// 鼠标点击事件
-				clientX = event.clientX
-				clientY = event.clientY
-			} else if (event.type === 'touchstart' || event.type === 'touchmove') {
-				// 触摸事件
-				clientX = event.touches[0].clientX
-				clientY = event.touches[0].clientY
+			const systemInfo = uni.getSystemInfoSync()
+			const screenWidth = systemInfo.windowWidth || 375
+			const pxToRpx = 750 / screenWidth
+			
+			if (event.detail && event.detail.x !== undefined && event.detail.y !== undefined) {
+				x = (event.detail.x * pxToRpx) / props.scale
+				y = (event.detail.y * pxToRpx) / props.scale
+			} else if (event.clientX !== undefined && event.clientY !== undefined) {
+				if (event.currentTarget && typeof event.currentTarget.getBoundingClientRect === 'function') {
+					const rect = event.currentTarget.getBoundingClientRect()
+					const relX = event.clientX - rect.left
+					const relY = event.clientY - rect.top
+					x = (relX * pxToRpx) / props.scale
+					y = (relY * pxToRpx) / props.scale
+				} else {
+					x = (event.clientX * pxToRpx) / props.scale
+					y = (event.clientY * pxToRpx) / props.scale
+				}
 			} else {
-				// 其他事件类型，使用默认位置
 				emit('add-text-layer')
 				return
 			}
 			
-			// 尝试获取canvas-area元素的位置
-			let x, y
-			const canvasArea = event.currentTarget
-			if (canvasArea && typeof canvasArea.getBoundingClientRect === 'function') {
-				// 计算相对于canvas-area的坐标
-				const rect = canvasArea.getBoundingClientRect()
-				// 计算相对于canvas-area的坐标（像素）
-				const pixelX = clientX - rect.left
-				const pixelY = clientY - rect.top
-				// 转换为rpx坐标（假设屏幕宽度为750rpx）
-				const rpxX = (pixelX / rect.width) * 345 // 345rpx是phone-screen的宽度
-				const rpxY = (pixelY / rect.height) * 692 // 692rpx是phone-screen的高度
-				// 应用缩放
-				x = rpxX / props.scale
-				y = rpxY / props.scale
-			} else {
-				// 无法获取canvas-area元素时使用默认位置
-				x = 140
-				y = 260
-			}
-			
-			// 当选择了文字工具时，点击画布添加文字图层
 			emit('add-text-layer', x, y)
-			// 添加文字图层后，取消文字工具选择
 			emit('clear-tool')
 		} else {
-			// 点击画布空白区域时，取消工具选择
 			emit('clear-tool')
 		}
 	}
 
 	function handleLayerClick(layer) {
+		if (hasMoved.value) {
+			hasMoved.value = false
+			return
+		}
 		if (layer.type === 'text') {
 			startEditing(layer)
 		} else {
@@ -192,8 +192,79 @@
 
 	function handleTextBlur(layerId) {
 		emit('update-text', layerId, editingText.value || '输入文字')
-		// 完成文字输入后，取消文字工具的选择
 		emit('clear-tool')
+	}
+
+	function handleLayerMouseDown(event, layer) {
+		if (layer.locked) return
+		if (props.editingLayerId === layer.id) return
+		
+		draggingLayerId.value = layer.id
+		hasMoved.value = false
+		emit('select-layer', layer.id)
+		
+		const clientX = event.clientX
+		const clientY = event.clientY
+		
+		dragStartPos.value = { x: clientX, y: clientY }
+		layerStartPos.value = { x: layer.x, y: layer.y }
+	}
+
+	function handleLayerMouseMove(event) {
+		if (!draggingLayerId.value) return
+		
+		const deltaX = event.clientX - dragStartPos.value.x
+		const deltaY = event.clientY - dragStartPos.value.y
+		
+		if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+			hasMoved.value = true
+		}
+		
+		const newX = layerStartPos.value.x + (deltaX / props.scale)
+		const newY = layerStartPos.value.y + (deltaY / props.scale)
+		
+		emit('update-layer-position', draggingLayerId.value, newX, newY)
+	}
+
+	function handleLayerMouseUp() {
+		draggingLayerId.value = ''
+	}
+
+	function handleLayerTouchStart(event, layer) {
+		if (layer.locked) return
+		if (props.editingLayerId === layer.id) return
+		
+		draggingLayerId.value = layer.id
+		hasMoved.value = false
+		emit('select-layer', layer.id)
+		
+		const touch = event.touches[0]
+		const clientX = touch.clientX
+		const clientY = touch.clientY
+		
+		dragStartPos.value = { x: clientX, y: clientY }
+		layerStartPos.value = { x: layer.x, y: layer.y }
+	}
+
+	function handleLayerTouchMove(event) {
+		if (!draggingLayerId.value) return
+		
+		const touch = event.touches[0]
+		const deltaX = touch.clientX - dragStartPos.value.x
+		const deltaY = touch.clientY - dragStartPos.value.y
+		
+		if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+			hasMoved.value = true
+		}
+		
+		const newX = layerStartPos.value.x + (deltaX / props.scale)
+		const newY = layerStartPos.value.y + (deltaY / props.scale)
+		
+		emit('update-layer-position', draggingLayerId.value, newX, newY)
+	}
+
+	function handleLayerTouchEnd() {
+		draggingLayerId.value = ''
 	}
 
 	function getLayerBoxStyle(layer) {
@@ -285,6 +356,12 @@
 	border-radius: 8rpx;
 }
 
+.layer--dragging {
+	opacity: 0.8;
+	cursor: move;
+	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.2);
+}
+
 .layer__text {
 	padding: 10rpx;
 	text-align: center;
@@ -337,4 +414,5 @@
 	text-align: center;
 	z-index: 0;
 }
+
 </style>

@@ -43,7 +43,7 @@
 			<view class="workspace__main">
 				<view class="stage-card">
 					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter" :scale="phoneFrameScale" :current-tool="currentTool" :editing-layer-id="editingLayerId"
-				@select-layer="selectLayer" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" />
+				@select-layer="selectLayer" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" @update-layer-position="updateLayerPosition" />
 
 				</view>
 			</view>
@@ -166,19 +166,17 @@ function addTextLayer(x, y) {
 	const height = Math.max(48, textSize.value + 20)
 	let position
 	if (x !== undefined && y !== undefined) {
-		// 使用鼠标点击坐标作为图层位置
 		position = {
-			x: Math.max(12, Math.floor(x - width / 2)),
-			y: Math.max(16, Math.floor(y - height / 2))
+			x: Math.max(0, Math.floor(x - 200)),
+			y: Math.max(0, Math.floor(y - 200))
 		}
 	} else {
-		// 否则使用中心位置
 		position = getCenterPosition(width, height)
 	}
 	const layer = {
 		id: createId('text'),
 		type: 'text',
-		text: '请输入', // 默认文字改为"请输入"
+		text: '请输入',
 		color: textColor.value,
 		size: textSize.value,
 		font: textFont.value,
@@ -190,7 +188,6 @@ function addTextLayer(x, y) {
 	}
 	layers.value.push(layer)
 	selectedLayerId.value = layer.id
-	// 触发编辑状态
 	editingLayerId.value = layer.id
 }
 
@@ -465,11 +462,16 @@ function clearAll() {
 }
 
 function handleClearTool() {
-	// 清空当前工具选择
 	currentTool.value = ''
-	// 清除编辑状态，隐藏输入框
 	editingLayerId.value = ''
 	console.log('清除工具选择，editingLayerId:', editingLayerId.value)
+}
+
+function updateLayerPosition(layerId, x, y) {
+	const layer = layers.value.find((item) => item.id === layerId)
+	if (!layer) return
+	layer.x = Math.max(0, x)
+	layer.y = Math.max(0, y)
 }
 </script>
 
@@ -728,5 +730,9 @@ page {
 	padding: 24rpx;
 	padding-top: 50rpx;
 	box-sizing: border-box;
+}
+.stage-card{
+	justify-content: center;
+	display: flex;
 }
 </style>

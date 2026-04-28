@@ -121,27 +121,71 @@ function handleSizeChange(e) {
 </script>
 
 <style scoped>
-
-
-.nav-content {
-	padding: 10rpx 0;
-}
-
 .toolbar-card {
 	width: 750rpx;
 	background: #fff;
 	border-radius: 24rpx;
 	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+	border-top-left-radius: 32rpx;
+	border-top-right-radius: 32rpx;
 }
 
+.toolbar-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20rpx 24rpx;
+	border-bottom: 2rpx solid #f2e7da;
+}
+
+.toolbar-top-left {
+	display: flex;
+	gap: 56rpx;
+}
+
+.nav-item {
+	font-size: 26rpx;
+	color: #826c60;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	padding: 16rpx 0;
+}
+
+.nav-item--active {
+	color: #d86e33;
+	font-weight: 600;
+	border-bottom: 2rpx solid #d86e33;
+}
+
+.toolbar-top-right {
+	width: 80rpx;
+	height: 80rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.toolbar-top-right-exit {
+	display: flex;
+	width: 55rpx;
+	height: 55rpx;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 4px 6px 0 #cccccc;
+}
 
 .toolbar-bottom {
 	padding: 20rpx 24rpx;
 }
 
+.nav-content {
+	padding: 10rpx 0;
+}
+
 .color-row {
 	display: flex;
 	gap: 16rpx;
+	flex-wrap: wrap;
 }
 
 .color-chip {
@@ -198,7 +242,6 @@ function handleSizeChange(e) {
 	line-height: 1.2;
 }
 
-/* 滑动输入条样式 */
 .size-slider {
 	width: 100%;
 }
@@ -214,7 +257,6 @@ function handleSizeChange(e) {
 	width: 100%;
 }
 
-/* 输入框样式 */
 .text-input-container {
 	margin-bottom: 20rpx;
 }
@@ -231,7 +273,6 @@ function handleSizeChange(e) {
 	margin-top: 20rpx;
 }
 
-/* 按钮样式 */
 .u-button {
 	width: 100%;
 	height: 80rpx;
