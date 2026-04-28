@@ -4,6 +4,7 @@
 		<view class="phone-screen" :style="screenStyle">
 			<view 
 				class="canvas-area" 
+				ref="canvasAreaRef"
 				@click="handleScreenClick"
 			>
 				<view
@@ -85,6 +86,23 @@
 	const layerStartPos = ref({ x: 0, y: 0 })
 	const hasMoved = ref(false)
 	const hasCreatedText = ref(false)
+	const canvasAreaRef = ref(null)
+
+	function getCanvasOffset() {
+		let left = 0, top = 0
+		if (canvasAreaRef.value) {
+			if (typeof canvasAreaRef.value.getBoundingClientRect === 'function') {
+				const rect = canvasAreaRef.value.getBoundingClientRect()
+				left = rect.left || 0
+				top = rect.top || 0
+			} else if (canvasAreaRef.value.$el && typeof canvasAreaRef.value.$el.getBoundingClientRect === 'function') {
+				const rect = canvasAreaRef.value.$el.getBoundingClientRect()
+				left = rect.left || 0
+				top = rect.top || 0
+			}
+		}
+		return { left, top }
+	}
 
 	// 监听选中图层变化，当选择文字工具时自动开始编辑
 	watch(() => props.selectedLayerId, (newId) => {
@@ -218,25 +236,32 @@
 		hasMoved.value = false
 		emit('select-layer', layer.id)
 		
-		const clientX = event.clientX
-		const clientY = event.clientY
+		const pageX = event.pageX || event.clientX
+		const pageY = event.pageY || event.clientY
 		
-		dragStartPos.value = { x: clientX, y: clientY }
+		dragStartPos.value = { x: pageX, y: pageY }
 		layerStartPos.value = { x: layer.x, y: layer.y }
 	}
 
 	function handleLayerMouseMove(event) {
 		if (!draggingLayerId.value) return
 		
-		const deltaX = event.clientX - dragStartPos.value.x
-		const deltaY = event.clientY - dragStartPos.value.y
+		const pageX = event.pageX || event.clientX
+		const pageY = event.pageY || event.clientY
+		
+		const deltaX = pageX - dragStartPos.value.x
+		const deltaY = pageY - dragStartPos.value.y
 		
 		if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
 			hasMoved.value = true
 		}
 		
-		const newX = layerStartPos.value.x + (deltaX / props.scale)
-		const newY = layerStartPos.value.y + (deltaY / props.scale)
+		const systemInfo = uni.getSystemInfoSync()
+		const screenWidth = systemInfo.windowWidth || 375
+		const pxToRpx = 750 / screenWidth
+		
+		const newX = layerStartPos.value.x + (deltaX * pxToRpx / props.scale)
+		const newY = layerStartPos.value.y + (deltaY * pxToRpx / props.scale)
 		
 		emit('update-layer-position', draggingLayerId.value, newX, newY)
 	}
@@ -254,10 +279,10 @@
 		emit('select-layer', layer.id)
 		
 		const touch = event.touches[0]
-		const clientX = touch.clientX
-		const clientY = touch.clientY
+		const pageX = touch.pageX || touch.clientX
+		const pageY = touch.pageY || touch.clientY
 		
-		dragStartPos.value = { x: clientX, y: clientY }
+		dragStartPos.value = { x: pageX, y: pageY }
 		layerStartPos.value = { x: layer.x, y: layer.y }
 	}
 
@@ -265,15 +290,22 @@
 		if (!draggingLayerId.value) return
 		
 		const touch = event.touches[0]
-		const deltaX = touch.clientX - dragStartPos.value.x
-		const deltaY = touch.clientY - dragStartPos.value.y
+		const pageX = touch.pageX || touch.clientX
+		const pageY = touch.pageY || touch.clientY
+		
+		const deltaX = pageX - dragStartPos.value.x
+		const deltaY = pageY - dragStartPos.value.y
 		
 		if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
 			hasMoved.value = true
 		}
 		
-		const newX = layerStartPos.value.x + (deltaX / props.scale)
-		const newY = layerStartPos.value.y + (deltaY / props.scale)
+		const systemInfo = uni.getSystemInfoSync()
+		const screenWidth = systemInfo.windowWidth || 375
+		const pxToRpx = 750 / screenWidth
+		
+		const newX = layerStartPos.value.x + (deltaX * pxToRpx / props.scale)
+		const newY = layerStartPos.value.y + (deltaY * pxToRpx / props.scale)
 		
 		emit('update-layer-position', draggingLayerId.value, newX, newY)
 	}
