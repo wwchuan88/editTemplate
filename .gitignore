@@ -1,2 +1,5 @@
 node_modules/
-editPhoneShell‌/unpackage/
+node_modules/*
+editPhoneShell‌/unpackage/*
+unpackage/*
+editPhoneShell‌/unpackage
