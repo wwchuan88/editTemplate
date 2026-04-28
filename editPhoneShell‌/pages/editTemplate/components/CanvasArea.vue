@@ -84,6 +84,7 @@
 	const dragStartPos = ref({ x: 0, y: 0 })
 	const layerStartPos = ref({ x: 0, y: 0 })
 	const hasMoved = ref(false)
+	const hasCreatedText = ref(false)
 
 	// 监听选中图层变化，当选择文字工具时自动开始编辑
 	watch(() => props.selectedLayerId, (newId) => {
@@ -92,6 +93,13 @@
 			if (layer && layer.type === 'text') {
 				startEditing(layer)
 			}
+		}
+	})
+
+	// 监听当前工具变化，当选择文字工具时重置创建标志
+	watch(() => props.currentTool, (newTool) => {
+		if (newTool === 'text') {
+			hasCreatedText.value = false
 		}
 	})
 
@@ -136,6 +144,12 @@
 
 	function handleScreenClick(event) {
 		if (props.currentTool === 'text') {
+			// 如果已经创建过文字，不再创建新的文字
+			if (hasCreatedText.value) {
+				return
+			}
+			
+			// 计算点击位置
 			let x, y
 			
 			const systemInfo = uni.getSystemInfoSync()
@@ -161,8 +175,9 @@
 				return
 			}
 			
-			// 只触发添加文字图层，不清除工具状态，让用户可以继续编辑
+			// 触发添加文字图层，并标记已经创建过文字
 			emit('add-text-layer', x, y)
+			hasCreatedText.value = true
 		} else {
 			emit('clear-tool')
 		}
@@ -174,6 +189,7 @@
 			return
 		}
 		if (layer.type === 'text') {
+			// 点击已生成的文字时，不重置创建标志，保持 hasCreatedText 为 true
 			startEditing(layer)
 		} else {
 			emit('select-layer', layer.id)
