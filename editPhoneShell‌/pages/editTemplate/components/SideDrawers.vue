@@ -2,7 +2,7 @@
 	<view class="sidebar" :class="{ 'sidebar--visible': visible }">
 		<view class="sidebar-header">
 			<view class="close-icon" @click="$emit('close')">
-				<text>‹</text>
+				<text class="close-icon__text">‹</text>
 			</view>
 		</view>
 		<view class="sidebar-content">
@@ -93,7 +93,7 @@
 		background-color: #f5f5f5;
 	}
 
-	.close-icon text {
+	.close-icon__text {
 		font-size: 32rpx;
 		font-weight: bold;
 		color: #333;
@@ -101,7 +101,7 @@
 		transition: transform 0.2s ease;
 	}
 
-	.close-icon:hover text {
+	.close-icon:hover .close-icon__text {
 		transform: rotate(15deg);
 	}
 

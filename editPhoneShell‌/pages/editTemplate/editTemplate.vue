@@ -201,7 +201,7 @@ function handleAddTextLayer(x, y) {
 
 function upsertTextLayer() {
 	if (selectedLayer.value && selectedLayer.value.type === 'text') {
-		selectedLayer.value.text = textDraft.value || '输入文字'
+		selectedLayer.value.text = textDraft.value
 		selectedLayer.value.color = textColor.value
 		selectedLayer.value.size = textSize.value
 		selectedLayer.value.font = textFont.value

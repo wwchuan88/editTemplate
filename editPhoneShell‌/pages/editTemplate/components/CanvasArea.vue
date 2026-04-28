@@ -22,7 +22,7 @@
 				>
 					<template v-if="layer.type === 'text'">
 						<view v-if="props.editingLayerId !== layer.id" class="layer__text" :style="getTextStyle(layer)">
-							{{ layer.text || '输入文字' }}
+							{{ layer.text }}
 						</view>
 						<view v-else class="layer__text-editor">
 							<textarea
@@ -37,7 +37,7 @@
 								:ref="el => textInputRefs[layer.id] = el"
 							></textarea>
 							<view class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
-								<text class="iconfont icon-close"></text>
+								<text class="iconfont icon-close layer__delete-btn-icon"></text>
 							</view>
 							<view
 								class="layer__resize-handle"
@@ -269,7 +269,7 @@
 	}
 
 	function handleTextBlur(layerId) {
-		emit('update-text', layerId, editingText.value || '输入文字')
+		emit('update-text', layerId, editingText.value)
 	}
 
 	function handleDeleteLayer(layerId) {
@@ -544,7 +544,7 @@
 	z-index: 10;
 }
 
-.layer__delete-btn text {
+.layer__delete-btn-icon {
 	color: #fff;
 	font-size: 24rpx;
 	font-weight: bold;
