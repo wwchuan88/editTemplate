@@ -161,8 +161,8 @@
 				return
 			}
 			
+			// 只触发添加文字图层，不清除工具状态，让用户可以继续编辑
 			emit('add-text-layer', x, y)
-			emit('clear-tool')
 		} else {
 			emit('clear-tool')
 		}
@@ -192,7 +192,6 @@
 
 	function handleTextBlur(layerId) {
 		emit('update-text', layerId, editingText.value || '输入文字')
-		emit('clear-tool')
 	}
 
 	function handleLayerMouseDown(event, layer) {

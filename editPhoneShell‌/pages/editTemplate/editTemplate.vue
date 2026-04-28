@@ -277,6 +277,9 @@ function handleUpdateText(id, text) {
 	if (selectedLayerId.value === id) {
 		textDraft.value = text
 	}
+	// 更新文字后清除编辑状态
+	editingLayerId.value = ''
+	currentTool.value = ''
 }
 
 function selectLayer(id) {
@@ -462,9 +465,11 @@ function clearAll() {
 }
 
 function handleClearTool() {
-	currentTool.value = ''
-	editingLayerId.value = ''
-	console.log('清除工具选择，editingLayerId:', editingLayerId.value)
+	// 只有在非编辑状态下才清除工具
+	if (!editingLayerId.value) {
+		currentTool.value = ''
+	}
+	console.log('清除工具选择，currentTool:', currentTool.value, 'editingLayerId:', editingLayerId.value)
 }
 
 function updateLayerPosition(layerId, x, y) {
