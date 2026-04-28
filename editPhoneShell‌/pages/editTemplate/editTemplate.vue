@@ -50,7 +50,7 @@
 		</view>
 
 		<view class="toolbar-wrap">
-			<TextToolbar v-if="currentTool === 'text'" :text-draft="textDraft" :text-color="textColor"
+			<TextToolbar v-if="currentTool === 'text' || (selectedLayer && selectedLayer.type === 'text')" :text-draft="textDraft" :text-color="textColor"
 				:text-size="textSize" :text-font="textFont" :colors="textColors" :is-editing="selectedLayer && selectedLayer.type === 'text'"
 				@update-draft="textDraft = $event" @pick-color="pickTextColor" @change-size="changeTextSize"
 				@pick-font="pickTextFont" @submit="upsertTextLayer" @exit="exitTool" />
@@ -485,6 +485,8 @@ function updateLayerPosition(layerId, x, y) {
 <style>
 page {
 	background: linear-gradient(180deg, #f7efe3 0%, #efe6da 100%);
+	overflow: hidden;
+	height: 100vh;
 }
 
 .page-shell {
