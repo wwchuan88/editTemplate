@@ -10,7 +10,7 @@
 				</view>
 				<view class="nav-item" :class="{ 'nav-item--active': activeNav === 'template' }"
 					@click="activeNav = 'template'">
-					模板
+					推荐图片
 				</view>
 			</view>
 			<view class="toolbar-top-right" @click="$emit('exit')">

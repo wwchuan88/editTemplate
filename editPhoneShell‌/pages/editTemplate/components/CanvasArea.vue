@@ -1,6 +1,5 @@
 <template>
-	<view class="phone-frame" :style="{ transform: `scale(${scale})`, transformOrigin: 'center center' }">
-		<view class="phone-camera"></view>
+	<view class="phone-frame" :style="{ transform: `scale(${scale})`, transformOrigin: 'center center' }">		
 		<view class="phone-screen" :style="screenStyle">
 			<view 
 				class="canvas-area" 
@@ -29,11 +28,12 @@
 							<textarea
 								class="layer__text-input"
 								:style="getTextStyle(layer)"
-								v-model="editingText"
+								:value="editingText"
 								placeholder="请输入"
-								@blur="handleTextBlur(layer.id, $event)"
-								@focus.stop="handleInputFocus"
-								@mousedown.stop="handleInputMouseDown"
+								@blur="handleTextBlur(layer.id)"
+								@focus="handleInputFocus"
+								@input="handleTextInput($event)"
+								@mousedown="handleInputMouseDown"
 								:ref="el => textInputRefs[layer.id] = el"
 							></textarea>
 							<view class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
@@ -41,10 +41,10 @@
 							</view>
 							<view
 								class="layer__resize-handle"
-								@touchstart.stop="handleResizeStart($event, layer)"
-								@touchmove.stop="handleResizeMove($event)"
-								@touchend.stop="handleResizeEnd($event)"
-								@mousedown.stop="handleResizeStart($event, layer)"
+								@touchstart="handleResizeStart($event, layer)"
+								@touchmove="handleResizeMove($event)"
+								@touchend="handleResizeEnd($event)"
+								@mousedown="handleResizeStart($event, layer)"
 							></view>
 						</view>
 					</template>
@@ -90,7 +90,7 @@
 		}
 	})
 
-	const emit = defineEmits(['select-layer', 'add-text-layer', 'update-text', 'clear-tool', 'update-layer-position', 'delete-layer', 'update-layer-size'])
+	const emit = defineEmits(['select-layer', 'add-text-layer', 'update-text', 'clear-tool', 'update-layer-position', 'delete-layer', 'update-layer-size', 'exit-edit'])
 
 	const editingText = ref('')
 	const textInputRefs = ref({})
@@ -177,6 +177,10 @@
 	})
 
 	function handleScreenClick(event) {
+		if (props.editingLayerId) {
+			emit('exit-edit')
+			return
+		}
 		if (props.currentTool === 'text') {
 			// 如果已经创建过文字，不再创建新的文字，直接取消工具
 			if (hasCreatedText.value) {
@@ -252,7 +256,19 @@
 		// 输入框鼠标按下，阻止事件冒泡到父层，避免触发拖拽
 	}
 
-	function handleTextBlur(layerId, event) {
+	function handleTextInput(event) {
+		if (event) {
+			if (event.target && event.target.value !== undefined) {
+				editingText.value = event.target.value
+			} else if (typeof event === 'string') {
+				editingText.value = event
+			} else if (event.detail && event.detail.value !== undefined) {
+				editingText.value = event.detail.value
+			}
+		}
+	}
+
+	function handleTextBlur(layerId) {
 		emit('update-text', layerId, editingText.value || '输入文字')
 	}
 
@@ -314,7 +330,9 @@
 		hasMoved.value = false
 		emit('select-layer', layer.id)
 		
-		const touch = event.touches[0]
+		const touch = event.touches ? event.touches[0] : event
+		if (!touch) return
+		
 		const pageX = touch.pageX || touch.clientX
 		const pageY = touch.pageY || touch.clientY
 		
@@ -325,7 +343,8 @@
 	function handleLayerTouchMove(event) {
 		if (!draggingLayerId.value) return
 		
-		const touch = event.touches[0]
+		const touch = event.touches ? event.touches[0] : event
+		if (!touch) return
 		const pageX = touch.pageX || touch.clientX
 		const pageY = touch.pageY || touch.clientY
 		
@@ -433,10 +452,10 @@
 <style scoped>
 
 .phone-frame {
-	width: 375rpx;
-	height: 812rpx;
+	width: 500rpx;
+	height: 1000rpx;
 	background: #292929;
-	border-radius: 64rpx;
+	border-radius: 50rpx;
 	position: relative;
 	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.2);
 }
@@ -454,13 +473,13 @@
 }
 
 .phone-screen {
-	width: 345rpx;
-	height: 692rpx;
+	width: 480rpx;
+	height: 980rpx;
 	background: #fffdf8;
 	position: absolute;
-	top: 60rpx;
-	left: 15rpx;
-	border-radius: 20rpx;
+	top: 10rpx;
+	left: 10rpx;
+	border-radius: 50rpx;
 	overflow: hidden;
 }
 
@@ -482,7 +501,6 @@
 .layer--dragging {
 	opacity: 0.8;
 	cursor: move;
-	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.2);
 }
 
 .layer__text {

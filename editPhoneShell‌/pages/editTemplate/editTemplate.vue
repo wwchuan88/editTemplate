@@ -43,7 +43,7 @@
 			<view class="workspace__main">
 				<view class="stage-card">
 					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter" :scale="phoneFrameScale" :current-tool="currentTool" :editing-layer-id="editingLayerId"
-				@select-layer="selectLayer" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" @update-layer-position="updateLayerPosition" @delete-layer="deleteLayer" @update-layer-size="updateLayerSize" />
+				@select-layer="selectLayer" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" @update-layer-position="updateLayerPosition" @delete-layer="deleteLayer" @update-layer-size="updateLayerSize" @exit-edit="exitEdit" />
 
 				</view>
 			</view>
@@ -93,8 +93,9 @@ const toolList = [
 	{ key: 'text', label: '文字' },
 	{ key: 'icon', label: '图标' },
 	{ key: 'upload', label: '图片' },
+	{ key: 'brush', label: '画笔' },
+	{ key: 'template', label: '模板' },
 	{ key: 'filter', label: '滤镜' },
-	{ key: 'brush', label: '画笔' }
 ]
 
 const decorToolList = [
@@ -383,6 +384,12 @@ function saveDesign() {
 }
 
 function exitTool() {
+	currentTool.value = ''
+}
+
+function exitEdit() {
+	editingLayerId.value = ''
+	selectedLayerId.value = ''
 	currentTool.value = ''
 }
 
@@ -749,13 +756,15 @@ page {
 
 .workspace__main {
 	position: absolute;
-	top: 100rpx;
+	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
 	padding: 24rpx;
-	padding-top: 50rpx;
 	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .stage-card{
 	justify-content: center;
