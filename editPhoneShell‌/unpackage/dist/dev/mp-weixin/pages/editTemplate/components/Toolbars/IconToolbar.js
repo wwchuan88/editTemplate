@@ -42,12 +42,12 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: activeNav.value === "graphics" ? 1 : "",
-        b: common_vendor.o(($event) => activeNav.value = "graphics", "05"),
+        b: common_vendor.o(($event) => activeNav.value = "graphics", "0b"),
         c: activeNav.value === "people" ? 1 : "",
-        d: common_vendor.o(($event) => activeNav.value = "people", "e9"),
+        d: common_vendor.o(($event) => activeNav.value = "people", "91"),
         e: activeNav.value === "cartoon" ? 1 : "",
-        f: common_vendor.o(($event) => activeNav.value = "cartoon", "87"),
-        g: common_vendor.o(($event) => _ctx.$emit("exit"), "cc"),
+        f: common_vendor.o(($event) => activeNav.value = "cartoon", "40"),
+        g: common_vendor.o(($event) => _ctx.$emit("exit"), "1c"),
         h: activeNav.value === "graphics"
       }, activeNav.value === "graphics" ? {
         i: common_vendor.f(graphicsOptions.value, (item, k0, i0) => {

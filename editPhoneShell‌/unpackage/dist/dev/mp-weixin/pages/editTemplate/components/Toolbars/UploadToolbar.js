@@ -22,18 +22,18 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: activeNav.value === "local" ? 1 : "",
-        b: common_vendor.o(($event) => activeNav.value = "local", "54"),
+        b: common_vendor.o(($event) => activeNav.value = "local", "87"),
         c: activeNav.value === "template" ? 1 : "",
-        d: common_vendor.o(($event) => activeNav.value = "template", "2f"),
-        e: common_vendor.o(($event) => _ctx.$emit("exit"), "df"),
+        d: common_vendor.o(($event) => activeNav.value = "template", "00"),
+        e: common_vendor.o(($event) => _ctx.$emit("exit"), "11"),
         f: activeNav.value === "local"
       }, activeNav.value === "local" ? {
-        g: common_vendor.o(($event) => _ctx.$emit("choose"), "62"),
+        g: common_vendor.o(($event) => _ctx.$emit("choose"), "78"),
         h: common_vendor.p({
           text: "选择图片",
           type: "primary"
         }),
-        i: common_vendor.o(($event) => _ctx.$emit("demo"), "3f"),
+        i: common_vendor.o(($event) => _ctx.$emit("demo"), "27"),
         j: common_vendor.p({
           text: "加入示例图",
           plain: true

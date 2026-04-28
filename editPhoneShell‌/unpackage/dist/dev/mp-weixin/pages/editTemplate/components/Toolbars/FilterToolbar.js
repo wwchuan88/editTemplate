@@ -25,10 +25,10 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: activeNav.value === "featured" ? 1 : "",
-        b: common_vendor.o(($event) => activeNav.value = "featured", "65"),
+        b: common_vendor.o(($event) => activeNav.value = "featured", "37"),
         c: activeNav.value === "youth" ? 1 : "",
-        d: common_vendor.o(($event) => activeNav.value = "youth", "34"),
-        e: common_vendor.o(($event) => _ctx.$emit("exit"), "97"),
+        d: common_vendor.o(($event) => activeNav.value = "youth", "79"),
+        e: common_vendor.o(($event) => _ctx.$emit("exit"), "48"),
         f: activeNav.value === "featured"
       }, activeNav.value === "featured" ? {
         g: common_vendor.f(featuredFilters.value, (item, k0, i0) => {

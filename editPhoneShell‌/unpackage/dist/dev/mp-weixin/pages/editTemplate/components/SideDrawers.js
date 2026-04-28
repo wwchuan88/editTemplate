@@ -30,7 +30,7 @@ const _sfc_main = {
     }
     return (_ctx, _cache) => {
       return {
-        a: common_vendor.o(($event) => _ctx.$emit("close"), "72"),
+        a: common_vendor.o(($event) => _ctx.$emit("close"), "2b"),
         b: common_vendor.f(__props.tools, (tool, k0, i0) => {
           return {
             a: common_vendor.t(getToolIcon(tool.key)),

@@ -54,17 +54,15 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: activeNav.value === "font" ? 1 : "",
-        b: common_vendor.o(($event) => activeNav.value = "font", "1f"),
+        b: common_vendor.o(($event) => activeNav.value = "font", "15"),
         c: activeNav.value === "size" ? 1 : "",
-        d: common_vendor.o(($event) => activeNav.value = "size", "f8"),
+        d: common_vendor.o(($event) => activeNav.value = "size", "dc"),
         e: activeNav.value === "color" ? 1 : "",
-        f: common_vendor.o(($event) => activeNav.value = "color", "b7"),
-        g: common_vendor.o(($event) => _ctx.$emit("exit"), "44"),
-        h: __props.textDraft,
-        i: common_vendor.o(($event) => _ctx.$emit("update-draft", $event.target.value), "f7"),
-        j: activeNav.value === "font"
+        f: common_vendor.o(($event) => activeNav.value = "color", "d2"),
+        g: common_vendor.o(($event) => _ctx.$emit("exit"), "a7"),
+        h: activeNav.value === "font"
       }, activeNav.value === "font" ? {
-        k: common_vendor.f(__props.fonts, (item, k0, i0) => {
+        i: common_vendor.f(__props.fonts, (item, k0, i0) => {
           return {
             a: item.value,
             b: common_vendor.t(item.label),
@@ -74,15 +72,15 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        l: activeNav.value === "size"
+        j: activeNav.value === "size"
       }, activeNav.value === "size" ? {
-        m: common_vendor.t(__props.textSize),
-        n: __props.textSize,
-        o: common_vendor.o(handleSizeChange, "a0")
+        k: common_vendor.t(__props.textSize),
+        l: __props.textSize,
+        m: common_vendor.o(handleSizeChange, "c9")
       } : {}, {
-        p: activeNav.value === "color"
+        n: activeNav.value === "color"
       }, activeNav.value === "color" ? {
-        q: common_vendor.f(__props.colors, (item, k0, i0) => {
+        o: common_vendor.f(__props.colors, (item, k0, i0) => {
           return {
             a: item,
             b: item,
@@ -90,9 +88,7 @@ const _sfc_main = {
             d: common_vendor.o(($event) => _ctx.$emit("pick-color", item), item)
           };
         })
-      } : {}, {
-        r: common_vendor.o(($event) => _ctx.$emit("submit"), "3d")
-      });
+      } : {});
     };
   }
 };

@@ -34,10 +34,10 @@ const _sfc_main = {
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: activeNav.value === "color" ? 1 : "",
-        b: common_vendor.o(($event) => activeNav.value = "color", "6f"),
+        b: common_vendor.o(($event) => activeNav.value = "color", "29"),
         c: activeNav.value === "size" ? 1 : "",
-        d: common_vendor.o(($event) => activeNav.value = "size", "92"),
-        e: common_vendor.o(($event) => _ctx.$emit("exit"), "b8"),
+        d: common_vendor.o(($event) => activeNav.value = "size", "67"),
+        e: common_vendor.o(($event) => _ctx.$emit("exit"), "33"),
         f: activeNav.value === "color"
       }, activeNav.value === "color" ? {
         g: common_vendor.f(__props.colors, (item, k0, i0) => {
@@ -53,11 +53,11 @@ const _sfc_main = {
       }, activeNav.value === "size" ? {
         i: common_vendor.t(__props.brushSize),
         j: __props.brushSize,
-        k: common_vendor.o(handleSizeChange, "11")
+        k: common_vendor.o(handleSizeChange, "79")
       } : {}, {
         l: activeNav.value === "tool"
       }, activeNav.value === "tool" ? {
-        m: common_vendor.o(($event) => _ctx.$emit("submit"), "b3"),
+        m: common_vendor.o(($event) => _ctx.$emit("submit"), "81"),
         n: common_vendor.p({
           text: "添加色点",
           type: "primary"

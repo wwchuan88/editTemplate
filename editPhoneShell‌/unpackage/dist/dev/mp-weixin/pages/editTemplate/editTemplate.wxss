@@ -221,3 +221,7 @@ page {
 	padding-top: 50rpx;
 	box-sizing: border-box;
 }
+.stage-card{
+	justify-content: center;
+	display: flex;
+}

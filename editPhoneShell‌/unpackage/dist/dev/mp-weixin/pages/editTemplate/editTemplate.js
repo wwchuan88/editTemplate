@@ -18,7 +18,8 @@ const FilterToolbar = () => "./components/Toolbars/FilterToolbar.js";
 const BrushToolbar = () => "./components/Toolbars/BrushToolbar.js";
 const _sfc_main = {
   __name: "editTemplate",
-  setup(__props) {
+  emits: ["edit-text-layer"],
+  setup(__props, { emit: __emit }) {
     const toolList = [
       { key: "text", label: "文字" },
       { key: "icon", label: "图标" },
@@ -52,6 +53,7 @@ const _sfc_main = {
     const currentDecorTool = common_vendor.ref("");
     const layers = common_vendor.ref([]);
     const selectedLayerId = common_vendor.ref("");
+    const editingLayerId = common_vendor.ref("");
     const activeFilter = common_vendor.ref("none");
     const textDraft = common_vendor.ref("店管家");
     const textColor = common_vendor.ref("#2f241f");
@@ -79,14 +81,22 @@ const _sfc_main = {
         y: Math.max(16, Math.floor((520 - height) / 2))
       };
     }
-    function addTextLayer() {
+    function addTextLayer(x, y) {
       const width = 180;
       const height = Math.max(48, textSize.value + 20);
-      const position = getCenterPosition(width, height);
+      let position;
+      if (x !== void 0 && y !== void 0) {
+        position = {
+          x: Math.max(0, Math.floor(x - 200)),
+          y: Math.max(0, Math.floor(y - 200))
+        };
+      } else {
+        position = getCenterPosition(width, height);
+      }
       const layer = {
         id: createId("text"),
         type: "text",
-        text: textDraft.value || "输入文字",
+        text: "请输入",
         color: textColor.value,
         size: textSize.value,
         font: textFont.value,
@@ -98,11 +108,11 @@ const _sfc_main = {
       };
       layers.value.push(layer);
       selectedLayerId.value = layer.id;
-      emit("edit-text-layer", layer.id);
+      editingLayerId.value = layer.id;
     }
-    function handleAddTextLayer() {
+    function handleAddTextLayer(x, y) {
       if (currentTool.value === "text") {
-        addTextLayer();
+        addTextLayer(x, y);
       }
     }
     function upsertTextLayer() {
@@ -172,13 +182,6 @@ const _sfc_main = {
       layers.value.push(layer);
       selectedLayerId.value = layer.id;
     }
-    function handleLayerMove(id, x, y) {
-      const layer = layers.value.find((item) => item.id === id);
-      if (!layer)
-        return;
-      layer.x = x;
-      layer.y = y;
-    }
     function handleUpdateText(id, text) {
       const layer = layers.value.find((item) => item.id === id);
       if (!layer)
@@ -243,7 +246,7 @@ const _sfc_main = {
       decorSidebarVisible.value = !decorSidebarVisible.value;
     }
     function toggleMoveMode() {
-      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:390", "切换移动模式");
+      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:393", "切换移动模式");
     }
     function startDrag(e) {
       isDragging.value = true;
@@ -253,7 +256,7 @@ const _sfc_main = {
         x: clientX - toolbarPosition.value.left,
         y: clientY - toolbarPosition.value.top
       };
-      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:404", "开始拖拽:", dragOffset.value);
+      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:407", "开始拖拽:", dragOffset.value);
     }
     function drag(e) {
       if (!isDragging.value)
@@ -265,37 +268,46 @@ const _sfc_main = {
         left: clientX - dragOffset.value.x,
         top: clientY - dragOffset.value.y
       };
-      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:420", "拖拽中:", toolbarPosition.value);
+      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:423", "拖拽中:", toolbarPosition.value);
     }
     function endDrag() {
       isDragging.value = false;
-      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:425", "结束拖拽");
+      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:428", "结束拖拽");
     }
     function undo() {
-      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:430", "撤销操作");
+      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:433", "撤销操作");
     }
     function redo() {
-      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:435", "重做操作");
+      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:438", "重做操作");
     }
     function zoomIn() {
       if (phoneFrameScale.value < 2) {
         phoneFrameScale.value += 0.1;
-        common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:442", "放大到:", phoneFrameScale.value);
+        common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:445", "放大到:", phoneFrameScale.value);
       }
     }
     function zoomOut() {
       if (phoneFrameScale.value > 0.5) {
         phoneFrameScale.value -= 0.1;
-        common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:450", "缩小到:", phoneFrameScale.value);
+        common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:453", "缩小到:", phoneFrameScale.value);
       }
     }
     function clearAll() {
-      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:456", "清空所有内容");
+      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:459", "清空所有内容");
       layers.value = [];
       selectedLayerId.value = "";
     }
     function handleClearTool() {
       currentTool.value = "";
+      editingLayerId.value = "";
+      common_vendor.index.__f__("log", "at pages/editTemplate/editTemplate.vue:467", "清除工具选择，editingLayerId:", editingLayerId.value);
+    }
+    function updateLayerPosition(layerId, x, y) {
+      const layer = layers.value.find((item) => item.id === layerId);
+      if (!layer)
+        return;
+      layer.x = Math.max(0, x);
+      layer.y = Math.max(0, y);
     }
     return (_ctx, _cache) => {
       return common_vendor.e({
@@ -305,56 +317,57 @@ const _sfc_main = {
           size: "medium",
           text: "保存设计"
         }),
-        b: common_vendor.o(toggleMoveMode, "8a"),
-        c: common_vendor.o(undo, "ae"),
-        d: common_vendor.o(redo, "b9"),
-        e: common_vendor.o(zoomIn, "a9"),
-        f: common_vendor.o(zoomOut, "7d"),
-        g: common_vendor.o(clearAll, "93"),
+        b: common_vendor.o(toggleMoveMode, "b7"),
+        c: common_vendor.o(undo, "05"),
+        d: common_vendor.o(redo, "2a"),
+        e: common_vendor.o(zoomIn, "c5"),
+        f: common_vendor.o(zoomOut, "5c"),
+        g: common_vendor.o(clearAll, "c5"),
         h: toolbarPosition.value.left + "rpx",
         i: toolbarPosition.value.top + "rpx",
         j: isDragging.value ? "move" : "default",
         k: common_vendor.o(startDrag, "8c"),
-        l: common_vendor.o(drag, "1a"),
-        m: common_vendor.o(endDrag, "93"),
-        n: common_vendor.o(startDrag, "6d"),
-        o: common_vendor.o(drag, "9c"),
-        p: common_vendor.o(endDrag, "38"),
-        q: common_vendor.o(endDrag, "72"),
-        r: common_vendor.o(($event) => currentTool.value = $event, "94"),
-        s: common_vendor.o(($event) => sidebarVisible.value = false, "bd"),
+        l: common_vendor.o(drag, "e6"),
+        m: common_vendor.o(endDrag, "8e"),
+        n: common_vendor.o(startDrag, "3b"),
+        o: common_vendor.o(drag, "dc"),
+        p: common_vendor.o(endDrag, "cc"),
+        q: common_vendor.o(endDrag, "1b"),
+        r: common_vendor.o(($event) => currentTool.value = $event, "5a"),
+        s: common_vendor.o(($event) => sidebarVisible.value = false, "98"),
         t: common_vendor.p({
           ["current-tool"]: currentTool.value,
           tools: toolList,
           visible: sidebarVisible.value
         }),
-        v: common_vendor.o(($event) => currentDecorTool.value = $event, "ac"),
-        w: common_vendor.o(($event) => decorSidebarVisible.value = false, "a4"),
+        v: common_vendor.o(($event) => currentDecorTool.value = $event, "ec"),
+        w: common_vendor.o(($event) => decorSidebarVisible.value = false, "9d"),
         x: common_vendor.p({
           ["current-tool"]: currentDecorTool.value,
           tools: decorToolList,
           visible: decorSidebarVisible.value
         }),
-        y: common_vendor.o(selectLayer, "48"),
-        z: common_vendor.o(handleLayerMove, "97"),
-        A: common_vendor.o(handleAddTextLayer, "1b"),
-        B: common_vendor.o(handleUpdateText, "f1"),
-        C: common_vendor.o(handleClearTool, "21"),
+        y: common_vendor.o(selectLayer, "9d"),
+        z: common_vendor.o(handleAddTextLayer, "7b"),
+        A: common_vendor.o(handleUpdateText, "af"),
+        B: common_vendor.o(handleClearTool, "5e"),
+        C: common_vendor.o(updateLayerPosition, "0d"),
         D: common_vendor.p({
           layers: layers.value,
           ["selected-layer-id"]: selectedLayerId.value,
           ["active-filter"]: activeFilter.value,
           scale: phoneFrameScale.value,
-          ["current-tool"]: currentTool.value
+          ["current-tool"]: currentTool.value,
+          ["editing-layer-id"]: editingLayerId.value
         }),
         E: currentTool.value === "text"
       }, currentTool.value === "text" ? {
-        F: common_vendor.o(($event) => textDraft.value = $event, "79"),
-        G: common_vendor.o(pickTextColor, "ea"),
-        H: common_vendor.o(changeTextSize, "d9"),
-        I: common_vendor.o(pickTextFont, "78"),
-        J: common_vendor.o(upsertTextLayer, "63"),
-        K: common_vendor.o(exitTool, "29"),
+        F: common_vendor.o(($event) => textDraft.value = $event, "66"),
+        G: common_vendor.o(pickTextColor, "59"),
+        H: common_vendor.o(changeTextSize, "24"),
+        I: common_vendor.o(pickTextFont, "fc"),
+        J: common_vendor.o(upsertTextLayer, "d7"),
+        K: common_vendor.o(exitTool, "4d"),
         L: common_vendor.p({
           ["text-draft"]: textDraft.value,
           ["text-color"]: textColor.value,
@@ -364,27 +377,27 @@ const _sfc_main = {
           ["is-editing"]: selectedLayer.value && selectedLayer.value.type === "text"
         })
       } : currentTool.value === "icon" ? {
-        N: common_vendor.o(addIconLayer, "4d"),
-        O: common_vendor.o(exitTool, "6a"),
+        N: common_vendor.o(addIconLayer, "f3"),
+        O: common_vendor.o(exitTool, "71"),
         P: common_vendor.p({
           options: iconOptions
         })
       } : currentTool.value === "upload" ? {
-        R: common_vendor.o(chooseImage, "e5"),
-        S: common_vendor.o(addDemoImage, "d1"),
-        T: common_vendor.o(exitTool, "80")
+        R: common_vendor.o(chooseImage, "9b"),
+        S: common_vendor.o(addDemoImage, "7d"),
+        T: common_vendor.o(exitTool, "5f")
       } : currentTool.value === "filter" ? {
-        V: common_vendor.o(($event) => activeFilter.value = $event, "eb"),
-        W: common_vendor.o(exitTool, "7f"),
+        V: common_vendor.o(($event) => activeFilter.value = $event, "0e"),
+        W: common_vendor.o(exitTool, "86"),
         X: common_vendor.p({
           options: filterOptions,
           ["active-filter"]: activeFilter.value
         })
       } : currentTool.value === "brush" ? {
-        Z: common_vendor.o(($event) => brushColor.value = $event, "ab"),
-        aa: common_vendor.o(($event) => brushSize.value = $event, "5f"),
-        ab: common_vendor.o(addBrushDot, "2f"),
-        ac: common_vendor.o(exitTool, "cb"),
+        Z: common_vendor.o(($event) => brushColor.value = $event, "38"),
+        aa: common_vendor.o(($event) => brushSize.value = $event, "28"),
+        ab: common_vendor.o(addBrushDot, "d4"),
+        ac: common_vendor.o(exitTool, "b8"),
         ad: common_vendor.p({
           colors: brushColors,
           ["brush-color"]: brushColor.value,
@@ -395,8 +408,8 @@ const _sfc_main = {
         Q: currentTool.value === "upload",
         U: currentTool.value === "filter",
         Y: currentTool.value === "brush",
-        ae: common_vendor.o(toggleSidebar, "6d"),
-        af: common_vendor.o(toggleDecorSidebar, "a7")
+        ae: common_vendor.o(toggleSidebar, "9c"),
+        af: common_vendor.o(toggleDecorSidebar, "b0")
       });
     };
   }

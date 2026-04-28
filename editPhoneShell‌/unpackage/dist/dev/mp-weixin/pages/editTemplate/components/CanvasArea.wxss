@@ -40,6 +40,11 @@
 	border: 2rpx solid #d86e33;
 	border-radius: 8rpx;
 }
+.layer--dragging.data-v-a8bceeae {
+	opacity: 0.8;
+	cursor: move;
+	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.2);
+}
 .layer__text.data-v-a8bceeae {
 	padding: 10rpx;
 	text-align: center;
@@ -87,3 +92,4 @@
 	text-align: center;
 	z-index: 0;
 }
+
