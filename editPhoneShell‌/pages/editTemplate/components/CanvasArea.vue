@@ -25,15 +25,28 @@
 						<view v-if="props.editingLayerId !== layer.id" class="layer__text" :style="getTextStyle(layer)">
 							{{ layer.text || '输入文字' }}
 						</view>
-						<input 
-							v-else 
-							class="layer__text-input" 
-							v-model="editingText" 
-							:style="getTextStyle(layer)"
-							@blur="handleTextBlur(layer.id)"
-							@keyup.enter="handleTextBlur(layer.id)"
-							:ref="el => textInputRefs[layer.id] = el"
-						/>
+						<view v-else class="layer__text-editor">
+							<textarea
+								class="layer__text-input"
+								:style="getTextStyle(layer)"
+								v-model="editingText"
+								placeholder="请输入"
+								@blur="handleTextBlur(layer.id, $event)"
+								@focus.stop="handleInputFocus"
+								@mousedown.stop="handleInputMouseDown"
+								:ref="el => textInputRefs[layer.id] = el"
+							></textarea>
+							<view class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
+								<text class="iconfont icon-close"></text>
+							</view>
+							<view
+								class="layer__resize-handle"
+								@touchstart.stop="handleResizeStart($event, layer)"
+								@touchmove.stop="handleResizeMove($event)"
+								@touchend.stop="handleResizeEnd($event)"
+								@mousedown.stop="handleResizeStart($event, layer)"
+							></view>
+						</view>
 					</template>
 					<view v-else-if="layer.type === 'icon'" class="layer__icon" :style="getIconStyle(layer)">
 						{{ layer.text }}
@@ -77,7 +90,7 @@
 		}
 	})
 
-	const emit = defineEmits(['select-layer', 'add-text-layer', 'update-text', 'clear-tool', 'update-layer-position'])
+	const emit = defineEmits(['select-layer', 'add-text-layer', 'update-text', 'clear-tool', 'update-layer-position', 'delete-layer', 'update-layer-size'])
 
 	const editingText = ref('')
 	const textInputRefs = ref({})
@@ -87,6 +100,9 @@
 	const hasMoved = ref(false)
 	const hasCreatedText = ref(false)
 	const canvasAreaRef = ref(null)
+	const resizingLayerId = ref('')
+	const resizeStartPos = ref({ x: 0, y: 0 })
+	const layerStartSize = ref({ width: 0, height: 0 })
 
 	function getCanvasOffset() {
 		let left = 0, top = 0
@@ -162,8 +178,9 @@
 
 	function handleScreenClick(event) {
 		if (props.currentTool === 'text') {
-			// 如果已经创建过文字，不再创建新的文字
+			// 如果已经创建过文字，不再创建新的文字，直接取消工具
 			if (hasCreatedText.value) {
+				emit('clear-tool')
 				return
 			}
 			
@@ -196,6 +213,9 @@
 			// 触发添加文字图层，并标记已经创建过文字
 			emit('add-text-layer', x, y)
 			hasCreatedText.value = true
+		} else if (props.currentTool === 'brush') {
+			// 画笔工具点击空白区域取消画笔
+			emit('clear-tool')
 		} else {
 			emit('clear-tool')
 		}
@@ -224,13 +244,29 @@
 		})
 	}
 
-	function handleTextBlur(layerId) {
+	function handleInputFocus() {
+		// 输入框获得焦点，什么也不做，只是阻止事件冒泡
+	}
+
+	function handleInputMouseDown() {
+		// 输入框鼠标按下，阻止事件冒泡到父层，避免触发拖拽
+	}
+
+	function handleTextBlur(layerId, event) {
 		emit('update-text', layerId, editingText.value || '输入文字')
+	}
+
+	function handleDeleteLayer(layerId) {
+		emit('delete-layer', layerId)
 	}
 
 	function handleLayerMouseDown(event, layer) {
 		if (layer.locked) return
-		if (props.editingLayerId === layer.id) return
+		
+		// 如果正在编辑，不阻止输入框获得焦点，但也不启动拖拽
+		if (props.editingLayerId === layer.id) {
+			return
+		}
 		
 		draggingLayerId.value = layer.id
 		hasMoved.value = false
@@ -312,6 +348,46 @@
 
 	function handleLayerTouchEnd() {
 		draggingLayerId.value = ''
+		resizingLayerId.value = ''
+	}
+
+	function handleResizeStart(event, layer) {
+		resizingLayerId.value = layer.id
+		const touch = event.touches ? event.touches[0] : event
+		const pageX = touch.pageX || touch.clientX
+		const pageY = touch.pageY || touch.clientY
+
+		resizeStartPos.value = { x: pageX, y: pageY }
+		layerStartSize.value = { width: layer.width, height: layer.height }
+
+		document.addEventListener('mousemove', handleResizeMove)
+		document.addEventListener('mouseup', handleResizeEnd)
+	}
+
+	function handleResizeMove(event) {
+		if (!resizingLayerId.value) return
+
+		const touch = event.touches ? event.touches[0] : event
+		const pageX = touch.pageX || touch.clientX
+		const pageY = touch.pageY || touch.clientY
+
+		const deltaX = pageX - resizeStartPos.value.x
+		const deltaY = pageY - resizeStartPos.value.y
+
+		const systemInfo = uni.getSystemInfoSync()
+		const screenWidth = systemInfo.windowWidth || 375
+		const pxToRpx = 750 / screenWidth
+
+		const newWidth = Math.max(60, layerStartSize.value.width + (deltaX * pxToRpx / props.scale))
+		const newHeight = Math.max(40, layerStartSize.value.height + (deltaY * pxToRpx / props.scale))
+
+		emit('update-layer-size', resizingLayerId.value, newWidth, newHeight)
+	}
+
+	function handleResizeEnd() {
+		resizingLayerId.value = ''
+		document.removeEventListener('mousemove', handleResizeMove)
+		document.removeEventListener('mouseup', handleResizeEnd)
 	}
 
 	function getLayerBoxStyle(layer) {
@@ -417,12 +493,55 @@
 
 .layer__text-input {
 	width: 100%;
+	height: 100%;
 	padding: 10rpx;
 	border: none;
 	outline: none;
 	background: transparent;
 	text-align: center;
 	word-break: break-word;
+	min-height: 40rpx;
+	resize: none;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+.layer__text-editor {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.layer__delete-btn {
+	position: absolute;
+	top: -20rpx;
+	right: -20rpx;
+	width: 40rpx;
+	height: 40rpx;
+	background: #d9485f;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 10;
+}
+
+.layer__delete-btn text {
+	color: #fff;
+	font-size: 24rpx;
+	font-weight: bold;
+}
+
+.layer__resize-handle {
+	position: absolute;
+	bottom: -10rpx;
+	right: -10rpx;
+	width: 24rpx;
+	height: 24rpx;
+	background: #f0b429;
+	border: 4rpx solid #fff;
+	border-radius: 4rpx;
+	z-index: 10;
 }
 
 .layer__icon {

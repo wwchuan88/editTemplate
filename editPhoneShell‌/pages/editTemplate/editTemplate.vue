@@ -43,7 +43,7 @@
 			<view class="workspace__main">
 				<view class="stage-card">
 					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter" :scale="phoneFrameScale" :current-tool="currentTool" :editing-layer-id="editingLayerId"
-				@select-layer="selectLayer" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" @update-layer-position="updateLayerPosition" />
+				@select-layer="selectLayer" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" @update-layer-position="updateLayerPosition" @delete-layer="deleteLayer" @update-layer-size="updateLayerSize" />
 
 				</view>
 			</view>
@@ -327,6 +327,16 @@ function removeSelectedLayer() {
 	selectedLayerId.value = ''
 }
 
+function deleteLayer(layerId) {
+	layers.value = layers.value.filter((item) => item.id !== layerId)
+	if (selectedLayerId.value === layerId) {
+		selectedLayerId.value = ''
+	}
+	if (editingLayerId.value === layerId) {
+		editingLayerId.value = ''
+	}
+}
+
 function chooseImage() {
 	uni.chooseImage({
 		count: 1,
@@ -472,6 +482,13 @@ function handleClearTool() {
 		currentTool.value = ''
 	}
 	console.log('清除工具选择，currentTool:', currentTool.value, 'editingLayerId:', editingLayerId.value)
+}
+
+function updateLayerSize(layerId, width, height) {
+	const layer = layers.value.find((item) => item.id === layerId)
+	if (!layer) return
+	layer.width = width
+	layer.height = height
 }
 
 function updateLayerPosition(layerId, x, y) {
