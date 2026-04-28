@@ -290,6 +290,8 @@ function selectLayer(id) {
 		textDraft.value = layer.text
 		textColor.value = layer.color
 		textSize.value = layer.size
+		// 点击已存在的文字图层时，设置 editingLayerId 以显示输入框
+		editingLayerId.value = id
 		// 点击已存在的文字图层时，不设置 currentTool，避免重置 hasCreatedText
 	} else {
 		// 点击非文字图层时，清空工具选择
