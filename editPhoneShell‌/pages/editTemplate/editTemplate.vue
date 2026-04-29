@@ -384,6 +384,7 @@ function saveDesign() {
 }
 
 function exitTool() {
+	selectedLayerId.value = ''
 	currentTool.value = ''
 }
 
@@ -536,6 +537,7 @@ page {
 	align-items: center;
 	left: 20rpx;
 	box-sizing: border-box;
+	z-index: 1001;
 }
 
 .tool-bar .iconfont {
