@@ -10,7 +10,7 @@
 				v-for="tool in tools"
 				:key="tool.key"
 				class="tool-item"
-				:class="{ 'tool-item--active': currentTool === tool.key }"
+				:class="{ 'tool-item tool-item--active': currentTool === tool.key }"
 				@click="$emit('select', tool.key)"
 			>
 				<text class="tool-item__icon">{{ getToolIcon(tool.key) }}</text>
@@ -120,9 +120,6 @@
 		transition: all 0.2s ease;
 	}
 
-	.tool-item:hover {
-		background: #f0f0f0;
-	}
 
 	.tool-item--active {
 		background: linear-gradient(135deg, #ea7c42 0%, #e45d47 100%);

@@ -28,11 +28,11 @@
 							<textarea
 								class="layer__text-input"
 								:style="getTextStyle(layer)"
-								:value="editingText"
+								:value="layer.text || ''"
 								placeholder="请输入"
 								@blur="handleTextBlur(layer.id)"
 								@focus="handleInputFocus"
-								@input="handleTextInput($event)"
+								@input="handleTextInput(layer.id, $event)"
 								@mousedown="handleInputMouseDown"
 								:ref="el => textInputRefs[layer.id] = el"
 							></textarea>
@@ -177,6 +177,8 @@
 	})
 
 	function handleScreenClick(event) {
+
+
 		if (props.editingLayerId) {
 			emit('exit-edit')
 			return
@@ -201,6 +203,7 @@
 			} else if (event.clientX !== undefined && event.clientY !== undefined) {
 				if (event.currentTarget && typeof event.currentTarget.getBoundingClientRect === 'function') {
 					const rect = event.currentTarget.getBoundingClientRect()
+				
 					const relX = event.clientX - rect.left
 					const relY = event.clientY - rect.top
 					x = (relX * pxToRpx) / props.scale
@@ -253,18 +256,28 @@
 	}
 
 	function handleInputMouseDown() {
+		
 		// 输入框鼠标按下，阻止事件冒泡到父层，避免触发拖拽
 	}
 
-	function handleTextInput(event) {
+	function handleTextInput(layerId, event) {
+		let value = ''
+		
 		if (event) {
-			if (event.target && event.target.value !== undefined) {
-				editingText.value = event.target.value
+			if (event.detail && event.detail.value !== undefined) {
+				value = event.detail.value
+			} else if (event.target && event.target.value !== undefined) {
+				value = event.target.value
 			} else if (typeof event === 'string') {
-				editingText.value = event
-			} else if (event.detail && event.detail.value !== undefined) {
-				editingText.value = event.detail.value
+				value = event
 			}
+		}
+		
+		editingText.value = value
+		
+		const layer = props.layers.find(item => item.id === layerId)
+		if (layer) {
+			layer.text = value
 		}
 	}
 
@@ -277,12 +290,11 @@
 	}
 
 	function handleLayerMouseDown(event, layer) {
-		if (layer.locked) return
-		
-		// 如果正在编辑，不阻止输入框获得焦点，但也不启动拖拽
-		if (props.editingLayerId === layer.id) {
-			return
-		}
+		// if (layer.locked) return
+		// // 如果正在编辑，不阻止输入框获得焦点，但也不启动拖拽
+		// if (props.editingLayerId === layer.id) {
+		// 	return
+		// }
 		
 		draggingLayerId.value = layer.id
 		hasMoved.value = false
@@ -297,7 +309,6 @@
 
 	function handleLayerMouseMove(event) {
 		if (!draggingLayerId.value) return
-		
 		const pageX = event.pageX || event.clientX
 		const pageY = event.pageY || event.clientY
 		
@@ -313,8 +324,10 @@
 		const pxToRpx = 750 / screenWidth
 		
 		const newX = layerStartPos.value.x + (deltaX * pxToRpx / props.scale)
-		const newY = layerStartPos.value.y + (deltaY * pxToRpx / props.scale)
-		
+		const newY = layerStartPos.value.y + (deltaY * pxToRpx / props.scale)	
+		if (Number.isNaN(newX) || Number.isNaN(newY)) {
+			return
+		}
 		emit('update-layer-position', draggingLayerId.value, newX, newY)
 	}
 
@@ -323,8 +336,8 @@
 	}
 
 	function handleLayerTouchStart(event, layer) {
-		if (layer.locked) return
-		if (props.editingLayerId === layer.id) return
+		// if (layer.locked) return
+		// if (props.editingLayerId === layer.id) return
 		
 		draggingLayerId.value = layer.id
 		hasMoved.value = false
@@ -341,6 +354,9 @@
 	}
 
 	function handleLayerTouchMove(event) {
+		console.log("aaaaaaaaa")
+		console.log("draggingLayerId.value", draggingLayerId.value)
+
 		if (!draggingLayerId.value) return
 		
 		const touch = event.touches ? event.touches[0] : event
@@ -354,14 +370,15 @@
 		if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
 			hasMoved.value = true
 		}
-		
 		const systemInfo = uni.getSystemInfoSync()
 		const screenWidth = systemInfo.windowWidth || 375
 		const pxToRpx = 750 / screenWidth
 		
 		const newX = layerStartPos.value.x + (deltaX * pxToRpx / props.scale)
 		const newY = layerStartPos.value.y + (deltaY * pxToRpx / props.scale)
-		
+		if (Number.isNaN(newX) || Number.isNaN(newY)) {
+			return
+		}
 		emit('update-layer-position', draggingLayerId.value, newX, newY)
 	}
 
@@ -379,8 +396,10 @@
 		resizeStartPos.value = { x: pageX, y: pageY }
 		layerStartSize.value = { width: layer.width, height: layer.height }
 
-		document.addEventListener('mousemove', handleResizeMove)
-		document.addEventListener('mouseup', handleResizeEnd)
+		if (typeof document !== 'undefined' && document.addEventListener) {
+			document.addEventListener('mousemove', handleResizeMove)
+			document.addEventListener('mouseup', handleResizeEnd)
+		}
 	}
 
 	function handleResizeMove(event) {
@@ -405,8 +424,10 @@
 
 	function handleResizeEnd() {
 		resizingLayerId.value = ''
-		document.removeEventListener('mousemove', handleResizeMove)
-		document.removeEventListener('mouseup', handleResizeEnd)
+		if (typeof document !== 'undefined' && document.removeEventListener) {
+			document.removeEventListener('mousemove', handleResizeMove)
+			document.removeEventListener('mouseup', handleResizeEnd)
+		}
 	}
 
 	function getLayerBoxStyle(layer) {
@@ -504,19 +525,15 @@
 }
 
 .layer__text {
-	padding: 10rpx;
-	text-align: center;
 	word-break: break-word;
 }
 
 .layer__text-input {
 	width: 100%;
 	height: 100%;
-	padding: 10rpx;
 	border: none;
 	outline: none;
 	background: transparent;
-	text-align: center;
 	word-break: break-word;
 	min-height: 40rpx;
 	resize: none;
@@ -552,10 +569,10 @@
 
 .layer__resize-handle {
 	position: absolute;
-	bottom: -10rpx;
-	right: -10rpx;
-	width: 24rpx;
-	height: 24rpx;
+	bottom: -20rpx;
+	right: -20rpx;
+	width: 30rpx;
+	height: 30rpx;
 	background: #f0b429;
 	border: 4rpx solid #fff;
 	border-radius: 4rpx;

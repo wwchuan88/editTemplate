@@ -36,7 +36,7 @@
 
 		<view class="workspace">
 			<SideDrawers :current-tool="currentTool" :tools="toolList" :visible="sidebarVisible"
-				@select="currentTool = $event" @close="sidebarVisible = false" />
+				@select="selectDesignTool" @close="sidebarVisible = false" />
 			<DecorSideDrawers :current-tool="currentDecorTool" :tools="decorToolList" :visible="decorSidebarVisible"
 				@select="currentDecorTool = $event" @close="decorSidebarVisible = false" />
 
@@ -503,6 +503,12 @@ function updateLayerPosition(layerId, x, y) {
 	if (!layer) return
 	layer.x = Math.max(0, x)
 	layer.y = Math.max(0, y)
+}
+
+function selectDesignTool(tool) {
+	// 只有在非编辑状态下才清除工具
+	
+	currentTool.value = tool
 }
 </script>
 
