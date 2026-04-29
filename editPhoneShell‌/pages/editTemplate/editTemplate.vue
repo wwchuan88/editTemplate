@@ -796,4 +796,7 @@ page {
 	color:#cccccc;
 	font-size: 24rpx;
 }
+.toolbar-card-icondown.icon-up{
+	transform: rotate(180deg);
+}
 </style>

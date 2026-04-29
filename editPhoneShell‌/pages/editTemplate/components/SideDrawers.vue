@@ -116,7 +116,7 @@
 		padding: 24rpx 12rpx;
 		border-radius: 0 24rpx 24rpx 0;
 		background: #f8f8f8;
-		margin: 0 12rpx;
+		margin: 0 12rpx 0 0;
 		transition: all 0.2s ease;
 	}
 

@@ -1,8 +1,12 @@
 <template>
 	<view class="toolbar-card">
-		<text class="iconfont icon-down toolbar-card-icondown"></text>
+		<text 
+			class="iconfont toolbar-card-icondown"
+			:class="isExpanded ? 'icon-down' : 'icon-up icon-down'"
+			@click="togglePanel"
+		></text>
 		<!-- 上层导航 -->
-		<view class="toolbar-top">
+		<view v-if="isExpanded" class="toolbar-top">
 			<view class="toolbar-top-left">
 				<view class="nav-item" :class="{ 'nav-item--active': activeNav === 'font' }"
 					@click="activeNav = 'font'">
@@ -23,7 +27,7 @@
 		</view>
 
 		<!-- 下层内容 -->
-		<view class="toolbar-bottom">
+		<view v-if="isExpanded" class="toolbar-bottom">
 			<!-- 字体选择 -->
 			<view v-if="activeNav === 'font'" class="nav-content">
 				<view class="font-scroll-container">
@@ -71,6 +75,11 @@
 import { ref } from 'vue'
 
 const activeNav = ref('font')
+const isExpanded = ref(true)
+
+function togglePanel() {
+	isExpanded.value = !isExpanded.value
+}
 
 const props = defineProps({
 	textDraft: {
@@ -124,8 +133,7 @@ function handleSizeChange(e) {
 <style scoped>
 .toolbar-card {
 	width: 750rpx;
-	background: #fff;
-	border-radius: 24rpx;
+	background: rgba(255, 255, 255, 0.9);
 	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
 	border-top-left-radius: 32rpx;
 	border-top-right-radius: 32rpx;
