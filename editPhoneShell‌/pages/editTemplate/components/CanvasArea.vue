@@ -48,8 +48,21 @@
 							></view>
 						</view>
 					</template>
-					<view v-else-if="layer.type === 'icon'" class="layer__icon" :style="getIconStyle(layer)">
-						{{ layer.text }}
+					<view v-else-if="layer.type === 'icon'" class="layer__icon-container">
+						<view class="layer__icon" :style="getIconStyle(layer)">
+							{{ layer.text }}
+						</view>
+						<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
+							<text class="iconfont icon-close layer__delete-btn-icon"></text>
+						</view>
+						<view
+							v-if="props.selectedLayerId === layer.id"
+							class="layer__resize-handle"
+							@touchstart="handleResizeStart($event, layer)"
+							@touchmove="handleResizeMove($event)"
+							@touchend="handleResizeEnd($event)"
+							@mousedown="handleResizeStart($event, layer)"
+						></view>
 					</view>
 					<image v-else-if="layer.type === 'image'" class="layer__image" :src="layer.url" mode="aspectFit"></image>
 					<view v-else-if="layer.type === 'brush'" class="layer__brush" :style="getBrushStyle(layer)"></view>
@@ -177,11 +190,12 @@
 	})
 
 	function handleScreenClick(event) {
-
-
 		if (props.editingLayerId) {
 			emit('exit-edit')
 			return
+		}
+		if (props.selectedLayerId) {
+			emit('select-layer', null)
 		}
 		if (props.currentTool === 'text') {
 			// 如果已经创建过文字，不再创建新的文字，直接取消工具
@@ -577,6 +591,12 @@
 	border: 4rpx solid #fff;
 	border-radius: 4rpx;
 	z-index: 10;
+}
+
+.layer__icon-container {
+	position: relative;
+	width: 100%;
+	height: 100%;
 }
 
 .layer__icon {

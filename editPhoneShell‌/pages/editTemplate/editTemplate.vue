@@ -497,6 +497,10 @@ function updateLayerSize(layerId, width, height) {
 	if (!layer) return
 	layer.width = width
 	layer.height = height
+	// 如果是图标图层，同时更新 size 属性以改变图标显示大小
+	if (layer.type === 'icon') {
+		layer.size = Math.min(width, height)
+	}
 }
 
 function updateLayerPosition(layerId, x, y) {
