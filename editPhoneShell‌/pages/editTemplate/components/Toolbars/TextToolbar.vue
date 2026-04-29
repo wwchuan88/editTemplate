@@ -1,5 +1,6 @@
 <template>
 	<view class="toolbar-card">
+		<text class="iconfont icon-down toolbar-card-icondown"></text>
 		<!-- 上层导航 -->
 		<view class="toolbar-top">
 			<view class="toolbar-top-left">
@@ -134,8 +135,8 @@ function handleSizeChange(e) {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 20rpx 24rpx;
 	border-bottom: 2rpx solid #f2e7da;
+	margin-bottom: 20rpx;
 }
 
 .toolbar-top-left {
@@ -161,7 +162,6 @@ function handleSizeChange(e) {
 	width: 80rpx;
 	height: 80rpx;
 	display: flex;
-	align-items: center;
 	justify-content: center;
 }
 

@@ -506,9 +506,8 @@ function updateLayerPosition(layerId, x, y) {
 }
 
 function selectDesignTool(tool) {
-	// 只有在非编辑状态下才清除工具
-	
-	currentTool.value = tool
+	selectedLayerId.value = ''
+	currentTool.value = tool		
 }
 </script>
 
@@ -670,6 +669,7 @@ page {
 	bottom: 0;
 	left: 0;
 	width: 750rpx;
+	z-index: 10000;
 }
 
 .toolbar-card {
@@ -775,5 +775,23 @@ page {
 .stage-card{
 	justify-content: center;
 	display: flex;
+}
+.toolbar-card-icondown{
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70rpx;
+    height: 33rpx;
+    border-radius: 8px;
+    opacity: 1;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+	color:#cccccc;
+	font-size: 24rpx;
 }
 </style>
