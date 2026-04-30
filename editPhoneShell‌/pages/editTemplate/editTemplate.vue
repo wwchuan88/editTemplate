@@ -54,6 +54,8 @@
 				:text-size="textSize" :text-font="textFont" :colors="textColors" :is-editing="selectedLayer && selectedLayer.type === 'text'"
 				@update-draft="textDraft = $event" @pick-color="pickTextColor" @change-size="changeTextSize"
 				@pick-font="pickTextFont" @submit="upsertTextLayer" @exit="exitTool" />
+			<IconEditToolbar v-else-if="selectedLayer && selectedLayer.type === 'icon'" :icon-color="selectedLayer.color" :colors="textColors"
+				@pick-color="updateIconColor" @exit="exitTool" />
 			<IconToolbar v-else-if="currentTool === 'icon'" :options="iconOptions" @add="addIconLayer"
 				@exit="exitTool" />
 			<UploadToolbar v-else-if="currentTool === 'upload'" @choose="chooseImage" @demo="addDemoImage"
@@ -85,6 +87,7 @@ import DecorSideDrawers from './components/DecorSideDrawers.vue'
 import CanvasArea from './components/CanvasArea.vue'
 import TextToolbar from './components/Toolbars/TextToolbar.vue'
 import IconToolbar from './components/Toolbars/IconToolbar.vue'
+import IconEditToolbar from './components/Toolbars/IconEditToolbar.vue'
 import UploadToolbar from './components/Toolbars/UploadToolbar.vue'
 import FilterToolbar from './components/Toolbars/FilterToolbar.vue'
 import BrushToolbar from './components/Toolbars/BrushToolbar.vue'
@@ -152,7 +155,7 @@ const filterOptions = [
 	{ key: 'night', label: '夜幕', desc: '压低亮度层次' }
 ]
 
-const textColors = ['#2f241f', '#d9485f', '#3c6e71', '#2b59c3', '#9c6644']
+const textColors = ['#2f241f', '#d9485f', '#3c6e71', '#2b59c3', '#9c6644']  //字体和图标颜色
 const brushColors = ['#ff7b54', '#ffb703', '#5b8def', '#18a058', '#b565d9']
 
 const currentTool = ref('')
@@ -366,6 +369,15 @@ function deleteLayer(layerId) {
 	}
 	if (editingLayerId.value === layerId) {
 		editingLayerId.value = ''
+	}
+}
+
+function updateIconColor(color) {
+	if (selectedLayerId.value) {
+		const layer = layers.value.find((item) => item.id === selectedLayerId.value)
+		if (layer && layer.type === 'icon') {
+			layer.color = color
+		}
 	}
 }
 
