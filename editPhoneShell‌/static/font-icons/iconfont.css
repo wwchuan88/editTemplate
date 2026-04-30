@@ -1,0 +1,75 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 5170626 */
+  src: url('iconfont.woff2?t=1777528577655') format('woff2'),
+       url('iconfont.woff?t=1777528577655') format('woff'),
+       url('iconfont.ttf?t=1777528577655') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.wwchuan-keaide:before {
+  content: "\ee600";
+}
+
+.wwchuan-chijing:before {
+  content: "\ee601";
+}
+
+.wwchuan-ganga:before {
+  content: "\ee602";
+}
+
+.wwchuan-qin:before {
+  content: "\ee603";
+}
+
+.wwchuan-shengqi:before {
+  content: "\ee604";
+}
+
+.wwchuan-shuyeu:before {
+  content: "\e612";
+}
+
+.wwchuan-xingxing:before {
+  content: "\e75b";
+}
+
+.wwchuan-aixin:before {
+  content: "\e8c3";
+}
+
+.wwchuan-tequankatongzhi:before {
+  content: "\e713";
+}
+
+.wwchuan-star-full:before {
+  content: "\e9a1";
+}
+
+.wwchuan-xiaojidongwuniao:before {
+  content: "\e627";
+}
+
+.wwchuan-qiatongxingxiang:before {
+  content: "\e605";
+}
+
+.wwchuan-a-ziyuan21:before {
+  content: "\e616";
+}
+
+.wwchuan-dongwu:before {
+  content: "\e6a9";
+}
+
+.wwchuan-hearts-fill:before {
+  content: "\e81d";
+}
+

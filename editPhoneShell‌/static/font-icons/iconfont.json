@@ -1,0 +1,114 @@
+{
+  "id": "5170626",
+  "name": "拼个壳-icons",
+  "font_family": "iconfont",
+  "css_prefix_text": "wwchuan-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1207",
+      "name": "可爱的",
+      "font_class": "keaide",
+      "unicode": "ee600",
+      "unicode_decimal": 976384
+    },
+    {
+      "icon_id": "1213",
+      "name": "吃惊",
+      "font_class": "chijing",
+      "unicode": "ee601",
+      "unicode_decimal": 976385
+    },
+    {
+      "icon_id": "1217",
+      "name": "尴尬",
+      "font_class": "ganga",
+      "unicode": "ee602",
+      "unicode_decimal": 976386
+    },
+    {
+      "icon_id": "1218",
+      "name": "亲",
+      "font_class": "qin",
+      "unicode": "ee603",
+      "unicode_decimal": 976387
+    },
+    {
+      "icon_id": "1221",
+      "name": "生气",
+      "font_class": "shengqi",
+      "unicode": "ee604",
+      "unicode_decimal": 976388
+    },
+    {
+      "icon_id": "3093089",
+      "name": "四叶草",
+      "font_class": "shuyeu",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "11222358",
+      "name": "星星",
+      "font_class": "xingxing",
+      "unicode": "e75b",
+      "unicode_decimal": 59227
+    },
+    {
+      "icon_id": "11372756",
+      "name": "爱心",
+      "font_class": "aixin",
+      "unicode": "e8c3",
+      "unicode_decimal": 59587
+    },
+    {
+      "icon_id": "11862392",
+      "name": "特权卡通知",
+      "font_class": "tequankatongzhi",
+      "unicode": "e713",
+      "unicode_decimal": 59155
+    },
+    {
+      "icon_id": "18170317",
+      "name": "星,星星,星形,半星,实星",
+      "font_class": "star-full",
+      "unicode": "e9a1",
+      "unicode_decimal": 59809
+    },
+    {
+      "icon_id": "19463531",
+      "name": "小鸡 动物 鸟",
+      "font_class": "xiaojidongwuniao",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "20446083",
+      "name": "卡通形象",
+      "font_class": "qiatongxingxiang",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "23474467",
+      "name": "动物园",
+      "font_class": "a-ziyuan21",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "33805626",
+      "name": "动物",
+      "font_class": "dongwu",
+      "unicode": "e6a9",
+      "unicode_decimal": 59049
+    },
+    {
+      "icon_id": "42230780",
+      "name": "hearts-fill",
+      "font_class": "hearts-fill",
+      "unicode": "e81d",
+      "unicode_decimal": 59421
+    }
+  ]
+}

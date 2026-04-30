@@ -105,12 +105,43 @@ const decorToolList = [
 ]
 
 const iconOptions = [
-	{ label: '星星', icon: '★', color: '#f0b429' },
-	{ label: '爱心', icon: '♥', color: '#df5f6c' },
-	{ label: '闪电', icon: '⚡', color: '#ff9f1c' },
-	{ label: '花朵', icon: '✿', color: '#ef7998' },
-	{ label: '音符', icon: '♪', color: '#5b8def' },
-	{ label: '笑脸', icon: '☺', color: '#18a058' }
+	{
+		key: 'graph',
+		label: '图形',
+		icon: '★',
+		type: 'graph',
+		icons:[
+			{ label: '星星', icon: 'wwchuan-star-full', color: '#f0b429', size: 40 },
+			{ label: '星星', icon: 'wwchuan-xingxing', color: '#df5f6c', size: 40 },
+			{ label: '爱心', icon: 'wwchuan-keaide', color: '#ff9f1c', size: 40 },
+			{ label: '爱心', icon: 'wwchuan-hearts-fill', color: '#ef7998', size: 40 },
+			{ label: '四叶草', icon: 'wwchuan-shuyeu', color: '#5b8def', size: 40 },	
+		]
+	},
+	{
+		key: 'emotion',
+		label: '表情',
+		icon: '😊',
+		type: 'emotion',
+		icons:[
+			{ label: '吃惊', icon: 'wwchuan-chijing', color: '#f0b429', size: 40 },
+			{ label: '尴尬', icon: 'wwchuan-ganga', color: '#df5f6c', size: 40 },
+			{ label: '亲亲', icon: 'wwchuan-qin', color: '#ff9f1c', size: 40 },
+			{ label: '生气', icon: 'wwchuan-shengqi', color: '#ef7998', size: 40 }	
+		]
+	},
+	{
+		key: 'pet',
+		label: '萌物',
+		icon: '😊',
+		type: 'pet',
+		icons:[
+			{ label: '小鸡', icon: 'wwchuan-xiaojidongwuniao', color: '#f0b429', size: 40 },
+			{ label: '小熊', icon: 'wwchuan-a-ziyuan21', color: '#df5f6c', size: 40 },
+			{ label: '脚印', icon: 'wwchuan-dongwu', color: '#ff9f1c', size: 40 }
+		]
+	},
+
 ]
 
 const filterOptions = [

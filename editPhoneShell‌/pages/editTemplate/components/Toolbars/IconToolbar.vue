@@ -5,7 +5,7 @@
 		<!-- 上层导航 -->
 		<view class="toolbar-top">
 			<view class="toolbar-top-left">
-				<view class="nav-item" :class="{ 'nav-item--active': activeNav === 'graphics' }"
+				<!-- <view class="nav-item" :class="{ 'nav-item--active': activeNav === 'graphics' }"
 					@click="activeNav = 'graphics'">
 					图形
 				</view>
@@ -16,19 +16,38 @@
 				<view class="nav-item" :class="{ 'nav-item--active': activeNav === 'cartoon' }"
 					@click="activeNav = 'cartoon'">
 					卡通
+				</view> -->
+
+				<view v-for="item in options" :key="item.label" class="nav-item"
+					:class="{ 'nav-item--active': activeNav === item.type }" @click="changeNav(item.type)">
+					{{ item.label }}
 				</view>
 			</view>
 			<view class="toolbar-top-right" @click="$emit('exit')">
 				<text class="toolbar-top-right-exit"></text>
 			</view>
 
-
 		</view>
 
 		<!-- 下层内容 -->
 		<view class="toolbar-bottom">
+
+			<view  class="nav-content">
+				<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
+					<view class="emoji-row">
+						<view v-for="item in cartoonOptions.icons" :key="item.type" class="emoji-card"
+							@click="$emit('add', item)">
+							<text class="emoji-card__icon iconfont" :class="item.icon"></text>
+							<text class="emoji-card__label">{{ item.label }}</text>
+						</view>
+					</view>
+				</scroll-view>
+			</view>
+
+
+
 			<!-- 图形 -->
-			<view v-if="activeNav === 'graphics'" class="nav-content">
+			<!-- <view v-if="activeNav === 'graphics'" class="nav-content">
 				<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
 					<view class="emoji-row">
 						<view v-for="item in graphicsOptions" :key="item.label" class="emoji-card"
@@ -38,10 +57,10 @@
 						</view>
 					</view>
 				</scroll-view>
-			</view>
+			</view> -->
 
 			<!-- 人物 -->
-			<view v-if="activeNav === 'people'" class="nav-content">
+			<!-- <view v-if="activeNav === 'people'" class="nav-content">
 				<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
 					<view class="emoji-row">
 						<view v-for="item in peopleOptions" :key="item.label" class="emoji-card"
@@ -51,28 +70,42 @@
 						</view>
 					</view>
 				</scroll-view>
-			</view>
+			</view> -->
 
 			<!-- 卡通 -->
-			<view v-if="activeNav === 'cartoon'" class="nav-content">
+			<!-- <view v-if="activeNav === 'cartoon'" class="nav-content">
 				<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
 					<view class="emoji-row">
-						<view v-for="item in cartoonOptions" :key="item.label" class="emoji-card"
+						<view v-for="item in cartoonOptions" :key="item.type" class="emoji-card"
 							@click="$emit('add', item)">
 							<text class="emoji-card__icon">{{ item.icon }}</text>
 							<text class="emoji-card__label">{{ item.label }}</text>
 						</view>
 					</view>
 				</scroll-view>
-			</view>
+			</view> -->
+
+
+
 		</view>
 	</view>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+const activeNav = ref('graph')
 
-const activeNav = ref('graphics')
+const cartoonOptions = computed(() => {
+	let obj = {}
+	props.options.filter((item, index) => {
+		if(item.type === activeNav.value){
+			obj.icons = item.icons;
+		}
+	})
+	return obj;
+})
+
+console.log("cartoonOptions", cartoonOptions)
 
 const props = defineProps({
 	options: {
@@ -104,15 +137,11 @@ const peopleOptions = computed(() => {
 	})
 })
 
-const cartoonOptions = computed(() => {
-	return props.options.filter((item, index) => {
-		if (item.category) {
-			return item.category === 'cartoon'
-		} else {
-			return index >= 4
-		}
-	})
-})
+
+
+const changeNav = (type) => {
+	activeNav.value = type
+}
 
 defineEmits(['add'])
 </script>

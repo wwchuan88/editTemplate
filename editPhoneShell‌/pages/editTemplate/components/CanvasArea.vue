@@ -49,9 +49,7 @@
 						</view>
 					</template>
 					<view v-else-if="layer.type === 'icon'" class="layer__icon-container">
-						<view class="layer__icon" :style="getIconStyle(layer)">
-							{{ layer.text }}
-						</view>
+						<view class="layer__icon iconfont" :class="layer.text" :style="getIconStyle(layer)"></view>
 						<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
 							<text class="iconfont icon-close layer__delete-btn-icon"></text>
 						</view>
@@ -190,6 +188,7 @@
 	})
 
 	function handleScreenClick(event) {
+
 		if (props.editingLayerId) {
 			emit('exit-edit')
 			return
