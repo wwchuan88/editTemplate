@@ -41,9 +41,9 @@
 				@select="currentDecorTool = $event" @close="decorSidebarVisible = false" />
 
 			<view class="workspace__main">
-				<view class="stage-card">
-					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter" :scale="phoneFrameScale" :current-tool="currentTool" :editing-layer-id="editingLayerId"
-				@select-layer="selectLayer" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" @update-layer-position="updateLayerPosition" @delete-layer="deleteLayer" @update-layer-size="updateLayerSize" @exit-edit="exitEdit" />
+			<view class="stage-card">
+					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter" :scale="phoneFrameScale" :current-tool="currentTool" :editing-layer-id="editingLayerId" :brush-color="brushColor" :brush-size="brushSize"
+				@select-layer="selectLayer" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" @update-layer-position="updateLayerPosition" @delete-layer="deleteLayer" @update-layer-size="updateLayerSize" @exit-edit="exitEdit" @add-brush-layer="handleAddBrushLayer" />
 
 				</view>
 			</view>
@@ -64,7 +64,7 @@
 				@pick="activeFilter = $event" @exit="exitTool" />
 			<BrushToolbar v-else-if="currentTool === 'brush'" :colors="brushColors" :brush-color="brushColor"
 				:brush-size="brushSize" @pick-color="brushColor = $event" @pick-size="brushSize = $event"
-				@submit="addBrushDot" @exit="exitTool" />
+				@exit="exitTool" />
 		</view>
 
 		<!-- 悬浮按钮 -->
@@ -287,18 +287,17 @@ function addDemoImage() {
 	addImageLayer('/static/logo.png')
 }
 
-function addBrushDot() {
-	const size = brushSize.value
-	const position = getCenterPosition(size, size)
+function handleAddBrushLayer(layerData) {
 	const layer = {
 		id: createId('brush'),
 		type: 'brush',
-		color: brushColor.value,
-		size,
-		width: size,
-		height: size,
-		x: position.x,
-		y: position.y,
+		color: layerData.color,
+		size: layerData.size,
+		width: layerData.width,
+		height: layerData.height,
+		x: layerData.x,
+		y: layerData.y,
+		imageData: layerData.imageData,
 		locked: false
 	}
 	layers.value.push(layer)
@@ -325,11 +324,9 @@ function selectLayer(id) {
 		textDraft.value = layer.text
 		textColor.value = layer.color
 		textSize.value = layer.size
-		// 点击已存在的文字图层时，设置 editingLayerId 以显示输入框
 		editingLayerId.value = id
-		// 点击已存在的文字图层时，不设置 currentTool，避免重置 hasCreatedText
+	} else if (currentTool.value === 'brush') {
 	} else {
-		// 点击非文字图层时，清空工具选择
 		currentTool.value = ''
 	}
 }
