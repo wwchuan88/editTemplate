@@ -298,6 +298,12 @@ function handleAddBrushLayer(layerData) {
 		x: layerData.x,
 		y: layerData.y,
 		imageData: layerData.imageData,
+		fullCanvasW: layerData.fullCanvasW || layerData.width,
+		fullCanvasH: layerData.fullCanvasH || layerData.height,
+		contentOffsetX: layerData.contentOffsetX || 0,
+		contentOffsetY: layerData.contentOffsetY || 0,
+		origW: layerData.origW || layerData.width,
+		origH: layerData.origH || layerData.height,
 		locked: false
 	}
 	layers.value.push(layer)

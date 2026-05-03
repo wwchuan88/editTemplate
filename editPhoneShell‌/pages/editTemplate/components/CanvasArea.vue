@@ -64,7 +64,7 @@
 					</view>
 					<image v-else-if="layer.type === 'image'" class="layer__image" :src="layer.url" mode="aspectFit"></image>
 					<view v-else-if="layer.type === 'brush'" class="layer__brush-container">
-						<image class="layer__brush-image" :src="layer.imageData" mode="scaleToFill"></image>
+						<image class="layer__brush-image" :src="layer.imageData" mode="scaleToFill" :style="getBrushImageStyle(layer)"></image>
 						<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
 							<text class="iconfont icon-close layer__delete-btn-icon"></text>
 						</view>
@@ -162,6 +162,7 @@
 	const hasDrawnContent = ref(false)
 	const brushCanvasVisible = ref(false)
 	const isSavingBrush = ref(false)
+	const drawBounds = ref({ minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity })
 
 	const brushCanvasStyle = computed(() => {
 		if (brushCanvasVisible.value) {
@@ -186,7 +187,7 @@
 					brushCtx.value = null
 					brushCanvasNode.value = null
 				})
-			} else {
+			} else if (!isSavingBrush.value) {
 				hasDrawnContent.value = false
 				brushCanvasVisible.value = false
 				brushCtx.value = null
@@ -338,6 +339,18 @@
 		lastX.value = pos.x
 		lastY.value = pos.y
 
+		if (!hasDrawnContent.value) {
+			drawBounds.value = { minX: pos.x, minY: pos.y, maxX: pos.x, maxY: pos.y }
+		} else {
+			const b = drawBounds.value
+			drawBounds.value = {
+				minX: Math.min(b.minX, pos.x),
+				minY: Math.min(b.minY, pos.y),
+				maxX: Math.max(b.maxX, pos.x),
+				maxY: Math.max(b.maxY, pos.y)
+			}
+		}
+
 		const ctx = brushCtx.value
 
 		ctx.beginPath()
@@ -362,6 +375,14 @@
 		ctx.moveTo(pos.x, pos.y)
 
 		hasDrawnContent.value = true
+		const b = drawBounds.value
+		drawBounds.value = {
+			minX: Math.min(b.minX, pos.x),
+			minY: Math.min(b.minY, pos.y),
+			maxX: Math.max(b.maxX, pos.x),
+			maxY: Math.max(b.maxY, pos.y)
+		}
+
 		lastX.value = pos.x
 		lastY.value = pos.y
 	}
@@ -462,50 +483,104 @@
 			const canvas = brushCanvasNode.value
 			if (!canvas) { onDone && onDone(); return }
 
-			const rect = cachedRect.value
+			const b = drawBounds.value
+			if (b.minX === Infinity || b.maxX === -Infinity) {
+				const ctx = canvas.getContext('2d')
+				ctx.save()
+				ctx.setTransform(1, 0, 0, 1, 0, 0)
+				ctx.clearRect(0, 0, canvas.width, canvas.height)
+				ctx.restore()
+				drawBounds.value = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
+				onDone && onDone()
+				return
+			}
+
+			const dpr = uni.getWindowInfo().pixelRatio || 2
+			const canvasLogicW = canvas.width / dpr
+			const canvasLogicH = canvas.height / dpr
+			const padding = Math.max(4, props.brushSize * 0.5)
+			const logicMinX = Math.max(0, b.minX - padding)
+			const logicMinY = Math.max(0, b.minY - padding)
+			const logicMaxX = Math.min(canvasLogicW, b.maxX + padding)
+			const logicMaxY = Math.min(canvasLogicH, b.maxY + padding)
+
 			const screenWidth = uni.getWindowInfo().windowWidth || 375
 			const pxToRpx = 750 / screenWidth
-			const layerW = (rect.width || 480) / props.scale
-			const layerH = (rect.height || 980) / props.scale
+
+			const layerX = logicMinX / props.scale
+			const layerY = logicMinY / props.scale
+			const layerW = (logicMaxX - logicMinX) / props.scale
+			const layerH = (logicMaxY - logicMinY) / props.scale
+			const fullW = canvasLogicW / props.scale
+			const fullH = canvasLogicH / props.scale
+			const offsetX = -logicMinX / props.scale
+			const offsetY = -logicMinY / props.scale
 
 			uni.canvasToTempFilePath({
 				canvas: canvas,
-				x: 0,
-				y: 0,
-				width: canvas.width,
-				height: canvas.height,
-				destWidth: canvas.width,
-				destHeight: canvas.height,
 				success: (tempRes) => {
-					emit('add-brush-layer', {
-						imageData: tempRes.tempFilePath,
-						color: props.brushColor,
-						size: props.brushSize,
-						x: 0,
-						y: 0,
-						width: layerW * pxToRpx,
-						height: layerH * pxToRpx
+					const fs = uni.getFileSystemManager()
+					fs.readFile({
+						filePath: tempRes.tempFilePath,
+						encoding: 'base64',
+						success: (readRes) => {
+							const base64Data = 'data:image/png;base64,' + readRes.data
+							emit('add-brush-layer', {
+								imageData: base64Data,
+								color: props.brushColor,
+								size: props.brushSize,
+								x: layerX * pxToRpx,
+								y: layerY * pxToRpx,
+								width: layerW * pxToRpx,
+								height: layerH * pxToRpx,
+								fullCanvasW: fullW * pxToRpx,
+								fullCanvasH: fullH * pxToRpx,
+								contentOffsetX: offsetX * pxToRpx,
+								contentOffsetY: offsetY * pxToRpx,
+								origW: layerW * pxToRpx,
+								origH: layerH * pxToRpx
+							})
+
+							const ctx = canvas.getContext('2d')
+							ctx.save()
+							ctx.setTransform(1, 0, 0, 1, 0, 0)
+							ctx.clearRect(0, 0, canvas.width, canvas.height)
+							ctx.restore()
+
+							drawBounds.value = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
+							onDone && onDone()
+						},
+						fail: (err) => {
+							console.warn('readFile base64 fail:', err)
+							emit('add-brush-layer', {
+								imageData: tempRes.tempFilePath,
+								color: props.brushColor,
+								size: props.brushSize,
+								x: layerX * pxToRpx,
+								y: layerY * pxToRpx,
+								width: layerW * pxToRpx,
+								height: layerH * pxToRpx,
+								fullCanvasW: fullW * pxToRpx,
+								fullCanvasH: fullH * pxToRpx,
+								contentOffsetX: offsetX * pxToRpx,
+								contentOffsetY: offsetY * pxToRpx,
+								origW: layerW * pxToRpx,
+								origH: layerH * pxToRpx
+							})
+
+							const ctx = canvas.getContext('2d')
+							ctx.save()
+							ctx.setTransform(1, 0, 0, 1, 0, 0)
+							ctx.clearRect(0, 0, canvas.width, canvas.height)
+							ctx.restore()
+
+							drawBounds.value = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
+							onDone && onDone()
+						}
 					})
-
-					const ctx = canvas.getContext('2d')
-					ctx.save()
-					ctx.setTransform(1, 0, 0, 1, 0, 0)
-					ctx.clearRect(0, 0, canvas.width, canvas.height)
-					ctx.restore()
-
-					onDone && onDone()
 				},
 				fail: (err) => {
 					console.warn('canvasToTempFilePath fail:', err)
-					emit('add-brush-layer', {
-						imageData: '',
-						color: props.brushColor,
-						size: props.brushSize,
-						x: 0,
-						y: 0,
-						width: layerW * pxToRpx,
-						height: layerH * pxToRpx
-					})
 					onDone && onDone()
 				}
 			})
@@ -828,8 +903,22 @@
 			left: layer.x + 'rpx',
 			top: layer.y + 'rpx',
 			width: layer.width + 'rpx',
-			height: layer.height + 'rpx'
+			height: layer.height + 'rpx',
+			overflow: layer.type === 'brush' ? 'visible' : 'visible'
 		}
+	}
+
+	function getBrushImageStyle(layer) {
+		if (layer.fullCanvasW && layer.fullCanvasH && layer.origW && layer.origH) {
+			const scaleX = layer.width / layer.origW
+			const scaleY = layer.height / layer.origH
+			return {
+				width: (layer.fullCanvasW * scaleX) + 'rpx',
+				height: (layer.fullCanvasH * scaleY) + 'rpx',
+				transform: `translate(${(layer.contentOffsetX || 0) * scaleX}rpx, ${(layer.contentOffsetY || 0) * scaleY}rpx)`
+			}
+		}
+		return {}
 	}
 </script>
 
@@ -954,6 +1043,7 @@
 	position: relative;
 	width: 100%;
 	height: 100%;
+
 }
 
 .layer__brush-image {
