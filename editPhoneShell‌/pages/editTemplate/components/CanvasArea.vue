@@ -134,7 +134,7 @@
 		},
 		brushSize: {
 			type: Number,
-			default: 28
+			default: 3
 		}
 	})
 

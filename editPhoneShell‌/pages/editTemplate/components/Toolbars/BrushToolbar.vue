@@ -31,9 +31,9 @@
 			
 			<view v-if="activeNav === 'size'" class="nav-content">
 				<view class="size-slider">
-					<text class="size-label">笔触粗细: {{ brushSize }}</text>
+					<text class="size-label">笔触粗细: {{ brushSize }}px</text>
 					<view class="slider-container">
-						<slider min="10" max="50" step="1" :value="brushSize" @change="handleSizeChange" />
+						<slider min="1" max="15" step="1" :value="brushSize" @change="handleSizeChange" />
 					</view>
 				</view>
 				<view class="brush-hint">在画布上拖动绘制线条</view>
@@ -58,7 +58,7 @@
 		},
 		brushSize: {
 			type: Number,
-			default: 28
+			default: 3
 		}
 	})
 
