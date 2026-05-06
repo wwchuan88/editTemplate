@@ -24,19 +24,22 @@
 			<view v-if="activeNav === 'local'" class="nav-content">
 				<view class="toolbar-actions">
 					<u-button text="选择图片" type="primary" @click="$emit('choose')"></u-button>
-					<u-button text="加入示例图" plain @click="$emit('demo')"></u-button>
 				</view>
 			</view>
 
 			<!-- 模板 -->
 			<view v-if="activeNav === 'template'" class="nav-content">
-				<view class="template-grid">
-					<view v-for="(item, index) in templateOptions" :key="index" class="template-item"
-						@click="$emit('select-template', item)">
-						<text class="template-item__icon">{{ item.icon }}</text>
-						<text class="template-item__label">{{ item.label }}</text>
+				<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
+					<view class="template-list">
+						<view v-for="(item, index) in templateOptions" :key="index" class="template-item"
+							@click="$emit('select-template', item)">
+							<image class="template-item__image" :src="item.icon"></image>
+							<text class="template-item__label">{{ item.label }}</text>
+						</view>
 					</view>
-				</view>
+				</scroll-view>
+
+
 			</view>
 		</view>
 	</view>
@@ -44,20 +47,27 @@
 
 <script setup>
 import { ref } from 'vue'
+import { buildUrl } from '@/config/env'
+
+console.log("aaaaaaaaaaaacccc", buildUrl("/images/file-1775810384284-738004091.png"))
 
 const activeNav = ref('local')
 
 const templateOptions = [
-	{ icon: '🌟', label: '星空模板' },
-	{ icon: '🌸', label: '樱花模板' },
-	{ icon: '🌊', label: '海洋模板' },
-	{ icon: '🍃', label: '森林模板' }
+	{ icon: buildUrl("/images/editTemplate/0001.jpeg"), label: '星空模板' },
+	{ icon: buildUrl("/images/editTemplate/0002.jpeg"), label: '樱花模板' },
+	{ icon: buildUrl("/images/editTemplate/0003.jpeg"), label: '海洋模板' },
+	{ icon: buildUrl("/images/editTemplate/0004.jpeg"), label: '森林模板' },
+	{ icon: buildUrl("/images/editTemplate/0001.jpeg"), label: '森林模板' }
 ]
 
 defineEmits(['choose', 'demo', 'exit', 'select-template'])
 </script>
 
 <style scoped>
+.chip-scroll {
+	white-space: nowrap;
+}
 .toolbar-card {
 	padding: 24rpx;
 	border-radius: 32rpx;
@@ -92,9 +102,8 @@ defineEmits(['choose', 'demo', 'exit', 'select-template'])
 	gap: 16rpx;
 }
 
-.template-grid {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
+.template-list {
+	display: inline-flex;
 	gap: 16rpx;
 }
 
@@ -105,6 +114,10 @@ defineEmits(['choose', 'demo', 'exit', 'select-template'])
 	text-align: center;
 	cursor: pointer;
 	transition: all 0.3s ease;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }
 
 .template-item:active {
@@ -120,5 +133,11 @@ defineEmits(['choose', 'demo', 'exit', 'select-template'])
 .template-item__label {
 	font-size: 22rpx;
 	color: #6d594d;
+}
+
+.template-item__image {
+	width: 100rpx;
+	height: 100rpx;
+	border-radius: 24rpx;
 }
 </style>

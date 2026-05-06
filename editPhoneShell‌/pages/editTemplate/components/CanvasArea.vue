@@ -670,6 +670,9 @@
 	})
 
 	function handleScreenClick(event) {
+
+		console.log("props.layers",props.layers)
+
 		if (props.editingLayerId) {
 			emit('exit-edit')
 			return
