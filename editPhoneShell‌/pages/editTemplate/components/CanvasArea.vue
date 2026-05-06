@@ -163,6 +163,7 @@
 	const brushCanvasVisible = ref(false)
 	const isSavingBrush = ref(false)
 	const drawBounds = ref({ minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity })
+	const brushCanvasScale = ref({ scaleX: 1, scaleY: 1 })
 
 	const brushCanvasStyle = computed(() => {
 		if (brushCanvasVisible.value) {
@@ -231,6 +232,11 @@
 					if (el) {
 						const rect = el.getBoundingClientRect()
 						cachedRect.value = { left: rect.left, top: rect.top, width: rect.width, height: rect.height }
+						// 计算canvas绘制尺寸与显示尺寸的比例
+						brushCanvasScale.value = {
+							scaleX: canvas.width / rect.width,
+							scaleY: canvas.height / rect.height
+						}
 					}
 				} else {
 					const rectQuery = uni.createSelectorQuery().in(proxy)
@@ -295,16 +301,28 @@
 		}
 
 		if (isCanvasRelative) {
+			// 小程序端使用touch.x/touch.y（相对canvas坐标）
 			const x = clientX / props.scale
 			const y = clientY / props.scale
 			return { x, y }
 		}
 
 		const rect = cachedRect.value
-		const x = (clientX - rect.left) / props.scale
-		const y = (clientY - rect.top) / props.scale
-
-		return { x, y }
+		
+		if (isH5.value) {
+			// H5端：需要考虑canvas绘制尺寸与显示尺寸的比例
+			const scaleX = brushCanvasScale.value.scaleX || 1
+			const scaleY = brushCanvasScale.value.scaleY || 1
+			// 先计算相对canvas显示区域的位置，再乘以缩放比例得到绘制坐标
+			const x = ((clientX - rect.left) * scaleX) / props.scale
+			const y = ((clientY - rect.top) * scaleY) / props.scale
+			return { x, y }
+		} else {
+			// 小程序端
+			const x = (clientX - rect.left) / props.scale
+			const y = (clientY - rect.top) / props.scale
+			return { x, y }
+		}
 	}
 
 	function brushStartDraw(e) {
