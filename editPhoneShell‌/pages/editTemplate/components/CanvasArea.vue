@@ -149,6 +149,10 @@
 		brushSize: {
 			type: Number,
 			default: 3
+		},
+		disabled: {
+			type: Boolean,
+			default: false
 		}
 	})
 
@@ -340,6 +344,7 @@
 	}
 
 	function brushStartDraw(e) {
+		if (props.disabled) return
 		if (props.currentTool !== 'brush') return
 
 		if (!brushCtx.value) {
@@ -677,6 +682,7 @@
 	})
 
 	function handleScreenClick(event) {
+		if (props.disabled) return
 
 		console.log("props.layers",props.layers)
 
@@ -728,6 +734,7 @@
 	}
 
 	function handleLayerClick(layer) {
+		if (props.disabled) return
 		if (hasMoved.value) {
 			hasMoved.value = false
 			return
@@ -781,6 +788,7 @@
 	}
 
 	function handleDeleteLayer(layerId) {
+		if (props.disabled) return
 		emit('delete-layer', layerId)
 	}
 
@@ -824,6 +832,7 @@
 	}
 
 	function handleLayerTouchStart(event, layer) {
+		if (props.disabled) return
 		draggingLayerId.value = layer.id
 		hasMoved.value = false
 		emit('select-layer', layer.id)
@@ -869,6 +878,7 @@
 	}
 
 	function handleResizeStart(event, layer) {
+		if (props.disabled) return
 		resizingLayerId.value = layer.id
 		const touch = event.touches ? event.touches[0] : event
 		const pageX = touch.pageX || touch.clientX

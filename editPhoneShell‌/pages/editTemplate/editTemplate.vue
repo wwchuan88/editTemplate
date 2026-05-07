@@ -1,9 +1,9 @@
 <template>
-	<view class="page-shell" >
-		<view style="width: 200rpx;position: fixed;top: 20rpx;right: 20rpx;z-index: 1000;">
+	<view class="page-shell" :class="{ 'page-shell--3d': is3DMode }">
+		<view v-if="!is3DMode" style="width: 200rpx;position: fixed;top: 20rpx;right: 20rpx;z-index: 1000;">
 			<up-button type="warning" shape="circle" size="medium" text="保存设计" style="width: 100%;"></up-button>
 		</view>
-		<view class="tool-bar tool-bar-move" :style="{
+		<view v-if="!is3DMode" class="tool-bar tool-bar-move" :style="{
 			display: 'flex',
 			justifyContent: 'flex-end',
 			marginTop: '16rpx',
@@ -29,14 +29,14 @@
 			<view class="tool-bar-button" @click="zoomOut">
 				<text class="iconfont icon-zooout"></text>
 			</view>
-			<view class="tool-bar-button" @click="clearAll">
-				<text class="iconfont icon-empty"></text>
+			<view class="tool-bar-button">
+				<text class="iconfont icon-eye" @click="toggle3DMode"></text>
 			</view>
 		</view>
 
-		<view class="workspace">
+		<view class="workspace" :class="{ 'workspace--3d': is3DMode }">
 
-			<view class="workspace__sidebars" >
+			<view v-if="!is3DMode" class="workspace__sidebars">
 				<SideDrawers :current-tool="currentTool" :tools="toolList" :visible="sidebarVisible"
 					@select="selectDesignTool" @close="sidebarVisible = false" />
 				<DecorSideDrawers :current-tool="currentDecorTool" :tools="decorToolList" :visible="decorSidebarVisible"
@@ -46,21 +46,39 @@
 
 
 
-			<view class="workspace__main" @click="exitTool">
-				<view class="stage-card" @click.stop>
+			<view class="workspace__main" :class="{ 'workspace__main--3d': is3DMode }" @click="exitTool">
+				<view class="stage-card" :class="{ 'stage-card--3d': is3DMode }" :style="is3DMode ? {
+					transform: `rotateX(${rotate3D.x}deg) rotateY(${rotate3D.y}deg)`,
+					transformStyle: 'preserve-3d',
+					perspective: '1200px'
+				} : {}" @click.stop @touchstart="is3DMode ? handle3DTouchStart($event) : null"
+					@touchmove="is3DMode ? handle3DTouchMove($event) : null"
+					@touchend="is3DMode ? handle3DTouchEnd() : null"
+					@mousedown="is3DMode ? handle3DMouseDown($event) : null"
+					@mousemove="is3DMode ? handle3DMouseMove($event) : null"
+					@mouseup="is3DMode ? handle3DMouseUp() : null" @mouseleave="is3DMode ? handle3DMouseUp() : null">
 					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter"
-						:scale="phoneFrameScale" :current-tool="currentTool" :editing-layer-id="editingLayerId"
-						:brush-color="brushColor" :brush-size="brushSize" @select-layer="selectLayer"
-						@add-text-layer="handleAddTextLayer" @update-text="handleUpdateText"
-						@clear-tool="handleClearTool" @update-layer-position="updateLayerPosition"
-						@delete-layer="deleteLayer" @update-layer-size="updateLayerSize" @exit-edit="exitEdit"
+						:scale="is3DMode ? phoneFrameScale * 1.2 : phoneFrameScale" :current-tool="currentTool"
+						:editing-layer-id="editingLayerId" :brush-color="brushColor" :brush-size="brushSize"
+						:disabled="is3DMode" @select-layer="selectLayer" @add-text-layer="handleAddTextLayer"
+						@update-text="handleUpdateText" @clear-tool="handleClearTool"
+						@update-layer-position="updateLayerPosition" @delete-layer="deleteLayer"
+						@update-layer-size="updateLayerSize" @exit-edit="exitEdit"
 						@add-brush-layer="handleAddBrushLayer" />
 
 				</view>
 			</view>
 		</view>
 
-		<view class="toolbar-wrap">
+		<view v-if="is3DMode" class="reset-3d-btn" @click="reset3DView">
+			<text class="reset-3d-btn__text">回正</text>
+		</view>
+
+		<view v-if="is3DMode" class="exit-3d-btn" @click="toggle3DMode">
+			<text class="exit-3d-btn__text">退出</text>
+		</view>
+
+		<view v-if="!is3DMode" class="toolbar-wrap">
 			<TextToolbar v-if="currentTool === 'text' || (selectedLayer && selectedLayer.type === 'text')"
 				:text-draft="textDraft" :text-color="textColor" :text-size="textSize" :text-font="textFont"
 				:colors="textColors" :is-editing="selectedLayer && selectedLayer.type === 'text'"
@@ -82,7 +100,7 @@
 		</view>
 
 		<!-- 悬浮按钮 -->
-		<view class="floating-buttons">
+		<view v-if="!is3DMode" class="floating-buttons">
 			<view class="floating-button" @click="toggleSidebar">
 				<text class="floating-button__icon">🎨</text>
 				<text class="floating-button__text">版面设计</text>
@@ -189,6 +207,10 @@ const brushSize = ref(3)
 const sidebarVisible = ref(false)
 const decorSidebarVisible = ref(false)
 const isDragging = ref(false)
+const is3DMode = ref(false)
+const is3DRotating = ref(false)
+const rotate3D = ref({ x: -15, y: 15 })
+const last3DPos = ref({ x: 0, y: 0 })
 const toolbarPosition = ref({ left: 20, top: 10 })
 const dragOffset = ref({ x: 0, y: 0 })
 const phoneFrameScale = ref(1)
@@ -587,6 +609,61 @@ function toggleMoveMode() {
 	console.log('切换移动模式')
 }
 
+function toggle3DMode() {
+	is3DMode.value = !is3DMode.value
+	console.log('3D mode:', is3DMode.value)
+	if (is3DMode.value) {
+		currentTool.value = ''
+		selectedLayerId.value = ''
+	}
+}
+
+function reset3DView() {
+	rotate3D.value = { x: 0, y: 0 }
+}
+
+function handle3DTouchStart(e) {
+	is3DRotating.value = true
+	const touch = e.touches[0]
+	last3DPos.value = { x: touch.clientX, y: touch.clientY }
+}
+
+function handle3DTouchMove(e) {
+	if (!is3DRotating.value) return
+	const touch = e.touches[0]
+	const deltaX = touch.clientX - last3DPos.value.x
+	const deltaY = touch.clientY - last3DPos.value.y
+	rotate3D.value = {
+		x: rotate3D.value.x + deltaY * 0.5,
+		y: rotate3D.value.y + deltaX * 0.5
+	}
+	last3DPos.value = { x: touch.clientX, y: touch.clientY }
+}
+
+function handle3DTouchEnd() {
+	is3DRotating.value = false
+}
+
+function handle3DMouseDown(e) {
+	is3DRotating.value = true
+	last3DPos.value = { x: e.clientX, y: e.clientY }
+}
+
+function handle3DMouseMove(e) {
+	if (!is3DRotating.value) return
+	const deltaX = e.clientX - last3DPos.value.x
+	const deltaY = e.clientY - last3DPos.value.y
+	rotate3D.value = {
+		x: rotate3D.value.x + deltaY * 0.5,
+		y: rotate3D.value.y + deltaX * 0.5
+	}
+	last3DPos.value = { x: e.clientX, y: e.clientY }
+}
+
+function handle3DMouseUp() {
+	is3DRotating.value = false
+}
+
 function startDrag(e) {
 	isDragging.value = true
 
@@ -949,10 +1026,98 @@ page {
 	justify-content: center;
 	align-items: center;
 }
+.workspace__main.workspace__main--3d{
+	left:unset;
+}
 
 .stage-card {
 	justify-content: center;
 	display: flex;
+}
+
+.stage-card--3d {
+	transform-style: preserve-3d;
+	perspective: 1200px;
+	transform: rotateX(-15deg) rotateY(15deg);
+	transition: transform 0.1s ease-out;
+}
+
+.exit-3d-btn {
+	position: fixed;
+	bottom: 200rpx;
+	right: 30rpx;
+	padding: 20rpx 40rpx;
+	background: rgba(0, 0, 0, 0.7);
+	border-radius: 40rpx;
+	z-index: 1000;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.exit-3d-btn:hover {
+	background: rgba(0, 0, 0, 0.85);
+}
+
+.exit-3d-btn__text {
+	color: #fff;
+	font-size: 28rpx;
+	font-weight: 500;
+}
+
+.reset-3d-btn {
+	position: fixed;
+	bottom: 300rpx;
+	right: 30rpx;
+	padding: 20rpx 40rpx;
+	background: rgba(0, 0, 0, 0.7);
+	border-radius: 40rpx;
+	z-index: 1000;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.reset-3d-btn:hover {
+	background: rgba(0, 0, 0, 0.85);
+}
+
+.reset-3d-btn__text {
+	color: #fff;
+	font-size: 28rpx;
+	font-weight: 500;
+}
+
+.page-shell--3d {
+	background: #f5f5f5;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.workspace--3d {
+	position: fixed !important;
+	top: 0 !important;
+	left: 0 !important;
+	right: 0 !important;
+	bottom: 0 !important;
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	margin-top: 0 !important;
+	padding: 20rpx;
+	box-sizing: border-box;
+}
+
+.workspace__main--3d {
+	width: 80%;
+	max-width: 600px;
+	flex: none !important;
+	margin: 0 auto !important;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .toolbar-card-icondown {
