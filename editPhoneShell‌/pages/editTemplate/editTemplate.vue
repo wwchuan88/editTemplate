@@ -59,6 +59,8 @@
 			<IconToolbar v-else-if="currentTool === 'icon'" :options="iconOptions" @add="addIconLayer"
 				@exit="exitTool" />
 			<UploadToolbar v-else-if="currentTool === 'upload'" @choose="chooseImage" @demo="addDemoImage"
+				@select-template="handleSelectTemplate" @exit="exitTool" />
+			<TemplateToolbar v-else-if="currentTool === 'template'" @select-template="handleSelectTemplate"
 				@exit="exitTool" />
 			<FilterToolbar v-else-if="currentTool === 'filter'" :options="filterOptions" :active-filter="activeFilter"
 				@pick="activeFilter = $event" @exit="exitTool" />
@@ -89,8 +91,10 @@ import TextToolbar from './components/Toolbars/TextToolbar.vue'
 import IconToolbar from './components/Toolbars/IconToolbar.vue'
 import IconEditToolbar from './components/Toolbars/IconEditToolbar.vue'
 import UploadToolbar from './components/Toolbars/UploadToolbar.vue'
+import TemplateToolbar from './components/Toolbars/TemplateToolbar.vue'
 import FilterToolbar from './components/Toolbars/FilterToolbar.vue'
 import BrushToolbar from './components/Toolbars/BrushToolbar.vue'
+import { buildUrl } from '@/config/env.js'
 
 const toolList = [
 	{ key: 'text', label: '文字' },
@@ -265,6 +269,14 @@ function addIconLayer(item) {
 	selectedLayerId.value = layer.id
 }
 
+function handleSelectTemplate(template) {
+	console.log('handleSelectTemplate:', template)
+	if (template && template.icon) {
+		addImageLayer(template.icon)
+		uni.showToast({ title: '已添加推荐图片', icon: 'success' })
+	}
+}
+
 function addImageLayer(url) {
 	const width = 150
 	const height = 150
@@ -281,6 +293,49 @@ function addImageLayer(url) {
 	}
 	layers.value.push(layer)
 	selectedLayerId.value = layer.id
+}
+
+function uploadImage(filePath) {
+	console.log('uploadImage called, filePath:', filePath)
+	console.log('buildUrl test:', buildUrl(''))
+	uni.showLoading({ title: '上传中...' })
+	
+	const uploadUrl = buildUrl('') + '/upload/image?uploadDir=editTemplate'
+	console.log('uploadUrl:', uploadUrl)
+	
+	uni.uploadFile({
+		url: uploadUrl,
+		filePath: filePath,
+		name: 'file',
+		success: (res) => {
+			uni.hideLoading()
+			console.log('upload success res:', res)
+			try {
+				const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data
+				console.log('upload data:', data)
+				if (data.err_code === 0 && data.data && data.data.imageUrl) {
+					const imageUrl = buildUrl('') + data.data.imageUrl
+					console.log('addImageLayer with url:', imageUrl)
+					addImageLayer(imageUrl)
+					uni.showToast({ title: '上传成功', icon: 'success' })
+				} else {
+					uni.showToast({ title: data.message || '上传失败', icon: 'error' })
+				}
+			} catch (e) {
+				console.error('parse error:', e)
+				uni.showToast({ title: '解析失败', icon: 'error' })
+			}
+		},
+		fail: (err) => {
+			uni.hideLoading()
+			console.error('upload fail:', err)
+			uni.showToast({ title: '上传失败', icon: 'error' })
+		},
+		complete: () => {
+			uni.hideLoading()
+			console.log('upload complete')
+		}
+	})
 }
 
 function addDemoImage() {
@@ -385,15 +440,73 @@ function updateIconColor(color) {
 }
 
 function chooseImage() {
+	console.log('chooseImage called')
+	// #ifdef MP-WEIXIN
+	const tryChooseImage = () => {
+		// 尝试使用 uni.chooseImage
+		uni.chooseImage({
+			count: 1,
+			sizeType: ['original'],
+			sourceType: ['album'],
+			success: (res) => {
+				console.log('uni.chooseImage success:', res)
+				const filePath = res.tempFilePaths && res.tempFilePaths[0]
+				console.log('filePath:', filePath)
+				if (filePath) {
+					uploadImage(filePath)
+				}
+			},
+			fail: (err) => {
+				console.error('uni.chooseImage fail:', err)
+				// 降级方案：使用 wx.chooseMessageFile
+				try {
+					wx.chooseMessageFile({
+						count: 1,
+						type: 'image',
+						success: (res) => {
+							console.log('wx.chooseMessageFile success:', res)
+							const filePath = res.tempFiles && res.tempFiles[0] && res.tempFiles[0].path
+							console.log('filePath:', filePath)
+							if (filePath) {
+								uploadImage(filePath)
+							}
+						},
+						fail: (err2) => {
+							console.error('wx.chooseMessageFile fail:', err2)
+							uni.showToast({ title: '无法选择图片', icon: 'error' })
+						}
+					})
+				} catch (e) {
+					console.error('fallback error:', e)
+					uni.showToast({ title: '图片选择失败', icon: 'error' })
+				}
+			}
+		})
+	}
+	
+	// 添加延迟调用
+	setTimeout(tryChooseImage, 50)
+	// #endif
+	
+	// #ifdef H5
 	uni.chooseImage({
 		count: 1,
-		sizeType: ['compressed'],
+		sizeType: ['original', 'compressed'],
 		sourceType: ['album', 'camera'],
 		success: (res) => {
+			console.log('chooseImage success:', res)
 			const filePath = res.tempFilePaths && res.tempFilePaths[0]
-			if (filePath) addImageLayer(filePath)
+			console.log('filePath:', filePath)
+			if (filePath) {
+				uploadImage(filePath)
+			}
+		},
+		fail: (err) => {
+			console.error('chooseImage fail:', err)
+			uni.showToast({ title: '图片选择失败', icon: 'error' })
 		}
 	})
+	// #endif
 }
 
 function changeTextSize(delta) {

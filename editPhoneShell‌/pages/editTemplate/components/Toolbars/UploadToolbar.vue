@@ -48,17 +48,14 @@
 <script setup>
 import { ref } from 'vue'
 import { buildUrl } from '@/config/env'
-
-console.log("aaaaaaaaaaaacccc", buildUrl("/images/file-1775810384284-738004091.png"))
-
 const activeNav = ref('local')
 
 const templateOptions = [
-	{ icon: buildUrl("/images/editTemplate/0001.jpeg"), label: '星空模板' },
-	{ icon: buildUrl("/images/editTemplate/0002.jpeg"), label: '樱花模板' },
-	{ icon: buildUrl("/images/editTemplate/0003.jpeg"), label: '海洋模板' },
-	{ icon: buildUrl("/images/editTemplate/0004.jpeg"), label: '森林模板' },
-	{ icon: buildUrl("/images/editTemplate/0001.jpeg"), label: '森林模板' }
+	{ icon: buildUrl("/public/images/editTemplate/0001.jpeg"), label: '星空模板' },
+	{ icon: buildUrl("/public/images/editTemplate/0002.jpeg"), label: '樱花模板' },
+	{ icon: buildUrl("/public/images/editTemplate/0003.jpeg"), label: '海洋模板' },
+	{ icon: buildUrl("/public/images/editTemplate/0004.jpeg"), label: '森林模板' },
+	{ icon: buildUrl("/public/images/editTemplate/0001.jpeg"), label: '森林模板' }
 ]
 
 defineEmits(['choose', 'demo', 'exit', 'select-template'])

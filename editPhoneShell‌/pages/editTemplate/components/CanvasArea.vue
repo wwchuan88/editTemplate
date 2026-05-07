@@ -62,7 +62,20 @@
 							@mousedown="handleResizeStart($event, layer)"
 						></view>
 					</view>
-					<image v-else-if="layer.type === 'image'" class="layer__image" :src="layer.url" mode="aspectFit"></image>
+					<view v-else-if="layer.type === 'image'" class="layer__image-container">
+						<image class="layer__image" :src="layer.url" mode="aspectFit"></image>
+						<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
+							<text class="iconfont icon-close layer__delete-btn-icon"></text>
+						</view>
+						<view
+							v-if="props.selectedLayerId === layer.id"
+							class="layer__resize-handle"
+							@touchstart.stop="handleResizeStart($event, layer)"
+							@touchmove.stop="handleResizeMove($event)"
+							@touchend.stop="handleResizeEnd($event)"
+							@mousedown.stop="handleResizeStart($event, layer)"
+						></view>
+					</view>
 					<view v-else-if="layer.type === 'brush'" class="layer__brush-container">
 						<image class="layer__brush-image" :src="layer.imageData" mode="scaleToFill" :style="getBrushImageStyle(layer)"></image>
 						<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
@@ -1056,6 +1069,12 @@
 }
 
 .layer__image {
+	width: 100%;
+	height: 100%;
+}
+
+.layer__image-container {
+	position: relative;
 	width: 100%;
 	height: 100%;
 }

@@ -25,6 +25,7 @@
 		text: '📝',
 		icon: '🎭',
 		upload: '🖼️',
+		template: '📋',
 		filter: '🎨',
 		brush: '🖌️'
 	}
