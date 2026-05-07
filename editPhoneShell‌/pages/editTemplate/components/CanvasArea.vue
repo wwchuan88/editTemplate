@@ -6,9 +6,10 @@
 				ref="canvasAreaRef"
 				@click="handleScreenClick"
 			>
-				<view
-					v-for="layer in layers"
-					:key="layer.id"
+				<view class="layers-container" :style="filterStyle">
+					<view
+						v-for="layer in layers"
+						:key="layer.id"
 					class="layer"
 					:class="{ 'layer--selected': selectedLayerId === layer.id, 'layer--dragging': draggingLayerId === layer.id }"
 					:style="getLayerStyle(layer)"
@@ -90,8 +91,8 @@
 							@mousedown.stop="handleResizeStart($event, layer)"
 						></view>
 					</view>
+					</view>
 				</view>
-				<view v-if="filterOverlay" class="filter-overlay" :style="filterOverlay"></view>
 
 				<canvas 
 					id="brushCanvas"
@@ -654,31 +655,24 @@
 		return map[props.activeFilter] || '滤镜：原图'
 	})
 
-	const filterOverlay = computed(() => {
+	const filterStyle = computed(() => {
 		switch (props.activeFilter) {
 			case 'warm':
-				return { background: 'rgba(255, 183, 77, 0.18)' }
+				return { filter: 'sepia(20%) saturate(120%) hue-rotate(-10deg)' }
 			case 'cool':
-				return { background: 'rgba(91, 141, 239, 0.16)' }
+				return { filter: 'sepia(10%) saturate(110%) hue-rotate(180deg)' }
 			case 'retro':
-				return { background: 'rgba(201, 153, 97, 0.2)' }
+				return { filter: 'sepia(30%) contrast(90%) saturate(80%)' }
 			case 'night':
-				return { background: 'rgba(31, 41, 55, 0.24)' }
+				return { filter: 'brightness(85%) contrast(95%) saturate(70%)' }
 			default:
-				return null
+				return {}
 		}
 	})
 
 	const screenStyle = computed(() => {
-		const colorMap = {
-			none: '#fffdf8',
-			warm: '#fff7ed',
-			cool: '#eef6ff',
-			retro: '#f9f1e7',
-			night: '#e8edf5'
-		}
 		return {
-			backgroundColor: colorMap[props.activeFilter] || '#fffdf8'
+			backgroundColor: '#fffdf8'
 		}
 	})
 
@@ -1092,13 +1086,18 @@
 	pointer-events: none;
 }
 
-.filter-overlay {
+.layers-container {
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
 	z-index: 10;
+	pointer-events: none;
+}
+
+.layers-container .layer {
+	pointer-events: auto;
 }
 
 .brush-canvas {
