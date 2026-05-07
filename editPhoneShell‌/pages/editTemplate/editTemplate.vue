@@ -1,8 +1,8 @@
 <template>
-	<view class="page-shell">
+	<view class="page-shell" >
 		<view style="width: 200rpx;position: fixed;top: 20rpx;right: 20rpx;z-index: 1000;">
-				<up-button type="warning" shape="circle" size="medium" text="保存设计" style="width: 100%;"></up-button>
-			</view>
+			<up-button type="warning" shape="circle" size="medium" text="保存设计" style="width: 100%;"></up-button>
+		</view>
 		<view class="tool-bar tool-bar-move" :style="{
 			display: 'flex',
 			justifyContent: 'flex-end',
@@ -35,27 +35,39 @@
 		</view>
 
 		<view class="workspace">
-			<SideDrawers :current-tool="currentTool" :tools="toolList" :visible="sidebarVisible"
-				@select="selectDesignTool" @close="sidebarVisible = false" />
-			<DecorSideDrawers :current-tool="currentDecorTool" :tools="decorToolList" :visible="decorSidebarVisible"
-				@select="currentDecorTool = $event" @close="decorSidebarVisible = false" />
 
-			<view class="workspace__main">
-			<view class="stage-card">
-					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter" :scale="phoneFrameScale" :current-tool="currentTool" :editing-layer-id="editingLayerId" :brush-color="brushColor" :brush-size="brushSize"
-				@select-layer="selectLayer" @add-text-layer="handleAddTextLayer" @update-text="handleUpdateText" @clear-tool="handleClearTool" @update-layer-position="updateLayerPosition" @delete-layer="deleteLayer" @update-layer-size="updateLayerSize" @exit-edit="exitEdit" @add-brush-layer="handleAddBrushLayer" />
+			<view class="workspace__sidebars" >
+				<SideDrawers :current-tool="currentTool" :tools="toolList" :visible="sidebarVisible"
+					@select="selectDesignTool" @close="sidebarVisible = false" />
+				<DecorSideDrawers :current-tool="currentDecorTool" :tools="decorToolList" :visible="decorSidebarVisible"
+					@select="currentDecorTool = $event" @close="decorSidebarVisible = false" />
+			</view>
+
+
+
+
+			<view class="workspace__main" @click="exitTool">
+				<view class="stage-card" @click.stop>
+					<CanvasArea :layers="layers" :selected-layer-id="selectedLayerId" :active-filter="activeFilter"
+						:scale="phoneFrameScale" :current-tool="currentTool" :editing-layer-id="editingLayerId"
+						:brush-color="brushColor" :brush-size="brushSize" @select-layer="selectLayer"
+						@add-text-layer="handleAddTextLayer" @update-text="handleUpdateText"
+						@clear-tool="handleClearTool" @update-layer-position="updateLayerPosition"
+						@delete-layer="deleteLayer" @update-layer-size="updateLayerSize" @exit-edit="exitEdit"
+						@add-brush-layer="handleAddBrushLayer" />
 
 				</view>
 			</view>
 		</view>
 
 		<view class="toolbar-wrap">
-			<TextToolbar v-if="currentTool === 'text' || (selectedLayer && selectedLayer.type === 'text')" :text-draft="textDraft" :text-color="textColor"
-				:text-size="textSize" :text-font="textFont" :colors="textColors" :is-editing="selectedLayer && selectedLayer.type === 'text'"
+			<TextToolbar v-if="currentTool === 'text' || (selectedLayer && selectedLayer.type === 'text')"
+				:text-draft="textDraft" :text-color="textColor" :text-size="textSize" :text-font="textFont"
+				:colors="textColors" :is-editing="selectedLayer && selectedLayer.type === 'text'"
 				@update-draft="textDraft = $event" @pick-color="pickTextColor" @change-size="changeTextSize"
 				@pick-font="pickTextFont" @submit="upsertTextLayer" @exit="exitTool" />
-			<IconEditToolbar v-else-if="selectedLayer && selectedLayer.type === 'icon'" :icon-color="selectedLayer.color" :colors="textColors"
-				@pick-color="updateIconColor" @exit="exitTool" />
+			<IconEditToolbar v-else-if="selectedLayer && selectedLayer.type === 'icon'"
+				:icon-color="selectedLayer.color" :colors="textColors" @pick-color="updateIconColor" @exit="exitTool" />
 			<IconToolbar v-else-if="currentTool === 'icon'" :options="iconOptions" @add="addIconLayer"
 				@exit="exitTool" />
 			<UploadToolbar v-else-if="currentTool === 'upload'" @choose="chooseImage" @demo="addDemoImage"
@@ -117,12 +129,12 @@ const iconOptions = [
 		label: '图形',
 		icon: '★',
 		type: 'graph',
-		icons:[
+		icons: [
 			{ label: '星星', icon: 'wwchuan-star-full', color: '#f0b429', size: 40 },
 			{ label: '星星', icon: 'wwchuan-xingxing', color: '#df5f6c', size: 40 },
 			{ label: '爱心', icon: 'wwchuan-keaide', color: '#ff9f1c', size: 40 },
 			{ label: '爱心', icon: 'wwchuan-hearts-fill', color: '#ef7998', size: 40 },
-			{ label: '四叶草', icon: 'wwchuan-shuyeu', color: '#5b8def', size: 40 },	
+			{ label: '四叶草', icon: 'wwchuan-shuyeu', color: '#5b8def', size: 40 },
 		]
 	},
 	{
@@ -130,11 +142,11 @@ const iconOptions = [
 		label: '表情',
 		icon: '😊',
 		type: 'emotion',
-		icons:[
+		icons: [
 			{ label: '吃惊', icon: 'wwchuan-chijing', color: '#f0b429', size: 40 },
 			{ label: '尴尬', icon: 'wwchuan-ganga', color: '#df5f6c', size: 40 },
 			{ label: '亲亲', icon: 'wwchuan-qin', color: '#ff9f1c', size: 40 },
-			{ label: '生气', icon: 'wwchuan-shengqi', color: '#ef7998', size: 40 }	
+			{ label: '生气', icon: 'wwchuan-shengqi', color: '#ef7998', size: 40 }
 		]
 	},
 	{
@@ -142,7 +154,7 @@ const iconOptions = [
 		label: '萌物',
 		icon: '😊',
 		type: 'pet',
-		icons:[
+		icons: [
 			{ label: '小鸡', icon: 'wwchuan-xiaojidongwuniao', color: '#f0b429', size: 40 },
 			{ label: '小熊', icon: 'wwchuan-a-ziyuan21', color: '#df5f6c', size: 40 },
 			{ label: '脚印', icon: 'wwchuan-dongwu', color: '#ff9f1c', size: 40 }
@@ -299,10 +311,10 @@ function uploadImage(filePath) {
 	console.log('uploadImage called, filePath:', filePath)
 	console.log('buildUrl test:', buildUrl(''))
 	uni.showLoading({ title: '上传中...' })
-	
+
 	const uploadUrl = buildUrl('') + '/upload/image?uploadDir=editTemplate'
 	console.log('uploadUrl:', uploadUrl)
-	
+
 	uni.uploadFile({
 		url: uploadUrl,
 		filePath: filePath,
@@ -483,11 +495,11 @@ function chooseImage() {
 			}
 		})
 	}
-	
+
 	// 添加延迟调用
 	setTimeout(tryChooseImage, 50)
 	// #endif
-	
+
 	// #ifdef H5
 	uni.chooseImage({
 		count: 1,
@@ -671,7 +683,7 @@ function updateLayerPosition(layerId, x, y) {
 
 function selectDesignTool(tool) {
 	selectedLayerId.value = ''
-	currentTool.value = tool		
+	currentTool.value = tool
 }
 </script>
 
@@ -937,29 +949,32 @@ page {
 	justify-content: center;
 	align-items: center;
 }
-.stage-card{
+
+.stage-card {
 	justify-content: center;
 	display: flex;
 }
-.toolbar-card-icondown{
+
+.toolbar-card-icondown {
 	display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 70rpx;
-    height: 33rpx;
-    border-radius: 8px;
-    opacity: 1;
-    background: #FFFFFF;
-    box-sizing: border-box;
-    border: 0.5px solid rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: -10px;
+	justify-content: center;
+	align-items: center;
+	width: 70rpx;
+	height: 33rpx;
+	border-radius: 8px;
+	opacity: 1;
+	background: #FFFFFF;
+	box-sizing: border-box;
+	border: 0.5px solid rgba(0, 0, 0, 0.1);
+	position: absolute;
+	top: -10px;
 	left: 50%;
 	transform: translateX(-50%);
-	color:#cccccc;
+	color: #cccccc;
 	font-size: 24rpx;
 }
-.toolbar-card-icondown.icon-up{
+
+.toolbar-card-icondown.icon-up {
 	transform: rotate(180deg);
 }
 </style>
