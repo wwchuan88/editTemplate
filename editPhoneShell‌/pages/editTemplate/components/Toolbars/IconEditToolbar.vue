@@ -1,6 +1,11 @@
 <template>
 	<view class="toolbar-card">
-		<view class="toolbar-top">
+		<text 
+			class="iconfont toolbar-card-icondown"
+			:class="isExpanded ? 'icon-down' : 'icon-up icon-down'"
+			@click="togglePanel"
+		></text>
+		<view v-if="isExpanded" class="toolbar-top">
 			<view class="toolbar-top-left">
 				<view class="nav-item nav-item--active">图标颜色</view>
 			</view>
@@ -9,7 +14,7 @@
 			</view>
 		</view>
 
-		<view class="toolbar-bottom">
+		<view v-if="isExpanded" class="toolbar-bottom">
 			<view class="color-row">
 				<view v-for="item in colors" :key="item" class="color-chip" :style="{ backgroundColor: item }"
 					:class="{ 'color-chip--active': iconColor === item }" @click="$emit('pick-color', item)"></view>
@@ -19,6 +24,14 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
+const isExpanded = ref(true)
+
+function togglePanel() {
+	isExpanded.value = !isExpanded.value
+}
+
 const props = defineProps({
 	iconColor: {
 		type: String,

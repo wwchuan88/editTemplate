@@ -15,6 +15,5 @@
 	@import '@/static/font/iconfont.css';
 	@import '@/static/font-icons/iconfont.css';
 	@import '@/uni_modules/uview-plus_3.8.9/index.scss';
-
 	/*每个页面公共css */
 </style>

@@ -324,14 +324,18 @@ function applyNativeThemeUI(mode, themeColors) {
         || config.color?.['u-navbar-bg-color']
         || (isDark ? '#1c1c1e' : '#ffffff')
     if (typeof uni.setNavigationBarColor === 'function') {
-        uni.setNavigationBarColor({
-            frontColor: isDark ? '#ffffff' : '#000000',
-            backgroundColor: navBg,
-            animation: {
-                duration: 0,
-                timingFunc: 'linear'
-            }
-        })
+        try {
+            uni.setNavigationBarColor({
+                frontColor: isDark ? '#ffffff' : '#000000',
+                backgroundColor: navBg,
+                animation: {
+                    duration: 0,
+                    timingFunc: 'linear'
+                }
+            })
+        } catch (e) {
+            console.warn('setNavigationBarColor failed:', e)
+        }
     }
     if (typeof uni.setBackgroundColor === 'function') {
         uni.setBackgroundColor({

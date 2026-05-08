@@ -1,8 +1,13 @@
 <template>
 	<view class="toolbar-card">
+		<text 
+			class="iconfont toolbar-card-icondown"
+			:class="isExpanded ? 'icon-down' : 'icon-up icon-down'"
+			@click="togglePanel"
+		></text>
 
 		<!-- 上层导航 -->
-		<view class="toolbar-top">
+		<view v-if="isExpanded" class="toolbar-top">		
 			<view class="toolbar-top-left">
 				<view class="nav-item" :class="{ 'nav-item--active': activeNav === 'local' }"
 					@click="activeNav = 'local'">
@@ -19,7 +24,7 @@
 		</view>
 
 		<!-- 下层内容 -->
-		<view class="toolbar-bottom">
+		<view v-if="isExpanded" class="toolbar-bottom">
 			<!-- 本地图片 -->
 			<view v-if="activeNav === 'local'" class="nav-content">
 				<view class="toolbar-actions">
@@ -38,8 +43,6 @@
 						</view>
 					</view>
 				</scroll-view>
-
-
 			</view>
 		</view>
 	</view>
@@ -49,6 +52,11 @@
 import { ref } from 'vue'
 import { buildUrl } from '@/config/env'
 const activeNav = ref('local')
+const isExpanded = ref(true)
+
+function togglePanel() {
+	isExpanded.value = !isExpanded.value
+}
 
 const templateOptions = [
 	{ icon: buildUrl("/public/images/editTemplate/0001.jpeg"), label: '星空模板' },
@@ -65,13 +73,6 @@ defineEmits(['choose', 'demo', 'exit', 'select-template'])
 .chip-scroll {
 	white-space: nowrap;
 }
-.toolbar-card {
-	padding: 24rpx;
-	border-radius: 32rpx;
-	background: rgba(255, 255, 255, 0.9);
-	box-shadow: 0 18rpx 60rpx rgba(80, 56, 30, 0.08);
-}
-
 .toolbar-card__title {
 	display: block;
 	margin-bottom: 8rpx;

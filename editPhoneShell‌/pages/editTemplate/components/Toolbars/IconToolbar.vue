@@ -1,23 +1,14 @@
 <template>
 	<view class="toolbar-card">
 
-
+		<text 
+			class="iconfont toolbar-card-icondown"
+			:class="isExpanded ? 'icon-down' : 'icon-up icon-down'"
+			@click="togglePanel"
+		></text>
 		<!-- 上层导航 -->
-		<view class="toolbar-top">
+		<view v-if="isExpanded" class="toolbar-top">
 			<view class="toolbar-top-left">
-				<!-- <view class="nav-item" :class="{ 'nav-item--active': activeNav === 'graphics' }"
-					@click="activeNav = 'graphics'">
-					图形
-				</view>
-				<view class="nav-item" :class="{ 'nav-item--active': activeNav === 'people' }"
-					@click="activeNav = 'people'">
-					人物
-				</view>
-				<view class="nav-item" :class="{ 'nav-item--active': activeNav === 'cartoon' }"
-					@click="activeNav = 'cartoon'">
-					卡通
-				</view> -->
-
 				<view v-for="item in options" :key="item.label" class="nav-item"
 					:class="{ 'nav-item--active': activeNav === item.type }" @click="changeNav(item.type)">
 					{{ item.label }}
@@ -30,14 +21,13 @@
 		</view>
 
 		<!-- 下层内容 -->
-		<view class="toolbar-bottom">
-
+		<view v-if="isExpanded" class="toolbar-bottom">
 			<view  class="nav-content">
 				<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
 					<view class="emoji-row">
 						<view v-for="item in cartoonOptions.icons" :key="item.type" class="emoji-card"
 							@click="$emit('add', item)">
-							<text class="emoji-card__icon iconfont" :class="item.icon"></text>
+							<text class="emoji-card__icon iconfont-wwchuan" :class="item.icon"></text>
 							<text class="emoji-card__label">{{ item.label }}</text>
 						</view>
 					</view>
@@ -94,6 +84,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 const activeNav = ref('graph')
+const isExpanded = ref(true)
+
+function togglePanel() {
+	isExpanded.value = !isExpanded.value
+}
 
 const cartoonOptions = computed(() => {
 	let obj = {}
@@ -147,13 +142,6 @@ defineEmits(['add'])
 </script>
 
 <style scoped>
-.toolbar-card {
-	padding: 24rpx;
-	border-radius: 32rpx;
-	background: rgba(255, 255, 255, 0.9);
-	box-shadow: 0 18rpx 60rpx rgba(80, 56, 30, 0.08);
-}
-
 .toolbar-card__title {
 	display: block;
 	margin-bottom: 8rpx;

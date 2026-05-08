@@ -131,27 +131,6 @@ function handleSizeChange(e) {
 </script>
 
 <style scoped>
-.toolbar-card {
-	width: 750rpx;
-	background: rgba(255, 255, 255, 0.9);
-	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
-	border-top-left-radius: 32rpx;
-	border-top-right-radius: 32rpx;
-}
-
-.toolbar-top {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	border-bottom: 2rpx solid #f2e7da;
-	margin-bottom: 20rpx;
-}
-
-.toolbar-top-left {
-	display: flex;
-	gap: 56rpx;
-}
-
 .nav-item {
 	font-size: 26rpx;
 	color: #826c60;
@@ -296,5 +275,25 @@ function handleSizeChange(e) {
 
 .u-button::after {
 	border: none;
+}
+.toolbar-card {
+	width: 750rpx;
+	background: rgba(255, 255, 255, 0.95);
+	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
+	border-top-left-radius: 32rpx;
+	border-top-right-radius: 32rpx;
+}
+
+.toolbar-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: 2rpx solid #f2e7da;
+	margin-bottom: 20rpx;
+}
+
+.toolbar-top-left {
+	display: flex;
+	gap: 56rpx;
 }
 </style>

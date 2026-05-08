@@ -37,7 +37,7 @@
 							</view>
 						</template>
 						<view v-else-if="layer.type === 'icon'" class="layer__icon-container">
-							<view class="layer__icon iconfont" :class="layer.text" :style="getIconStyle(layer)"></view>
+							<view class="layer__icon iconfont-wwchuan" :class="layer.text" :style="getIconStyle(layer)"></view>
 							<view v-if="props.selectedLayerId === layer.id" class="layer__rotate-btn" @touchstart.stop="handleRotateStart($event, layer)"
 								@touchmove.stop="handleRotateMove" @touchend.stop="handleRotateEnd"
 								@mousedown.stop="handleRotateStart($event, layer)" @mouseup.stop="handleRotateEnd"
@@ -775,18 +775,20 @@ function handleDeleteLayer(layerId) {
 const rotatingLayerId = ref('')
 const rotateStartAngle = ref(0)
 const rotateStartMousePos = ref({ x: 0, y: 0 })
+const layerStartRotation = ref(0)
 
 function handleRotateStart(event, layer) {
 	if (props.disabled) return
 
 	rotatingLayerId.value = layer.id
-	rotateStartAngle.value = layer.rotation || 0
+	layerStartRotation.value = layer.rotation || 0
 
 	const touch = event.touches ? event.touches[0] : event
 	const pageX = touch.pageX || touch.clientX
 	const pageY = touch.pageY || touch.clientY
 
 	rotateStartMousePos.value = { x: pageX, y: pageY }
+	rotateStartAngle.value = Math.atan2(pageY, pageX) * (180 / Math.PI)
 
 	event.stopPropagation()
 }
@@ -812,29 +814,23 @@ function handleRotateMove(event) {
 		return
 	}
 
-	const rotationSpeed = 0.5
-	const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI) * rotationSpeed
-	const newRotation = rotateStartAngle.value + angle
+	const deltaAngle = Math.atan2(deltaY, deltaX) * (180 / Math.PI)
+
+	const rotationSpeed = 0.1
+	const rotationDelta = deltaAngle * rotationSpeed
 
 	const layer = props.layers.find(l => l.id === rotatingLayerId.value)
 	if (layer) {
-		layer.rotation = newRotation
+		layer.rotation = (layer.rotation || 0) + rotationDelta
 	}
+
+	rotateStartMousePos.value = { x: pageX, y: pageY }
 
 	event.stopPropagation()
 }
 
 function handleRotateEnd() {
 	if (!rotatingLayerId.value) return
-
-	const layer = props.layers.find(l => l.id === rotatingLayerId.value)
-	if (layer) {
-		let rot = layer.rotation % 360
-		if (rot < 0) rot += 360
-		layer.rotation = Math.round(rot / 15) * 15
-		if (layer.rotation >= 360) layer.rotation = 0
-	}
-
 	rotatingLayerId.value = ''
 }
 
