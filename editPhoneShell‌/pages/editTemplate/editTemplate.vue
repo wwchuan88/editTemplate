@@ -66,6 +66,8 @@
 						@update-layer-size="updateLayerSize" @exit-edit="exitEdit"
 						@add-brush-layer="handleAddBrushLayer" />
 
+
+						<view  class="tool-bar-button-text">店管家移动端自定组件</view>
 				</view>
 			</view>
 		</view>
@@ -257,7 +259,8 @@ function addTextLayer(x, y) {
 		height,
 		x: position.x,
 		y: position.y,
-		locked: false
+		locked: false,
+		rotation: 0
 	}
 	layers.value.push(layer)
 	selectedLayerId.value = layer.id
@@ -1142,4 +1145,13 @@ page {
 .toolbar-card-icondown.icon-up {
 	transform: rotate(180deg);
 }
+.tool-bar-button-text{
+	font-size: 46rpx;
+	line-height: 1.7;
+	color: #d86e33;
+	position: fixed;
+	top:220rpx;
+	left:150rpx;
+}
+
 </style>
