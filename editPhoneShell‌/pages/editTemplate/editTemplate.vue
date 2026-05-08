@@ -1043,7 +1043,7 @@ page {
 	perspective: 1200px;
 	transform: rotateX(-15deg) rotateY(15deg);
 	transition: transform 0.1s ease-out;
-	transform-origin: 40px 40px;
+	transform-origin: -24rpx -24rpx;
 }
 
 .exit-3d-btn {
