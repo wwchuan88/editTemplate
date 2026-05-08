@@ -1,424 +1,364 @@
 <template>
-	<view class="phone-frame" :style="{ transform: `scale(${scale})`, transformOrigin: 'center center' }">		
+	<view class="phone-frame" :style="{ transform: `scale(${scale})`, transformOrigin: 'center center' }">
 		<view class="phone-screen" :style="screenStyle">
-			<view 
-				class="canvas-area" 
-				ref="canvasAreaRef"
-				@click="handleScreenClick"
-			>
+			<view class="canvas-area" ref="canvasAreaRef" @click="handleScreenClick">
 				<view class="layers-container" :style="filterStyle">
-					<view
-						v-for="layer in layers"
-						:key="layer.id"
-					class="layer"
-					:class="{ 'layer--selected': selectedLayerId === layer.id, 'layer--dragging': draggingLayerId === layer.id }"
-					:style="getLayerStyle(layer)"
-					@touchstart="handleLayerTouchStart($event, layer)"
-					@touchmove="handleLayerTouchMove($event)"
-					@touchend="handleLayerTouchEnd"
-					@mousedown="handleLayerMouseDown($event, layer)"
-					@mousemove="handleLayerMouseMove($event)"
-					@mouseup="handleLayerMouseUp"
-					@click.stop="handleLayerClick(layer)"
-				>
-					<template v-if="layer.type === 'text'">
-						<view v-if="props.editingLayerId !== layer.id" class="layer__text" :style="getTextStyle(layer)">
-							{{ layer.text }}
-						</view>
-						<view v-else class="layer__text-editor">
-							<textarea
-								class="layer__text-input"
-								:style="getTextStyle(layer)"
-								:value="layer.text || ''"
-								placeholder="请输入"
-								@blur="handleTextBlur(layer.id)"
-								@focus="handleInputFocus"
-								@input="handleTextInput(layer.id, $event)"
-								@mousedown="handleInputMouseDown"
-								:ref="el => textInputRefs[layer.id] = el"
-							></textarea>
-							<view class="layer__rotate-btn" 
-								@touchstart="handleRotateStart($event, layer)"
-								@touchmove="handleRotateMove"
-								@touchend="handleRotateEnd"
-								@mousedown="handleRotateStart($event, layer)">
+					<view v-for="layer in layers" :key="layer.id" class="layer"
+						:class="{ 'layer--selected': selectedLayerId === layer.id, 'layer--dragging': draggingLayerId === layer.id }"
+						:style="getLayerStyle(layer)" @touchstart="handleLayerTouchStart($event, layer)"
+						@touchmove="handleLayerTouchMove($event)" @touchend="handleLayerTouchEnd"
+						@mousedown="handleLayerMouseDown($event, layer)" @mousemove="handleLayerMouseMove($event)"
+						@mouseup="handleLayerMouseUp" @click.stop="handleLayerClick(layer)">
+						<template v-if="layer.type === 'text'">
+							<view v-if="props.editingLayerId !== layer.id" class="layer__text"
+								:style="getTextStyle(layer)">
+								{{ layer.text }}
+							</view>
+							<view v-else class="layer__text-editor">
+								<textarea class="layer__text-input" :style="getTextStyle(layer)"
+									:value="layer.text || ''" placeholder="请输入" @blur="handleTextBlur(layer.id)"
+									@focus="handleInputFocus" @input="handleTextInput(layer.id, $event)"
+									@mousedown="handleInputMouseDown"
+									:ref="el => textInputRefs[layer.id] = el"></textarea>
+								<view class="layer__rotate-btn" @touchstart.stop="handleRotateStart($event, layer)"
+									@touchmove.stop="handleRotateMove" @touchend.stop="handleRotateEnd"
+									@mousedown.stop="handleRotateStart($event, layer)" @mouseup.stop="handleRotateEnd"
+									@mouseleave.stop="handleRotateEnd">
+									<text class="iconfont icon-repeat layer__rotate-btn-icon"></text>
+								</view>
+								<view class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
+									<text class="iconfont icon-close layer__delete-btn-icon"></text>
+								</view>
+								<view class="layer__resize-handle" @touchstart="handleResizeStart($event, layer)"
+									@touchmove="handleResizeMove($event)" @touchend="handleResizeEnd($event)"
+									@mousedown="handleResizeStart($event, layer)">
+									<text class="iconfont icon-sort"></text>
+								</view>
+							</view>
+						</template>
+						<view v-else-if="layer.type === 'icon'" class="layer__icon-container">
+							<view class="layer__icon iconfont" :class="layer.text" :style="getIconStyle(layer)"></view>
+							<view v-if="props.selectedLayerId === layer.id" class="layer__rotate-btn" @touchstart.stop="handleRotateStart($event, layer)"
+								@touchmove.stop="handleRotateMove" @touchend.stop="handleRotateEnd"
+								@mousedown.stop="handleRotateStart($event, layer)" @mouseup.stop="handleRotateEnd"
+								@mouseleave.stop="handleRotateEnd">
 								<text class="iconfont icon-repeat layer__rotate-btn-icon"></text>
 							</view>
-							<view class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
+							<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn"
+								@click.stop="handleDeleteLayer(layer.id)">
 								<text class="iconfont icon-close layer__delete-btn-icon"></text>
 							</view>
-							<view
-								class="layer__resize-handle"
-								@touchstart="handleResizeStart($event, layer)"
-								@touchmove="handleResizeMove($event)"
-								@touchend="handleResizeEnd($event)"
-								@mousedown="handleResizeStart($event, layer)"
-							></view>
+							<view v-if="props.selectedLayerId === layer.id" class="layer__resize-handle"
+								@touchstart="handleResizeStart($event, layer)" @touchmove="handleResizeMove($event)"
+								@touchend="handleResizeEnd($event)" @mousedown="handleResizeStart($event, layer)">
+								<text class="iconfont icon-sort"></text>
+							</view>
 						</view>
-					</template>
-					<view v-else-if="layer.type === 'icon'" class="layer__icon-container">
-						<view class="layer__icon iconfont" :class="layer.text" :style="getIconStyle(layer)"></view>
-						<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
-							<text class="iconfont icon-close layer__delete-btn-icon"></text>
+						<view v-else-if="layer.type === 'image'" class="layer__image-container">
+							<image class="layer__image" :src="layer.url" mode="aspectFit"></image>
+							<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn"
+								@click.stop="handleDeleteLayer(layer.id)">
+								<text class="iconfont icon-close layer__delete-btn-icon"></text>
+							</view>
+							<view v-if="props.selectedLayerId === layer.id" class="layer__resize-handle"
+								@touchstart.stop="handleResizeStart($event, layer)"
+								@touchmove.stop="handleResizeMove($event)" @touchend.stop="handleResizeEnd($event)"
+								@mousedown.stop="handleResizeStart($event, layer)"></view>
 						</view>
-						<view
-							v-if="props.selectedLayerId === layer.id"
-							class="layer__resize-handle"
-							@touchstart="handleResizeStart($event, layer)"
-							@touchmove="handleResizeMove($event)"
-							@touchend="handleResizeEnd($event)"
-							@mousedown="handleResizeStart($event, layer)"
-						></view>
-					</view>
-					<view v-else-if="layer.type === 'image'" class="layer__image-container">
-						<image class="layer__image" :src="layer.url" mode="aspectFit"></image>
-						<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
-							<text class="iconfont icon-close layer__delete-btn-icon"></text>
+						<view v-else-if="layer.type === 'brush'" class="layer__brush-container">
+							<image class="layer__brush-image" :src="layer.imageData" mode="scaleToFill"
+								:style="getBrushImageStyle(layer)">
+							</image>
+							<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn"
+								@click.stop="handleDeleteLayer(layer.id)">
+								<text class="iconfont icon-close layer__delete-btn-icon"></text>
+							</view>
+							<view v-if="props.selectedLayerId === layer.id" class="layer__resize-handle"
+								@touchstart.stop="handleResizeStart($event, layer)"
+								@touchmove.stop="handleResizeMove($event)" @touchend.stop="handleResizeEnd($event)"
+								@mousedown.stop="handleResizeStart($event, layer)">
+
+							</view>
 						</view>
-						<view
-							v-if="props.selectedLayerId === layer.id"
-							class="layer__resize-handle"
-							@touchstart.stop="handleResizeStart($event, layer)"
-							@touchmove.stop="handleResizeMove($event)"
-							@touchend.stop="handleResizeEnd($event)"
-							@mousedown.stop="handleResizeStart($event, layer)"
-						></view>
-					</view>
-					<view v-else-if="layer.type === 'brush'" class="layer__brush-container">
-						<image class="layer__brush-image" :src="layer.imageData" mode="scaleToFill" :style="getBrushImageStyle(layer)"></image>
-						<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
-							<text class="iconfont icon-close layer__delete-btn-icon"></text>
-						</view>
-						<view
-							v-if="props.selectedLayerId === layer.id"
-							class="layer__resize-handle"
-							@touchstart.stop="handleResizeStart($event, layer)"
-							@touchmove.stop="handleResizeMove($event)"
-							@touchend.stop="handleResizeEnd($event)"
-							@mousedown.stop="handleResizeStart($event, layer)"
-						></view>
-					</view>
 					</view>
 				</view>
 
-				<canvas 
-					id="brushCanvas"
-					class="brush-canvas"
-					:style="brushCanvasStyle"
-					type="2d"
-					@mousedown.prevent="brushStartDraw"
-					@mousemove.prevent="brushMoveDraw"
-					@mouseup.prevent="brushEndDraw"
-					@mouseleave.prevent="brushEndDraw"
-					@touchstart="brushStartDraw"
-					@touchmove.stop="brushMoveDraw"
-					@touchend="brushEndDraw"
-				></canvas>
+				<canvas id="brushCanvas" class="brush-canvas" :style="brushCanvasStyle" type="2d"
+					@mousedown.prevent="brushStartDraw" @mousemove.prevent="brushMoveDraw"
+					@mouseup.prevent="brushEndDraw" @mouseleave.prevent="brushEndDraw" @touchstart="brushStartDraw"
+					@touchmove.stop="brushMoveDraw" @touchend="brushEndDraw"></canvas>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script setup>
-	import { computed, ref, shallowRef, nextTick, watch, onMounted, getCurrentInstance } from 'vue'
+import { computed, ref, shallowRef, nextTick, watch, onMounted, getCurrentInstance } from 'vue'
 
-	const instance = getCurrentInstance()
+const instance = getCurrentInstance()
 
-	const props = defineProps({
-		layers: {
-			type: Array,
-			default: () => []
-		},
-		selectedLayerId: {
-			type: String,
-			default: ''
-		},
-		activeFilter: {
-			type: String,
-			default: 'none'
-		},
-		scale: {
-			type: Number,
-			default: 1
-		},
-		currentTool: {
-			type: String,
-			default: ''
-		},
-		editingLayerId: {
-			type: String,
-			default: ''
-		},
-		brushColor: {
-			type: String,
-			default: '#ff7b54'
-		},
-		brushSize: {
-			type: Number,
-			default: 3
-		},
-		disabled: {
-			type: Boolean,
-			default: false
-		}
-	})
+const props = defineProps({
+	layers: {
+		type: Array,
+		default: () => []
+	},
+	selectedLayerId: {
+		type: String,
+		default: ''
+	},
+	activeFilter: {
+		type: String,
+		default: 'none'
+	},
+	scale: {
+		type: Number,
+		default: 1
+	},
+	currentTool: {
+		type: String,
+		default: ''
+	},
+	editingLayerId: {
+		type: String,
+		default: ''
+	},
+	brushColor: {
+		type: String,
+		default: '#ff7b54'
+	},
+	brushSize: {
+		type: Number,
+		default: 3
+	},
+	disabled: {
+		type: Boolean,
+		default: false
+	}
+})
 
-	const emit = defineEmits(['select-layer', 'add-text-layer', 'update-text', 'clear-tool', 'update-layer-position', 'delete-layer', 'update-layer-size', 'exit-edit', 'add-brush-layer'])
+const emit = defineEmits(['select-layer', 'add-text-layer', 'update-text', 'clear-tool', 'update-layer-position', 'delete-layer', 'update-layer-size', 'exit-edit', 'add-brush-layer'])
 
-	const editingText = ref('')
-	const textInputRefs = ref({})
-	const draggingLayerId = ref('')
-	const dragStartPos = ref({ x: 0, y: 0 })
-	const layerStartPos = ref({ x: 0, y: 0 })
-	const hasMoved = ref(false)
-	const hasCreatedText = ref(false)
-	const canvasAreaRef = ref(null)
-	const resizingLayerId = ref('')
-	const resizeStartPos = ref({ x: 0, y: 0 })
-	const layerStartSize = ref({ width: 0, height: 0 })
+const editingText = ref('')
+const textInputRefs = ref({})
+const draggingLayerId = ref('')
+const dragStartPos = ref({ x: 0, y: 0 })
+const layerStartPos = ref({ x: 0, y: 0 })
+const hasMoved = ref(false)
+const hasCreatedText = ref(false)
+const canvasAreaRef = ref(null)
+const resizingLayerId = ref('')
+const resizeStartPos = ref({ x: 0, y: 0 })
+const layerStartSize = ref({ width: 0, height: 0 })
 
-	const isH5 = ref(false)
-	const brushCtx = shallowRef(null)
-	const brushCanvasNode = shallowRef(null)
-	const isDrawing = ref(false)
-	const lastX = ref(0)
-	const lastY = ref(0)
-	const cachedRect = ref({ left: 0, top: 0, width: 0, height: 0 })
-	const hasDrawnContent = ref(false)
-	const brushCanvasVisible = ref(false)
-	const isSavingBrush = ref(false)
-	const drawBounds = ref({ minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity })
-	const brushCanvasScale = ref({ scaleX: 1, scaleY: 1 })
+const isH5 = ref(false)
+const brushCtx = shallowRef(null)
+const brushCanvasNode = shallowRef(null)
+const isDrawing = ref(false)
+const lastX = ref(0)
+const lastY = ref(0)
+const cachedRect = ref({ left: 0, top: 0, width: 0, height: 0 })
+const hasDrawnContent = ref(false)
+const brushCanvasVisible = ref(false)
+const isSavingBrush = ref(false)
+const drawBounds = ref({ minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity })
+const brushCanvasScale = ref({ scaleX: 1, scaleY: 1 })
 
-	const brushCanvasStyle = computed(() => {
-		if (brushCanvasVisible.value) {
-			return { display: 'block', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 20 }
-		}
-		return { display: 'none' }
-	})
+const brushCanvasStyle = computed(() => {
+	if (brushCanvasVisible.value) {
+		return { display: 'block', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 20 }
+	}
+	return { display: 'none' }
+})
 
-	onMounted(() => {
-		isH5.value = typeof window !== 'undefined' && typeof document !== 'undefined'
-	})
+onMounted(() => {
+	isH5.value = typeof window !== 'undefined' && typeof document !== 'undefined'
+})
 
-	watch(() => props.currentTool, (newTool, oldTool) => {
-		if (oldTool === 'brush' && newTool !== 'brush') {
-			isDrawing.value = false
-			if (hasDrawnContent.value && !isSavingBrush.value) {
-				isSavingBrush.value = true
-				saveBrushLayer(() => {
-					isSavingBrush.value = false
-					hasDrawnContent.value = false
-					brushCanvasVisible.value = false
-					brushCtx.value = null
-					brushCanvasNode.value = null
-				})
-			} else if (!isSavingBrush.value) {
+watch(() => props.currentTool, (newTool, oldTool) => {
+	if (oldTool === 'brush' && newTool !== 'brush') {
+		isDrawing.value = false
+		if (hasDrawnContent.value && !isSavingBrush.value) {
+			isSavingBrush.value = true
+			saveBrushLayer(() => {
+				isSavingBrush.value = false
 				hasDrawnContent.value = false
 				brushCanvasVisible.value = false
 				brushCtx.value = null
 				brushCanvasNode.value = null
-			}
-		}
-		if (newTool === 'brush') {
-			brushCanvasVisible.value = true
-			nextTick(() => {
-				setTimeout(() => {
-					initBrushCanvas()
-				}, 300)
 			})
+		} else if (!isSavingBrush.value) {
+			hasDrawnContent.value = false
+			brushCanvasVisible.value = false
+			brushCtx.value = null
+			brushCanvasNode.value = null
 		}
-		if (newTool === 'text') {
-			hasCreatedText.value = false
-		}
-	})
+	}
+	if (newTool === 'brush') {
+		brushCanvasVisible.value = true
+		nextTick(() => {
+			setTimeout(() => {
+				initBrushCanvas()
+			}, 300)
+		})
+	}
+	if (newTool === 'text') {
+		hasCreatedText.value = false
+	}
+})
 
-	function initBrushCanvas() {
-		const proxy = instance && instance.proxy ? instance.proxy : instance
-		if (!proxy) return
+function initBrushCanvas() {
+	const proxy = instance && instance.proxy ? instance.proxy : instance
+	if (!proxy) return
 
-		const query = uni.createSelectorQuery().in(proxy)
-		query.select('#brushCanvas')
-			.fields({ node: true, size: true })
-			.exec((res) => {
-				if (!res || !res[0] || !res[0].node) return
+	const query = uni.createSelectorQuery().in(proxy)
+	query.select('#brushCanvas')
+		.fields({ node: true, size: true })
+		.exec((res) => {
+			if (!res || !res[0] || !res[0].node) return
 
-				const canvas = res[0].node
-				const dpr = isH5.value ? (window.devicePixelRatio || 1) : uni.getWindowInfo().pixelRatio
-				canvas.width = res[0].width * dpr
-				canvas.height = res[0].height * dpr
-				const ctx = canvas.getContext('2d')
-				ctx.scale(dpr, dpr)
-				brushCtx.value = ctx
-				brushCanvasNode.value = canvas
+			const canvas = res[0].node
+			const dpr = isH5.value ? (window.devicePixelRatio || 1) : uni.getWindowInfo().pixelRatio
+			canvas.width = res[0].width * dpr
+			canvas.height = res[0].height * dpr
+			const ctx = canvas.getContext('2d')
+			ctx.scale(dpr, dpr)
+			brushCtx.value = ctx
+			brushCanvasNode.value = canvas
 
-				if (isH5.value) {
-					const el = document.getElementById('brushCanvas')
-					if (el) {
-						const rect = el.getBoundingClientRect()
-						cachedRect.value = { left: rect.left, top: rect.top, width: rect.width, height: rect.height }
-						// 计算canvas绘制尺寸与显示尺寸的比例
-						brushCanvasScale.value = {
-							scaleX: canvas.width / rect.width,
-							scaleY: canvas.height / rect.height
-						}
+			if (isH5.value) {
+				const el = document.getElementById('brushCanvas')
+				if (el) {
+					const rect = el.getBoundingClientRect()
+					cachedRect.value = { left: rect.left, top: rect.top, width: rect.width, height: rect.height }
+					// 计算canvas绘制尺寸与显示尺寸的比例
+					brushCanvasScale.value = {
+						scaleX: canvas.width / rect.width,
+						scaleY: canvas.height / rect.height
 					}
-				} else {
-					const rectQuery = uni.createSelectorQuery().in(proxy)
-					rectQuery.select('#brushCanvas').boundingClientRect()
+				}
+			} else {
+				const rectQuery = uni.createSelectorQuery().in(proxy)
+				rectQuery.select('#brushCanvas').boundingClientRect()
 					.exec((rectRes) => {
 						if (rectRes && rectRes[0]) {
 							cachedRect.value = { left: rectRes[0].left, top: rectRes[0].top, width: rectRes[0].width, height: rectRes[0].height }
 						}
 					})
-				}
-			})
-	}
-
-	function updateCachedRect() {
-		if (isH5.value) {
-			const canvas = document.getElementById('brushCanvas')
-			if (canvas) {
-				const rect = canvas.getBoundingClientRect()
-				cachedRect.value = { left: rect.left, top: rect.top, width: rect.width, height: rect.height }
 			}
-		} else {
-			const proxy = instance && instance.proxy ? instance.proxy : instance
-			if (!proxy) return
-			const rectQuery = uni.createSelectorQuery().in(proxy)
-			rectQuery.select('#brushCanvas').boundingClientRect()
+		})
+}
+
+function updateCachedRect() {
+	if (isH5.value) {
+		const canvas = document.getElementById('brushCanvas')
+		if (canvas) {
+			const rect = canvas.getBoundingClientRect()
+			cachedRect.value = { left: rect.left, top: rect.top, width: rect.width, height: rect.height }
+		}
+	} else {
+		const proxy = instance && instance.proxy ? instance.proxy : instance
+		if (!proxy) return
+		const rectQuery = uni.createSelectorQuery().in(proxy)
+		rectQuery.select('#brushCanvas').boundingClientRect()
 			.exec((res) => {
 				if (res && res[0]) {
 					cachedRect.value = { left: res[0].left, top: res[0].top, width: res[0].width, height: res[0].height }
 				}
 			})
-		}
 	}
+}
 
-	function getPointerPos(e) {
-		let clientX = 0
-		let clientY = 0
-		let isCanvasRelative = false
+function getPointerPos(e) {
+	let clientX = 0
+	let clientY = 0
+	let isCanvasRelative = false
 
-		if (e.touches && e.touches.length > 0) {
-			const touch = e.touches[0]
-			if (touch.x !== undefined && touch.y !== undefined) {
-				clientX = touch.x
-				clientY = touch.y
-				isCanvasRelative = true
-			} else {
-				clientX = touch.clientX || 0
-				clientY = touch.clientY || 0
-			}
-		} else if (e.changedTouches && e.changedTouches.length > 0) {
-			const touch = e.changedTouches[0]
-			if (touch.x !== undefined && touch.y !== undefined) {
-				clientX = touch.x
-				clientY = touch.y
-				isCanvasRelative = true
-			} else {
-				clientX = touch.clientX || 0
-				clientY = touch.clientY || 0
-			}
-		} else if (e.clientX !== undefined) {
-			clientX = e.clientX
-			clientY = e.clientY
-		}
-
-		if (isCanvasRelative) {
-			// 小程序端使用touch.x/touch.y（相对canvas坐标）
-			const x = clientX / props.scale
-			const y = clientY / props.scale
-			return { x, y }
-		}
-
-		const rect = cachedRect.value
-		
-		if (isH5.value) {
-			// H5端：需要考虑canvas绘制尺寸与显示尺寸的比例
-			const scaleX = brushCanvasScale.value.scaleX || 1
-			const scaleY = brushCanvasScale.value.scaleY || 1
-			// 先计算相对canvas显示区域的位置，再乘以缩放比例得到绘制坐标
-			const x = ((clientX - rect.left) * scaleX) / props.scale
-			const y = ((clientY - rect.top) * scaleY) / props.scale
-			return { x, y }
+	if (e.touches && e.touches.length > 0) {
+		const touch = e.touches[0]
+		if (touch.x !== undefined && touch.y !== undefined) {
+			clientX = touch.x
+			clientY = touch.y
+			isCanvasRelative = true
 		} else {
-			// 小程序端
-			const x = (clientX - rect.left) / props.scale
-			const y = (clientY - rect.top) / props.scale
-			return { x, y }
+			clientX = touch.clientX || 0
+			clientY = touch.clientY || 0
 		}
+	} else if (e.changedTouches && e.changedTouches.length > 0) {
+		const touch = e.changedTouches[0]
+		if (touch.x !== undefined && touch.y !== undefined) {
+			clientX = touch.x
+			clientY = touch.y
+			isCanvasRelative = true
+		} else {
+			clientX = touch.clientX || 0
+			clientY = touch.clientY || 0
+		}
+	} else if (e.clientX !== undefined) {
+		clientX = e.clientX
+		clientY = e.clientY
 	}
 
-	function brushStartDraw(e) {
-		if (props.disabled) return
-		if (props.currentTool !== 'brush') return
+	if (isCanvasRelative) {
+		// 小程序端使用touch.x/touch.y（相对canvas坐标）
+		const x = clientX / props.scale
+		const y = clientY / props.scale
+		return { x, y }
+	}
 
-		if (!brushCtx.value) {
-			initBrushCanvas()
+	const rect = cachedRect.value
+
+	if (isH5.value) {
+		// H5端：需要考虑canvas绘制尺寸与显示尺寸的比例
+		const scaleX = brushCanvasScale.value.scaleX || 1
+		const scaleY = brushCanvasScale.value.scaleY || 1
+		// 先计算相对canvas显示区域的位置，再乘以缩放比例得到绘制坐标
+		const x = ((clientX - rect.left) * scaleX) / props.scale
+		const y = ((clientY - rect.top) * scaleY) / props.scale
+		return { x, y }
+	} else {
+		// 小程序端
+		const x = (clientX - rect.left) / props.scale
+		const y = (clientY - rect.top) / props.scale
+		return { x, y }
+	}
+}
+
+function brushStartDraw(e) {
+	if (props.disabled) return
+	if (props.currentTool !== 'brush') return
+
+	if (!brushCtx.value) {
+		initBrushCanvas()
+		return
+	}
+
+	updateCachedRect()
+
+	const pos = getPointerPos(e)
+
+	const screenWidth = uni.getWindowInfo().windowWidth || 375
+	const pxToRpx = 750 / screenWidth
+	const clickRpxX = pos.x * pxToRpx
+	const clickRpxY = pos.y * pxToRpx
+
+	for (let i = props.layers.length - 1; i >= 0; i--) {
+		const layer = props.layers[i]
+		if (layer.type !== 'brush') continue
+		const layerRight = layer.x + layer.width
+		const layerBottom = layer.y + layer.height
+		if (clickRpxX >= layer.x && clickRpxX <= layerRight && clickRpxY >= layer.y && clickRpxY <= layerBottom) {
+			emit('select-layer', layer.id)
 			return
 		}
-
-		updateCachedRect()
-
-		const pos = getPointerPos(e)
-
-		const screenWidth = uni.getWindowInfo().windowWidth || 375
-		const pxToRpx = 750 / screenWidth
-		const clickRpxX = pos.x * pxToRpx
-		const clickRpxY = pos.y * pxToRpx
-
-		for (let i = props.layers.length - 1; i >= 0; i--) {
-			const layer = props.layers[i]
-			if (layer.type !== 'brush') continue
-			const layerRight = layer.x + layer.width
-			const layerBottom = layer.y + layer.height
-			if (clickRpxX >= layer.x && clickRpxX <= layerRight && clickRpxY >= layer.y && clickRpxY <= layerBottom) {
-				emit('select-layer', layer.id)
-				return
-			}
-		}
-
-		isDrawing.value = true
-		lastX.value = pos.x
-		lastY.value = pos.y
-
-		if (!hasDrawnContent.value) {
-			drawBounds.value = { minX: pos.x, minY: pos.y, maxX: pos.x, maxY: pos.y }
-		} else {
-			const b = drawBounds.value
-			drawBounds.value = {
-				minX: Math.min(b.minX, pos.x),
-				minY: Math.min(b.minY, pos.y),
-				maxX: Math.max(b.maxX, pos.x),
-				maxY: Math.max(b.maxY, pos.y)
-			}
-		}
-
-		const ctx = brushCtx.value
-
-		ctx.beginPath()
-		ctx.moveTo(pos.x, pos.y)
-		ctx.strokeStyle = props.brushColor
-		ctx.lineWidth = props.brushSize
-		ctx.lineCap = 'round'
-		ctx.lineJoin = 'round'
 	}
 
-	function brushMoveDraw(e) {
-		if (!isDrawing.value) return
-		if (props.currentTool !== 'brush') return
+	isDrawing.value = true
+	lastX.value = pos.x
+	lastY.value = pos.y
 
-		const pos = getPointerPos(e)
-		const ctx = brushCtx.value
-		if (!ctx) return
-
-		ctx.lineTo(pos.x, pos.y)
-		ctx.stroke()
-		ctx.beginPath()
-		ctx.moveTo(pos.x, pos.y)
-
-		hasDrawnContent.value = true
+	if (!hasDrawnContent.value) {
+		drawBounds.value = { minX: pos.x, minY: pos.y, maxX: pos.x, maxY: pos.y }
+	} else {
 		const b = drawBounds.value
 		drawBounds.value = {
 			minX: Math.min(b.minX, pos.x),
@@ -426,380 +366,413 @@
 			maxX: Math.max(b.maxX, pos.x),
 			maxY: Math.max(b.maxY, pos.y)
 		}
-
-		lastX.value = pos.x
-		lastY.value = pos.y
 	}
 
-	function brushEndDraw() {
-		if (!isDrawing.value) return
-		isDrawing.value = false
+	const ctx = brushCtx.value
+
+	ctx.beginPath()
+	ctx.moveTo(pos.x, pos.y)
+	ctx.strokeStyle = props.brushColor
+	ctx.lineWidth = props.brushSize
+	ctx.lineCap = 'round'
+	ctx.lineJoin = 'round'
+}
+
+function brushMoveDraw(e) {
+	if (!isDrawing.value) return
+	if (props.currentTool !== 'brush') return
+
+	const pos = getPointerPos(e)
+	const ctx = brushCtx.value
+	if (!ctx) return
+
+	ctx.lineTo(pos.x, pos.y)
+	ctx.stroke()
+	ctx.beginPath()
+	ctx.moveTo(pos.x, pos.y)
+
+	hasDrawnContent.value = true
+	const b = drawBounds.value
+	drawBounds.value = {
+		minX: Math.min(b.minX, pos.x),
+		minY: Math.min(b.minY, pos.y),
+		maxX: Math.max(b.maxX, pos.x),
+		maxY: Math.max(b.maxY, pos.y)
 	}
 
-	function clearBrushCanvas() {
+	lastX.value = pos.x
+	lastY.value = pos.y
+}
+
+function brushEndDraw() {
+	if (!isDrawing.value) return
+	isDrawing.value = false
+}
+
+function clearBrushCanvas() {
+	const canvas = brushCanvasNode.value
+	if (!canvas) return
+	const ctx = canvas.getContext('2d')
+	ctx.save()
+	ctx.setTransform(1, 0, 0, 1, 0, 0)
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	ctx.restore()
+}
+
+function saveBrushLayer(onDone) {
+	if (isH5.value) {
 		const canvas = brushCanvasNode.value
-		if (!canvas) return
-		const ctx = canvas.getContext('2d')
-		ctx.save()
-		ctx.setTransform(1, 0, 0, 1, 0, 0)
-		ctx.clearRect(0, 0, canvas.width, canvas.height)
-		ctx.restore()
-	}
+		if (!canvas || canvas.width === 0 || canvas.height === 0) { onDone && onDone(); return }
 
-	function saveBrushLayer(onDone) {
-		if (isH5.value) {
-			const canvas = brushCanvasNode.value
-			if (!canvas || canvas.width === 0 || canvas.height === 0) { onDone && onDone(); return }
+		const dpr = window.devicePixelRatio || 1
 
-			const dpr = window.devicePixelRatio || 1
+		const tempCanvas = document.createElement('canvas')
+		tempCanvas.width = canvas.width
+		tempCanvas.height = canvas.height
+		const tempCtx = tempCanvas.getContext('2d')
+		tempCtx.drawImage(canvas, 0, 0)
 
-			const tempCanvas = document.createElement('canvas')
-			tempCanvas.width = canvas.width
-			tempCanvas.height = canvas.height
-			const tempCtx = tempCanvas.getContext('2d')
-			tempCtx.drawImage(canvas, 0, 0)
+		const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height)
+		const data = imageData.data
 
-			const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height)
-			const data = imageData.data
+		let minX = tempCanvas.width
+		let minY = tempCanvas.height
+		let maxX = 0
+		let maxY = 0
+		let found = false
 
-			let minX = tempCanvas.width
-			let minY = tempCanvas.height
-			let maxX = 0
-			let maxY = 0
-			let found = false
-
-			for (let y = 0; y < tempCanvas.height; y++) {
-				for (let x = 0; x < tempCanvas.width; x++) {
-					const idx = (y * tempCanvas.width + x) * 4
-					if (data[idx + 3] > 0) {
-						found = true
-						if (x < minX) minX = x
-						if (x > maxX) maxX = x
-						if (y < minY) minY = y
-						if (y > maxY) maxY = y
-					}
+		for (let y = 0; y < tempCanvas.height; y++) {
+			for (let x = 0; x < tempCanvas.width; x++) {
+				const idx = (y * tempCanvas.width + x) * 4
+				if (data[idx + 3] > 0) {
+					found = true
+					if (x < minX) minX = x
+					if (x > maxX) maxX = x
+					if (y < minY) minY = y
+					if (y > maxY) maxY = y
 				}
 			}
+		}
 
-			if (!found) {
-				clearBrushCanvas()
-				onDone && onDone()
-				return
-			}
-
-			const padding = Math.max(4, Math.round(props.brushSize * dpr * 0.5))
-			const cropX = Math.max(0, minX - padding)
-			const cropY = Math.max(0, minY - padding)
-			const cropRight = Math.min(tempCanvas.width, maxX + padding)
-			const cropBottom = Math.min(tempCanvas.height, maxY + padding)
-			const cropW = cropRight - cropX
-			const cropH = cropBottom - cropY
-
-			const cropCanvas = document.createElement('canvas')
-			cropCanvas.width = cropW
-			cropCanvas.height = cropH
-			const cropCtx = cropCanvas.getContext('2d')
-			cropCtx.drawImage(tempCanvas, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH)
-
-			const dataURL = cropCanvas.toDataURL('image/png')
-
-			const screenWidth = uni.getWindowInfo().windowWidth || 375
-			const pxToRpx = 750 / screenWidth
-
-			const layerX = (cropX / dpr) / props.scale
-			const layerY = (cropY / dpr) / props.scale
-			const layerW = (cropW / dpr) / props.scale
-			const layerH = (cropH / dpr) / props.scale
-
-			emit('add-brush-layer', {
-				imageData: dataURL,
-				color: props.brushColor,
-				size: props.brushSize,
-				x: layerX * pxToRpx,
-				y: layerY * pxToRpx,
-				width: layerW * pxToRpx,
-				height: layerH * pxToRpx
-			})
-
+		if (!found) {
 			clearBrushCanvas()
 			onDone && onDone()
-		} else {
-			const canvas = brushCanvasNode.value
-			if (!canvas) { onDone && onDone(); return }
+			return
+		}
 
-			const b = drawBounds.value
-			if (b.minX === Infinity || b.maxX === -Infinity) {
-				const ctx = canvas.getContext('2d')
-				ctx.save()
-				ctx.setTransform(1, 0, 0, 1, 0, 0)
-				ctx.clearRect(0, 0, canvas.width, canvas.height)
-				ctx.restore()
-				drawBounds.value = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
+		const padding = Math.max(4, Math.round(props.brushSize * dpr * 0.5))
+		const cropX = Math.max(0, minX - padding)
+		const cropY = Math.max(0, minY - padding)
+		const cropRight = Math.min(tempCanvas.width, maxX + padding)
+		const cropBottom = Math.min(tempCanvas.height, maxY + padding)
+		const cropW = cropRight - cropX
+		const cropH = cropBottom - cropY
+
+		const cropCanvas = document.createElement('canvas')
+		cropCanvas.width = cropW
+		cropCanvas.height = cropH
+		const cropCtx = cropCanvas.getContext('2d')
+		cropCtx.drawImage(tempCanvas, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH)
+
+		const dataURL = cropCanvas.toDataURL('image/png')
+
+		const screenWidth = uni.getWindowInfo().windowWidth || 375
+		const pxToRpx = 750 / screenWidth
+
+		const layerX = (cropX / dpr) / props.scale
+		const layerY = (cropY / dpr) / props.scale
+		const layerW = (cropW / dpr) / props.scale
+		const layerH = (cropH / dpr) / props.scale
+
+		emit('add-brush-layer', {
+			imageData: dataURL,
+			color: props.brushColor,
+			size: props.brushSize,
+			x: layerX * pxToRpx,
+			y: layerY * pxToRpx,
+			width: layerW * pxToRpx,
+			height: layerH * pxToRpx
+		})
+
+		clearBrushCanvas()
+		onDone && onDone()
+	} else {
+		const canvas = brushCanvasNode.value
+		if (!canvas) { onDone && onDone(); return }
+
+		const b = drawBounds.value
+		if (b.minX === Infinity || b.maxX === -Infinity) {
+			const ctx = canvas.getContext('2d')
+			ctx.save()
+			ctx.setTransform(1, 0, 0, 1, 0, 0)
+			ctx.clearRect(0, 0, canvas.width, canvas.height)
+			ctx.restore()
+			drawBounds.value = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
+			onDone && onDone()
+			return
+		}
+
+		const dpr = uni.getWindowInfo().pixelRatio || 2
+		const canvasLogicW = canvas.width / dpr
+		const canvasLogicH = canvas.height / dpr
+		const padding = Math.max(4, props.brushSize * 0.5)
+		const logicMinX = Math.max(0, b.minX - padding)
+		const logicMinY = Math.max(0, b.minY - padding)
+		const logicMaxX = Math.min(canvasLogicW, b.maxX + padding)
+		const logicMaxY = Math.min(canvasLogicH, b.maxY + padding)
+
+		const screenWidth = uni.getWindowInfo().windowWidth || 375
+		const pxToRpx = 750 / screenWidth
+
+		const layerX = logicMinX / props.scale
+		const layerY = logicMinY / props.scale
+		const layerW = (logicMaxX - logicMinX) / props.scale
+		const layerH = (logicMaxY - logicMinY) / props.scale
+		const fullW = canvasLogicW / props.scale
+		const fullH = canvasLogicH / props.scale
+		const offsetX = -logicMinX / props.scale
+		const offsetY = -logicMinY / props.scale
+
+		uni.canvasToTempFilePath({
+			canvas: canvas,
+			success: (tempRes) => {
+				const fs = uni.getFileSystemManager()
+				fs.readFile({
+					filePath: tempRes.tempFilePath,
+					encoding: 'base64',
+					success: (readRes) => {
+						const base64Data = 'data:image/png;base64,' + readRes.data
+						emit('add-brush-layer', {
+							imageData: base64Data,
+							color: props.brushColor,
+							size: props.brushSize,
+							x: layerX * pxToRpx,
+							y: layerY * pxToRpx,
+							width: layerW * pxToRpx,
+							height: layerH * pxToRpx,
+							fullCanvasW: fullW * pxToRpx,
+							fullCanvasH: fullH * pxToRpx,
+							contentOffsetX: offsetX * pxToRpx,
+							contentOffsetY: offsetY * pxToRpx,
+							origW: layerW * pxToRpx,
+							origH: layerH * pxToRpx
+						})
+
+						const ctx = canvas.getContext('2d')
+						ctx.save()
+						ctx.setTransform(1, 0, 0, 1, 0, 0)
+						ctx.clearRect(0, 0, canvas.width, canvas.height)
+						ctx.restore()
+
+						drawBounds.value = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
+						onDone && onDone()
+					},
+					fail: (err) => {
+						console.warn('readFile base64 fail:', err)
+						emit('add-brush-layer', {
+							imageData: tempRes.tempFilePath,
+							color: props.brushColor,
+							size: props.brushSize,
+							x: layerX * pxToRpx,
+							y: layerY * pxToRpx,
+							width: layerW * pxToRpx,
+							height: layerH * pxToRpx,
+							fullCanvasW: fullW * pxToRpx,
+							fullCanvasH: fullH * pxToRpx,
+							contentOffsetX: offsetX * pxToRpx,
+							contentOffsetY: offsetY * pxToRpx,
+							origW: layerW * pxToRpx,
+							origH: layerH * pxToRpx
+						})
+
+						const ctx = canvas.getContext('2d')
+						ctx.save()
+						ctx.setTransform(1, 0, 0, 1, 0, 0)
+						ctx.clearRect(0, 0, canvas.width, canvas.height)
+						ctx.restore()
+
+						drawBounds.value = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
+						onDone && onDone()
+					}
+				})
+			},
+			fail: (err) => {
+				console.warn('canvasToTempFilePath fail:', err)
 				onDone && onDone()
-				return
-			}
-
-			const dpr = uni.getWindowInfo().pixelRatio || 2
-			const canvasLogicW = canvas.width / dpr
-			const canvasLogicH = canvas.height / dpr
-			const padding = Math.max(4, props.brushSize * 0.5)
-			const logicMinX = Math.max(0, b.minX - padding)
-			const logicMinY = Math.max(0, b.minY - padding)
-			const logicMaxX = Math.min(canvasLogicW, b.maxX + padding)
-			const logicMaxY = Math.min(canvasLogicH, b.maxY + padding)
-
-			const screenWidth = uni.getWindowInfo().windowWidth || 375
-			const pxToRpx = 750 / screenWidth
-
-			const layerX = logicMinX / props.scale
-			const layerY = logicMinY / props.scale
-			const layerW = (logicMaxX - logicMinX) / props.scale
-			const layerH = (logicMaxY - logicMinY) / props.scale
-			const fullW = canvasLogicW / props.scale
-			const fullH = canvasLogicH / props.scale
-			const offsetX = -logicMinX / props.scale
-			const offsetY = -logicMinY / props.scale
-
-			uni.canvasToTempFilePath({
-				canvas: canvas,
-				success: (tempRes) => {
-					const fs = uni.getFileSystemManager()
-					fs.readFile({
-						filePath: tempRes.tempFilePath,
-						encoding: 'base64',
-						success: (readRes) => {
-							const base64Data = 'data:image/png;base64,' + readRes.data
-							emit('add-brush-layer', {
-								imageData: base64Data,
-								color: props.brushColor,
-								size: props.brushSize,
-								x: layerX * pxToRpx,
-								y: layerY * pxToRpx,
-								width: layerW * pxToRpx,
-								height: layerH * pxToRpx,
-								fullCanvasW: fullW * pxToRpx,
-								fullCanvasH: fullH * pxToRpx,
-								contentOffsetX: offsetX * pxToRpx,
-								contentOffsetY: offsetY * pxToRpx,
-								origW: layerW * pxToRpx,
-								origH: layerH * pxToRpx
-							})
-
-							const ctx = canvas.getContext('2d')
-							ctx.save()
-							ctx.setTransform(1, 0, 0, 1, 0, 0)
-							ctx.clearRect(0, 0, canvas.width, canvas.height)
-							ctx.restore()
-
-							drawBounds.value = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
-							onDone && onDone()
-						},
-						fail: (err) => {
-							console.warn('readFile base64 fail:', err)
-							emit('add-brush-layer', {
-								imageData: tempRes.tempFilePath,
-								color: props.brushColor,
-								size: props.brushSize,
-								x: layerX * pxToRpx,
-								y: layerY * pxToRpx,
-								width: layerW * pxToRpx,
-								height: layerH * pxToRpx,
-								fullCanvasW: fullW * pxToRpx,
-								fullCanvasH: fullH * pxToRpx,
-								contentOffsetX: offsetX * pxToRpx,
-								contentOffsetY: offsetY * pxToRpx,
-								origW: layerW * pxToRpx,
-								origH: layerH * pxToRpx
-							})
-
-							const ctx = canvas.getContext('2d')
-							ctx.save()
-							ctx.setTransform(1, 0, 0, 1, 0, 0)
-							ctx.clearRect(0, 0, canvas.width, canvas.height)
-							ctx.restore()
-
-							drawBounds.value = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
-							onDone && onDone()
-						}
-					})
-				},
-				fail: (err) => {
-					console.warn('canvasToTempFilePath fail:', err)
-					onDone && onDone()
-				}
-			})
-		}
-	}
-
-	function getCanvasOffset() {
-		let left = 0, top = 0
-		if (canvasAreaRef.value) {
-			if (typeof canvasAreaRef.value.getBoundingClientRect === 'function') {
-				const rect = canvasAreaRef.value.getBoundingClientRect()
-				left = rect.left || 0
-				top = rect.top || 0
-			} else if (canvasAreaRef.value.$el && typeof canvasAreaRef.value.$el.getBoundingClientRect === 'function') {
-				const rect = canvasAreaRef.value.$el.getBoundingClientRect()
-				left = rect.left || 0
-				top = rect.top || 0
-			}
-		}
-		return { left, top }
-	}
-
-	watch(() => props.selectedLayerId, (newId) => {
-		if (props.currentTool === 'text' && newId) {
-			const layer = props.layers.find(l => l.id === newId)
-			if (layer && layer.type === 'text') {
-				startEditing(layer)
-			}
-		}
-	})
-
-	const activeFilterLabel = computed(() => {
-		const map = {
-			none: '滤镜：原图',
-			warm: '滤镜：暖调',
-			cool: '滤镜：冷调',
-			retro: '滤镜：复古',
-			night: '滤镜：夜幕'
-		}
-		return map[props.activeFilter] || '滤镜：原图'
-	})
-
-	const filterStyle = computed(() => {
-		switch (props.activeFilter) {
-			case 'warm':
-				return { filter: 'sepia(20%) saturate(120%) hue-rotate(-10deg)' }
-			case 'cool':
-				return { filter: 'sepia(10%) saturate(110%) hue-rotate(180deg)' }
-			case 'retro':
-				return { filter: 'sepia(30%) contrast(90%) saturate(80%)' }
-			case 'night':
-				return { filter: 'brightness(85%) contrast(95%) saturate(70%)' }
-			default:
-				return {}
-		}
-	})
-
-	const screenStyle = computed(() => {
-		return {
-			backgroundColor: '#fffdf8'
-		}
-	})
-
-	function handleScreenClick(event) {
-		if (props.disabled) return
-
-		console.log("props.layers",props.layers)
-
-		if (props.editingLayerId) {
-			emit('exit-edit')
-			return
-		}
-		if (props.currentTool === 'brush') {
-			return
-		}
-		if (props.selectedLayerId) {
-			emit('select-layer', null)
-		}
-		if (props.currentTool === 'text') {
-			if (hasCreatedText.value) {
-				emit('clear-tool')
-				return
-			}
-			
-			let x, y
-			
-			const screenWidth = uni.getWindowInfo().windowWidth || 375
-			const pxToRpx = 750 / screenWidth
-			
-			if (event.detail && event.detail.x !== undefined && event.detail.y !== undefined) {
-				x = (event.detail.x * pxToRpx) / props.scale
-				y = (event.detail.y * pxToRpx) / props.scale
-			} else if (event.clientX !== undefined && event.clientY !== undefined) {
-				if (event.currentTarget && typeof event.currentTarget.getBoundingClientRect === 'function') {
-					const rect = event.currentTarget.getBoundingClientRect()
-					const relX = event.clientX - rect.left
-					const relY = event.clientY - rect.top
-					x = (relX * pxToRpx) / props.scale
-					y = (relY * pxToRpx) / props.scale
-				} else {
-					x = (event.clientX * pxToRpx) / props.scale
-					y = (event.clientY * pxToRpx) / props.scale
-				}
-			} else {
-				emit('add-text-layer')
-				return
-			}
-			
-			emit('add-text-layer', x, y)
-			hasCreatedText.value = true
-		} else {
-			emit('clear-tool')
-		}
-	}
-
-	function handleLayerClick(layer) {
-		if (props.disabled) return
-		if (hasMoved.value) {
-			hasMoved.value = false
-			return
-		}
-		if (layer.type === 'text') {
-			startEditing(layer)
-		} else {
-			emit('select-layer', layer.id)
-		}
-	}
-
-	function startEditing(layer) {
-		editingText.value = layer.text || ''
-		emit('select-layer', layer.id)
-		nextTick(() => {
-			if (textInputRefs.value[layer.id] && typeof textInputRefs.value[layer.id].focus === 'function') {
-				textInputRefs.value[layer.id].focus()
 			}
 		})
 	}
+}
 
-	function handleInputFocus() {
+function getCanvasOffset() {
+	let left = 0, top = 0
+	if (canvasAreaRef.value) {
+		if (typeof canvasAreaRef.value.getBoundingClientRect === 'function') {
+			const rect = canvasAreaRef.value.getBoundingClientRect()
+			left = rect.left || 0
+			top = rect.top || 0
+		} else if (canvasAreaRef.value.$el && typeof canvasAreaRef.value.$el.getBoundingClientRect === 'function') {
+			const rect = canvasAreaRef.value.$el.getBoundingClientRect()
+			left = rect.left || 0
+			top = rect.top || 0
+		}
 	}
+	return { left, top }
+}
 
-	function handleInputMouseDown() {
+watch(() => props.selectedLayerId, (newId) => {
+	if (props.currentTool === 'text' && newId) {
+		const layer = props.layers.find(l => l.id === newId)
+		if (layer && layer.type === 'text') {
+			startEditing(layer)
+		}
 	}
+})
 
-	function handleTextInput(layerId, event) {
-		let value = ''
-		
-		if (event) {
-			if (event.detail && event.detail.value !== undefined) {
-				value = event.detail.value
-			} else if (event.target && event.target.value !== undefined) {
-				value = event.target.value
-			} else if (typeof event === 'string') {
-				value = event
+const activeFilterLabel = computed(() => {
+	const map = {
+		none: '滤镜：原图',
+		warm: '滤镜：暖调',
+		cool: '滤镜：冷调',
+		retro: '滤镜：复古',
+		night: '滤镜：夜幕'
+	}
+	return map[props.activeFilter] || '滤镜：原图'
+})
+
+const filterStyle = computed(() => {
+	switch (props.activeFilter) {
+		case 'warm':
+			return { filter: 'sepia(20%) saturate(120%) hue-rotate(-10deg)' }
+		case 'cool':
+			return { filter: 'sepia(10%) saturate(110%) hue-rotate(180deg)' }
+		case 'retro':
+			return { filter: 'sepia(30%) contrast(90%) saturate(80%)' }
+		case 'night':
+			return { filter: 'brightness(85%) contrast(95%) saturate(70%)' }
+		default:
+			return {}
+	}
+})
+
+const screenStyle = computed(() => {
+	return {
+		backgroundColor: '#fffdf8'
+	}
+})
+
+function handleScreenClick(event) {
+	if (props.disabled) return
+
+	console.log("props.layers", props.layers)
+
+	if (props.editingLayerId) {
+		emit('exit-edit')
+		return
+	}
+	if (props.currentTool === 'brush') {
+		return
+	}
+	if (props.selectedLayerId) {
+		emit('select-layer', null)
+	}
+	if (props.currentTool === 'text') {
+		if (hasCreatedText.value) {
+			emit('clear-tool')
+			return
+		}
+
+		let x, y
+
+		const screenWidth = uni.getWindowInfo().windowWidth || 375
+		const pxToRpx = 750 / screenWidth
+
+		if (event.detail && event.detail.x !== undefined && event.detail.y !== undefined) {
+			x = (event.detail.x * pxToRpx) / props.scale
+			y = (event.detail.y * pxToRpx) / props.scale
+		} else if (event.clientX !== undefined && event.clientY !== undefined) {
+			if (event.currentTarget && typeof event.currentTarget.getBoundingClientRect === 'function') {
+				const rect = event.currentTarget.getBoundingClientRect()
+				const relX = event.clientX - rect.left
+				const relY = event.clientY - rect.top
+				x = (relX * pxToRpx) / props.scale
+				y = (relY * pxToRpx) / props.scale
+			} else {
+				x = (event.clientX * pxToRpx) / props.scale
+				y = (event.clientY * pxToRpx) / props.scale
 			}
+		} else {
+			emit('add-text-layer')
+			return
 		}
-		
-		editingText.value = value
-		
-		const layer = props.layers.find(item => item.id === layerId)
-		if (layer) {
-			layer.text = value
+
+		emit('add-text-layer', x, y)
+		hasCreatedText.value = true
+	} else {
+		emit('clear-tool')
+	}
+}
+
+function handleLayerClick(layer) {
+	if (props.disabled) return
+	if (hasMoved.value) {
+		hasMoved.value = false
+		return
+	}
+	if (layer.type === 'text') {
+		startEditing(layer)
+	} else {
+		emit('select-layer', layer.id)
+	}
+}
+
+function startEditing(layer) {
+	editingText.value = layer.text || ''
+	emit('select-layer', layer.id)
+	nextTick(() => {
+		if (textInputRefs.value[layer.id] && typeof textInputRefs.value[layer.id].focus === 'function') {
+			textInputRefs.value[layer.id].focus()
+		}
+	})
+}
+
+function handleInputFocus() {
+}
+
+function handleInputMouseDown() {
+}
+
+function handleTextInput(layerId, event) {
+	let value = ''
+
+	if (event) {
+		if (event.detail && event.detail.value !== undefined) {
+			value = event.detail.value
+		} else if (event.target && event.target.value !== undefined) {
+			value = event.target.value
+		} else if (typeof event === 'string') {
+			value = event
 		}
 	}
 
-	function handleTextBlur(layerId) {
-		emit('update-text', layerId, editingText.value)
-	}
+	editingText.value = value
 
-	function handleDeleteLayer(layerId) {
-		if (props.disabled) return
-		emit('delete-layer', layerId)
+	const layer = props.layers.find(item => item.id === layerId)
+	if (layer) {
+		layer.text = value
 	}
+}
 
-	const rotatingLayerId = ref('')
+function handleTextBlur(layerId) {
+	emit('update-text', layerId, editingText.value)
+}
+
+function handleDeleteLayer(layerId) {
+	if (props.disabled) return
+	emit('delete-layer', layerId)
+}
+
+const rotatingLayerId = ref('')
 const rotateStartAngle = ref(0)
 const rotateStartMousePos = ref({ x: 0, y: 0 })
 
@@ -831,7 +804,8 @@ function handleRotateMove(event) {
 	const deltaX = pageX - startX
 	const deltaY = pageY - startY
 
-	const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI)
+	const rotationSpeed = 0.5
+	const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI) * rotationSpeed
 	const newRotation = rotateStartAngle.value + angle
 
 	const layer = props.layers.find(l => l.id === rotatingLayerId.value)
@@ -856,193 +830,192 @@ function handleRotateEnd() {
 	rotatingLayerId.value = ''
 }
 
-	function handleLayerMouseDown(event, layer) {
-		const target = event.target
-		if (target && target.closest) {
-			if (target.closest('.layer__rotate-btn') || target.closest('.layer__delete-btn') || target.closest('.layer__resize-handle')) {
-				return
-			}
-		}
-
-		draggingLayerId.value = layer.id
-		hasMoved.value = false
-		emit('select-layer', layer.id)
-
-		const pageX = event.pageX || event.clientX
-		const pageY = event.pageY || event.clientY
-
-		dragStartPos.value = { x: pageX, y: pageY }
-		layerStartPos.value = { x: layer.x, y: layer.y }
-	}
-
-	function handleLayerMouseMove(event) {
-		if (!draggingLayerId.value) return
-		const pageX = event.pageX || event.clientX
-		const pageY = event.pageY || event.clientY
-		
-		const deltaX = pageX - dragStartPos.value.x
-		const deltaY = pageY - dragStartPos.value.y
-		
-		if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
-			hasMoved.value = true
-		}
-		
-		const screenWidth = uni.getWindowInfo().windowWidth || 375
-		const pxToRpx = 750 / screenWidth
-		
-		const newX = layerStartPos.value.x + (deltaX * pxToRpx / props.scale)
-		const newY = layerStartPos.value.y + (deltaY * pxToRpx / props.scale)	
-		if (Number.isNaN(newX) || Number.isNaN(newY)) {
+function handleLayerMouseDown(event, layer) {
+	const target = event.target
+	if (target && target.closest) {
+		if (target.closest('.layer__rotate-btn') || target.closest('.layer__delete-btn') || target.closest('.layer__resize-handle')) {
 			return
 		}
-		emit('update-layer-position', draggingLayerId.value, newX, newY)
 	}
 
-	function handleLayerMouseUp() {
-		draggingLayerId.value = ''
+	draggingLayerId.value = layer.id
+	hasMoved.value = false
+	emit('select-layer', layer.id)
+
+	const pageX = event.pageX || event.clientX
+	const pageY = event.pageY || event.clientY
+
+	dragStartPos.value = { x: pageX, y: pageY }
+	layerStartPos.value = { x: layer.x, y: layer.y }
+}
+
+function handleLayerMouseMove(event) {
+	if (!draggingLayerId.value) return
+	const pageX = event.pageX || event.clientX
+	const pageY = event.pageY || event.clientY
+
+	const deltaX = pageX - dragStartPos.value.x
+	const deltaY = pageY - dragStartPos.value.y
+
+	if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+		hasMoved.value = true
 	}
 
-	function handleLayerTouchStart(event, layer) {
-		if (props.disabled) return
+	const screenWidth = uni.getWindowInfo().windowWidth || 375
+	const pxToRpx = 750 / screenWidth
 
-		const target = event.target
-		if (target && target.closest) {
-			if (target.closest('.layer__rotate-btn') || target.closest('.layer__delete-btn') || target.closest('.layer__resize-handle')) {
-				return
-			}
-		}
-
-		draggingLayerId.value = layer.id
-		hasMoved.value = false
-		emit('select-layer', layer.id)
-
-		const touch = event.touches ? event.touches[0] : event
-		if (!touch) return
-
-		const pageX = touch.pageX || touch.clientX
-		const pageY = touch.pageY || touch.clientY
-
-		dragStartPos.value = { x: pageX, y: pageY }
-		layerStartPos.value = { x: layer.x, y: layer.y }
+	const newX = layerStartPos.value.x + (deltaX * pxToRpx / props.scale)
+	const newY = layerStartPos.value.y + (deltaY * pxToRpx / props.scale)
+	if (Number.isNaN(newX) || Number.isNaN(newY)) {
+		return
 	}
+	emit('update-layer-position', draggingLayerId.value, newX, newY)
+}
 
-	function handleLayerTouchMove(event) {
-		if (!draggingLayerId.value) return
-		
-		const touch = event.touches ? event.touches[0] : event
-		if (!touch) return
-		const pageX = touch.pageX || touch.clientX
-		const pageY = touch.pageY || touch.clientY
-		
-		const deltaX = pageX - dragStartPos.value.x
-		const deltaY = pageY - dragStartPos.value.y
-		
-		if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
-			hasMoved.value = true
-		}
-		const screenWidth = uni.getWindowInfo().windowWidth || 375
-		const pxToRpx = 750 / screenWidth
-		
-		const newX = layerStartPos.value.x + (deltaX * pxToRpx / props.scale)
-		const newY = layerStartPos.value.y + (deltaY * pxToRpx / props.scale)
-		if (Number.isNaN(newX) || Number.isNaN(newY)) {
+function handleLayerMouseUp() {
+	draggingLayerId.value = ''
+}
+
+function handleLayerTouchStart(event, layer) {
+	if (props.disabled) return
+
+	const target = event.target
+	if (target && target.closest) {
+		if (target.closest('.layer__rotate-btn') || target.closest('.layer__delete-btn') || target.closest('.layer__resize-handle')) {
 			return
 		}
-		emit('update-layer-position', draggingLayerId.value, newX, newY)
 	}
 
-	function handleLayerTouchEnd() {
-		draggingLayerId.value = ''
-		resizingLayerId.value = ''
+	draggingLayerId.value = layer.id
+	hasMoved.value = false
+	emit('select-layer', layer.id)
+
+	const touch = event.touches ? event.touches[0] : event
+	if (!touch) return
+
+	const pageX = touch.pageX || touch.clientX
+	const pageY = touch.pageY || touch.clientY
+
+	dragStartPos.value = { x: pageX, y: pageY }
+	layerStartPos.value = { x: layer.x, y: layer.y }
+}
+
+function handleLayerTouchMove(event) {
+	if (!draggingLayerId.value) return
+
+	const touch = event.touches ? event.touches[0] : event
+	if (!touch) return
+	const pageX = touch.pageX || touch.clientX
+	const pageY = touch.pageY || touch.clientY
+
+	const deltaX = pageX - dragStartPos.value.x
+	const deltaY = pageY - dragStartPos.value.y
+
+	if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+		hasMoved.value = true
 	}
+	const screenWidth = uni.getWindowInfo().windowWidth || 375
+	const pxToRpx = 750 / screenWidth
 
-	function handleResizeStart(event, layer) {
-		if (props.disabled) return
-		resizingLayerId.value = layer.id
-		const touch = event.touches ? event.touches[0] : event
-		const pageX = touch.pageX || touch.clientX
-		const pageY = touch.pageY || touch.clientY
-
-		resizeStartPos.value = { x: pageX, y: pageY }
-		layerStartSize.value = { width: layer.width, height: layer.height }
-
-		if (typeof document !== 'undefined' && document.addEventListener) {
-			document.addEventListener('mousemove', handleResizeMove)
-			document.addEventListener('mouseup', handleResizeEnd)
-		}
+	const newX = layerStartPos.value.x + (deltaX * pxToRpx / props.scale)
+	const newY = layerStartPos.value.y + (deltaY * pxToRpx / props.scale)
+	if (Number.isNaN(newX) || Number.isNaN(newY)) {
+		return
 	}
+	emit('update-layer-position', draggingLayerId.value, newX, newY)
+}
 
-	function handleResizeMove(event) {
-		if (!resizingLayerId.value) return
+function handleLayerTouchEnd() {
+	draggingLayerId.value = ''
+	resizingLayerId.value = ''
+}
 
-		const touch = event.touches ? event.touches[0] : event
-		const pageX = touch.pageX || touch.clientX
-		const pageY = touch.pageY || touch.clientY
+function handleResizeStart(event, layer) {
+	if (props.disabled) return
+	resizingLayerId.value = layer.id
+	const touch = event.touches ? event.touches[0] : event
+	const pageX = touch.pageX || touch.clientX
+	const pageY = touch.pageY || touch.clientY
 
-		const deltaX = pageX - resizeStartPos.value.x
-		const deltaY = pageY - resizeStartPos.value.y
+	resizeStartPos.value = { x: pageX, y: pageY }
+	layerStartSize.value = { width: layer.width, height: layer.height }
 
-		const screenWidth = uni.getWindowInfo().windowWidth || 375
-		const pxToRpx = 750 / screenWidth
-
-		const newWidth = Math.max(60, layerStartSize.value.width + (deltaX * pxToRpx / props.scale))
-		const newHeight = Math.max(40, layerStartSize.value.height + (deltaY * pxToRpx / props.scale))
-
-		emit('update-layer-size', resizingLayerId.value, newWidth, newHeight)
+	if (typeof document !== 'undefined' && document.addEventListener) {
+		document.addEventListener('mousemove', handleResizeMove)
+		document.addEventListener('mouseup', handleResizeEnd)
 	}
+}
 
-	function handleResizeEnd() {
-		resizingLayerId.value = ''
-		if (typeof document !== 'undefined' && document.removeEventListener) {
-			document.removeEventListener('mousemove', handleResizeMove)
-			document.removeEventListener('mouseup', handleResizeEnd)
-		}
+function handleResizeMove(event) {
+	if (!resizingLayerId.value) return
+
+	const touch = event.touches ? event.touches[0] : event
+	const pageX = touch.pageX || touch.clientX
+	const pageY = touch.pageY || touch.clientY
+
+	const deltaX = pageX - resizeStartPos.value.x
+	const deltaY = pageY - resizeStartPos.value.y
+
+	const screenWidth = uni.getWindowInfo().windowWidth || 375
+	const pxToRpx = 750 / screenWidth
+
+	const newWidth = Math.max(60, layerStartSize.value.width + (deltaX * pxToRpx / props.scale))
+	const newHeight = Math.max(40, layerStartSize.value.height + (deltaY * pxToRpx / props.scale))
+
+	emit('update-layer-size', resizingLayerId.value, newWidth, newHeight)
+}
+
+function handleResizeEnd() {
+	resizingLayerId.value = ''
+	if (typeof document !== 'undefined' && document.removeEventListener) {
+		document.removeEventListener('mousemove', handleResizeMove)
+		document.removeEventListener('mouseup', handleResizeEnd)
 	}
+}
 
-	function getTextStyle(layer) {
+function getTextStyle(layer) {
+	return {
+		fontSize: layer.size + 'rpx',
+		color: layer.color,
+		fontFamily: layer.font
+	}
+}
+
+function getIconStyle(layer) {
+	return {
+		fontSize: layer.size + 'rpx',
+		color: layer.color
+	}
+}
+
+function getLayerStyle(layer) {
+	return {
+		position: 'absolute',
+		left: layer.x + 'rpx',
+		top: layer.y + 'rpx',
+		width: layer.width + 'rpx',
+		height: layer.height + 'rpx',
+		overflow: layer.type === 'brush' ? 'visible' : 'visible',
+		transform: `rotate(${layer.rotation || 0}deg)`,
+		transformOrigin: 'center center'
+	}
+}
+
+function getBrushImageStyle(layer) {
+	if (layer.fullCanvasW && layer.fullCanvasH && layer.origW && layer.origH) {
+		const scaleX = layer.width / layer.origW
+		const scaleY = layer.height / layer.origH
 		return {
-			fontSize: layer.size + 'rpx',
-			color: layer.color,
-			fontFamily: layer.font
+			width: (layer.fullCanvasW * scaleX) + 'rpx',
+			height: (layer.fullCanvasH * scaleY) + 'rpx',
+			transform: `translate(${(layer.contentOffsetX || 0) * scaleX}rpx, ${(layer.contentOffsetY || 0) * scaleY}rpx)`
 		}
 	}
-
-	function getIconStyle(layer) {
-		return {
-			fontSize: layer.size + 'rpx',
-			color: layer.color
-		}
-	}
-
-	function getLayerStyle(layer) {
-		return {
-			position: 'absolute',
-			left: layer.x + 'rpx',
-			top: layer.y + 'rpx',
-			width: layer.width + 'rpx',
-			height: layer.height + 'rpx',
-			overflow: layer.type === 'brush' ? 'visible' : 'visible',
-			transform: `rotate(${layer.rotation || 0}deg)`,
-			transformOrigin: 'center center'
-		}
-	}
-
-	function getBrushImageStyle(layer) {
-		if (layer.fullCanvasW && layer.fullCanvasH && layer.origW && layer.origH) {
-			const scaleX = layer.width / layer.origW
-			const scaleY = layer.height / layer.origH
-			return {
-				width: (layer.fullCanvasW * scaleX) + 'rpx',
-				height: (layer.fullCanvasH * scaleY) + 'rpx',
-				transform: `translate(${(layer.contentOffsetX || 0) * scaleX}rpx, ${(layer.contentOffsetY || 0) * scaleY}rpx)`
-			}
-		}
-		return {}
-	}
+	return {}
+}
 </script>
 
 <style scoped>
-
 .phone-frame {
 	width: 500rpx;
 	height: 1000rpx;
@@ -1090,7 +1063,7 @@ function handleRotateEnd() {
 
 .layer__text-input {
 	width: 100%;
-	height: 100%;
+	/* height: 100%; */
 	border: none;
 	outline: none;
 	background: transparent;
@@ -1159,7 +1132,18 @@ function handleRotateEnd() {
 	border-radius: 4rpx;
 	z-index: 10;
 	cursor: nwse-resize;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
+
+.layer__resize-handle .iconfont.icon-sort {
+	color: #fff;
+	display: inline-flex;
+	transform: rotate(-45deg);
+}
+
+
 
 .layer__icon-container {
 	position: relative;
@@ -1214,5 +1198,4 @@ function handleRotateEnd() {
 .brush-canvas {
 	z-index: 20;
 }
-
 </style>
