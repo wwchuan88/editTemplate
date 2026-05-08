@@ -804,6 +804,14 @@ function handleRotateMove(event) {
 	const deltaX = pageX - startX
 	const deltaY = pageY - startY
 
+	const threshold = 5
+	const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+
+	if (distance < threshold) {
+		event.stopPropagation()
+		return
+	}
+
 	const rotationSpeed = 0.5
 	const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI) * rotationSpeed
 	const newRotation = rotateStartAngle.value + angle
