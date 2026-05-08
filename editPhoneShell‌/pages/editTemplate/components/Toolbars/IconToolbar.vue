@@ -27,7 +27,7 @@
 					<view class="emoji-row">
 						<view v-for="item in cartoonOptions.icons" :key="item.type" class="emoji-card"
 							@click="$emit('add', item)">
-							<text class="emoji-card__icon iconfont-wwchuan" :class="item.icon"></text>
+							<text class="emoji-card__icon iconfont " :class="item.icon"></text>
 							<text class="emoji-card__label">{{ item.label }}</text>
 						</view>
 					</view>

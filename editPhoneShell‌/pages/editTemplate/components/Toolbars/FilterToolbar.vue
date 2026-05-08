@@ -1,7 +1,13 @@
 <template>
 	<view class="toolbar-card">
+		<text 
+			class="iconfont toolbar-card-icondown"
+			:class="isExpanded ? 'icon-down' : 'icon-up icon-down'"
+			@click="togglePanel"
+		></text>
+		
 		<!-- 上层导航 -->
-		<view class="toolbar-top">
+		<view v-if="isExpanded" class="toolbar-top">	
 			<view class="toolbar-top-left">
 				<view class="nav-item" :class="{ 'nav-item--active': activeNav === 'featured' }" @click="activeNav = 'featured'">
 					精选预设
@@ -16,10 +22,10 @@
 		</view>
 		
 		<!-- 下层内容 -->
-		<view class="toolbar-bottom">
+		<view v-if="isExpanded" class="toolbar-bottom">
 			<!-- 精选预设 -->
 			<view v-if="activeNav === 'featured'" class="nav-content">
-				<view class="filter-grid">
+				<view class="filter-list">
 					<view
 						v-for="item in featuredFilters"
 						:key="item.key"
@@ -35,7 +41,7 @@
 			
 			<!-- 青春预设 -->
 			<view v-if="activeNav === 'youth'" class="nav-content">
-				<view class="filter-grid">
+				<view class="filter-list">
 					<view
 						v-for="item in youthFilters"
 						:key="item.key"
@@ -56,6 +62,10 @@
 	import { ref, computed } from 'vue'
 	
 	const activeNav = ref('featured')
+	const isExpanded = ref(true)
+	function togglePanel() {
+		isExpanded.value = !isExpanded.value
+	}
 	
 	const props = defineProps({
 		options: {
@@ -148,5 +158,10 @@
 		font-size: 22rpx;
 		line-height: 1.5;
 		color: #826c60;
+	}
+	.filter-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16rpx;
 	}
 </style>

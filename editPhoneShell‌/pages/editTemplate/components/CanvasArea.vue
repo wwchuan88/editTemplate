@@ -37,7 +37,7 @@
 							</view>
 						</template>
 						<view v-else-if="layer.type === 'icon'" class="layer__icon-container">
-							<view class="layer__icon iconfont-wwchuan" :class="layer.text" :style="getIconStyle(layer)"></view>
+							<view class="layer__icon iconfont" :class="layer.text" :style="getIconStyle(layer)"></view>
 							<view v-if="props.selectedLayerId === layer.id" class="layer__rotate-btn" @touchstart.stop="handleRotateStart($event, layer)"
 								@touchmove.stop="handleRotateMove" @touchend.stop="handleRotateEnd"
 								@mousedown.stop="handleRotateStart($event, layer)" @mouseup.stop="handleRotateEnd"

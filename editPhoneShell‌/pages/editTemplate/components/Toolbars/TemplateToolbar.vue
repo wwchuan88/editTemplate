@@ -1,8 +1,13 @@
 <template>
 	<view class="toolbar-card">
+		<text 
+			class="iconfont toolbar-card-icondown"
+			:class="isExpanded ? 'icon-down' : 'icon-up icon-down'"
+			@click="togglePanel"
+		></text>
 
 		<!-- 上层导航 -->
-		<view class="toolbar-top">
+		<view v-if="isExpanded" class="toolbar-top">	
 			<view class="toolbar-top-left">
 				<view class="nav-item" :class="{ 'nav-item--active': activeCategory === 'literary' }"
 					@click="activeCategory = 'literary'">
@@ -23,7 +28,7 @@
 		</view>
 
 		<!-- 下层内容 -->
-		<view class="toolbar-bottom">
+		<view v-if="isExpanded" class="toolbar-bottom">
 			<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
 				<view class="template-list">
 					<view v-for="(item, index) in currentTemplates" :key="index" class="template-item"
@@ -42,6 +47,10 @@ import { ref, computed } from 'vue'
 import { buildUrl } from '@/config/env'
 
 const activeCategory = ref('literary')
+const isExpanded = ref(true)
+function togglePanel() {
+	isExpanded.value = !isExpanded.value
+}
 
 const templateCategories = {
 	literary: [
