@@ -94,7 +94,7 @@
 				@exit="exitTool" />
 			<FilterToolbar v-else-if="currentTool === 'filter'" :options="filterOptions" :active-filter="activeFilter"
 				@pick="activeFilter = $event" @exit="exitTool" />
-			<BrushToolbar v-else-if="currentTool === 'brush'" :colors="brushColors" :brush-color="brushColor"
+			<BrushToolbar v-else-if="currentTool === 'brush'" :colors="textColors" :brush-color="brushColor"
 				:brush-size="brushSize" @pick-color="brushColor = $event" @pick-size="brushSize = $event"
 				@exit="exitTool" />
 		</view>
@@ -189,7 +189,7 @@ const filterOptions = [
 	{ key: 'night', label: '夜幕', desc: '压低亮度层次' }
 ]
 
-const textColors = ['#2f241f', '#d9485f', '#3c6e71', '#2b59c3', '#9c6644']  //字体和图标颜色
+const textColors = ['#2f241f', '#d9485f', '#3c6e71', '#2b59c3', '#9c6644','#ff7b54', '#ffb703', '#5b8def', '#18a058', '#b565d9', '#3498db']  //字体和图标颜色
 const brushColors = ['#ff7b54', '#ffb703', '#5b8def', '#18a058', '#b565d9']
 
 const currentTool = ref('')
