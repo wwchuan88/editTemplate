@@ -637,8 +637,8 @@ function handle3DTouchMove(e) {
 	const deltaX = touch.clientX - last3DPos.value.x
 	const deltaY = touch.clientY - last3DPos.value.y
 	rotate3D.value = {
-		x: rotate3D.value.x + deltaY * 0.5,
-		y: rotate3D.value.y + deltaX * 0.5
+		x: rotate3D.value.x + deltaY * 0.2,
+		y: rotate3D.value.y + deltaX * 0.2
 	}
 	last3DPos.value = { x: touch.clientX, y: touch.clientY }
 }
@@ -657,8 +657,8 @@ function handle3DMouseMove(e) {
 	const deltaX = e.clientX - last3DPos.value.x
 	const deltaY = e.clientY - last3DPos.value.y
 	rotate3D.value = {
-		x: rotate3D.value.x + deltaY * 0.5,
-		y: rotate3D.value.y + deltaX * 0.5
+		x: rotate3D.value.x + deltaY * 0.2,
+		y: rotate3D.value.y + deltaX * 0.2
 	}
 	last3DPos.value = { x: e.clientX, y: e.clientY }
 }
@@ -1043,6 +1043,7 @@ page {
 	perspective: 1200px;
 	transform: rotateX(-15deg) rotateY(15deg);
 	transition: transform 0.1s ease-out;
+	transform-origin: 40px 40px;
 }
 
 .exit-3d-btn {

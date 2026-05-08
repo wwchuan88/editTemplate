@@ -37,6 +37,13 @@
 								@mousedown="handleInputMouseDown"
 								:ref="el => textInputRefs[layer.id] = el"
 							></textarea>
+							<view class="layer__rotate-btn" 
+								@touchstart="handleRotateStart($event, layer)"
+								@touchmove="handleRotateMove"
+								@touchend="handleRotateEnd"
+								@mousedown="handleRotateStart($event, layer)">
+								<text class="iconfont icon-repeat layer__rotate-btn-icon"></text>
+							</view>
 							<view class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
 								<text class="iconfont icon-close layer__delete-btn-icon"></text>
 							</view>
@@ -792,14 +799,78 @@
 		emit('delete-layer', layerId)
 	}
 
+	const rotatingLayerId = ref('')
+const rotateStartAngle = ref(0)
+const rotateStartMousePos = ref({ x: 0, y: 0 })
+
+function handleRotateStart(event, layer) {
+	if (props.disabled) return
+
+	rotatingLayerId.value = layer.id
+	rotateStartAngle.value = layer.rotation || 0
+
+	const touch = event.touches ? event.touches[0] : event
+	const pageX = touch.pageX || touch.clientX
+	const pageY = touch.pageY || touch.clientY
+
+	rotateStartMousePos.value = { x: pageX, y: pageY }
+
+	event.stopPropagation()
+}
+
+function handleRotateMove(event) {
+	if (!rotatingLayerId.value) return
+
+	const touch = event.touches ? event.touches[0] : event
+	const pageX = touch.clientX || touch.pageX
+	const pageY = touch.clientY || touch.pageY
+
+	const startX = rotateStartMousePos.value.x
+	const startY = rotateStartMousePos.value.y
+
+	const deltaX = pageX - startX
+	const deltaY = pageY - startY
+
+	const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI)
+	const newRotation = rotateStartAngle.value + angle
+
+	const layer = props.layers.find(l => l.id === rotatingLayerId.value)
+	if (layer) {
+		layer.rotation = newRotation
+	}
+
+	event.stopPropagation()
+}
+
+function handleRotateEnd() {
+	if (!rotatingLayerId.value) return
+
+	const layer = props.layers.find(l => l.id === rotatingLayerId.value)
+	if (layer) {
+		let rot = layer.rotation % 360
+		if (rot < 0) rot += 360
+		layer.rotation = Math.round(rot / 15) * 15
+		if (layer.rotation >= 360) layer.rotation = 0
+	}
+
+	rotatingLayerId.value = ''
+}
+
 	function handleLayerMouseDown(event, layer) {
+		const target = event.target
+		if (target && target.closest) {
+			if (target.closest('.layer__rotate-btn') || target.closest('.layer__delete-btn') || target.closest('.layer__resize-handle')) {
+				return
+			}
+		}
+
 		draggingLayerId.value = layer.id
 		hasMoved.value = false
 		emit('select-layer', layer.id)
-		
+
 		const pageX = event.pageX || event.clientX
 		const pageY = event.pageY || event.clientY
-		
+
 		dragStartPos.value = { x: pageX, y: pageY }
 		layerStartPos.value = { x: layer.x, y: layer.y }
 	}
@@ -833,16 +904,24 @@
 
 	function handleLayerTouchStart(event, layer) {
 		if (props.disabled) return
+
+		const target = event.target
+		if (target && target.closest) {
+			if (target.closest('.layer__rotate-btn') || target.closest('.layer__delete-btn') || target.closest('.layer__resize-handle')) {
+				return
+			}
+		}
+
 		draggingLayerId.value = layer.id
 		hasMoved.value = false
 		emit('select-layer', layer.id)
-		
+
 		const touch = event.touches ? event.touches[0] : event
 		if (!touch) return
-		
+
 		const pageX = touch.pageX || touch.clientX
 		const pageY = touch.pageY || touch.clientY
-		
+
 		dragStartPos.value = { x: pageX, y: pageY }
 		layerStartPos.value = { x: layer.x, y: layer.y }
 	}
@@ -942,7 +1021,9 @@
 			top: layer.y + 'rpx',
 			width: layer.width + 'rpx',
 			height: layer.height + 'rpx',
-			overflow: layer.type === 'brush' ? 'visible' : 'visible'
+			overflow: layer.type === 'brush' ? 'visible' : 'visible',
+			transform: `rotate(${layer.rotation || 0}deg)`,
+			transformOrigin: 'center center'
 		}
 	}
 
@@ -1024,6 +1105,26 @@
 	position: relative;
 	width: 100%;
 	height: 100%;
+}
+
+.layer__rotate-btn {
+	position: absolute;
+	top: -24rpx;
+	left: -24rpx;
+	width: 48rpx;
+	height: 48rpx;
+	background: #4a90d9;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 10;
+	cursor: pointer;
+}
+
+.layer__rotate-btn-icon {
+	color: #fff;
+	font-size: 24rpx;
 }
 
 .layer__delete-btn {
