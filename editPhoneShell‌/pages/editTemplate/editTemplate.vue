@@ -184,11 +184,11 @@ const iconOptions = [
 ]
 
 const filterOptions = [
-	{ key: 'none', label: '原图', desc: '保持自然底色' },
-	{ key: 'warm', label: '暖调', desc: '增加柔和暖光' },
-	{ key: 'cool', label: '冷调', desc: '适合清爽风格' },
-	{ key: 'retro', label: '复古', desc: '偏奶油复古色' },
-	{ key: 'night', label: '夜幕', desc: '压低亮度层次' }
+	{ key: 'none', label: '原图', desc: '保持自然底色', icon: buildUrl("/public/images/filters/original1.png") },
+	{ key: 'warm', label: '暖调', desc: '增加柔和暖光', icon: buildUrl("/public/images/filters/warm1.png") },
+	{ key: 'cool', label: '冷调', desc: '适合清爽风格', icon: buildUrl("/public/images/filters/cool1.png") },	
+	{ key: 'retro', label: '艳丽', desc: '偏鲜艳颜色', icon: buildUrl("/public/images/filters/vivid1.png") },
+	{ key: 'night', label: '夜幕', desc: '压低亮度层次', icon: buildUrl("/public/images/filters/black1.png") }
 ]
 
 const textColors = ['#2f241f', '#d9485f', '#3c6e71', '#2b59c3', '#9c6644','#ff7b54', '#ffb703', '#5b8def', '#18a058', '#b565d9', '#3498db']  //字体和图标颜色

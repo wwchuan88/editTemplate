@@ -19,29 +19,33 @@
 									:value="layer.text || ''" placeholder="请输入" @blur="handleTextBlur(layer.id)"
 									@focus="handleInputFocus" @input="handleTextInput(layer.id, $event)"
 									@mousedown="handleInputMouseDown"
-									:ref="el => textInputRefs[layer.id] = el"></textarea>
-								<view class="layer__rotate-btn" @touchstart.stop="handleRotateStart($event, layer)"
-									@touchmove.stop="handleRotateMove" @touchend.stop="handleRotateEnd"
-									@mousedown.stop="handleRotateStart($event, layer)" @mouseup.stop="handleRotateEnd"
-									@mouseleave.stop="handleRotateEnd">
-									<text class="iconfont icon-repeat layer__rotate-btn-icon"></text>
-								</view>
-								<view class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
-									<text class="iconfont icon-close layer__delete-btn-icon"></text>
-								</view>
-								<view class="layer__resize-handle" @touchstart="handleResizeStart($event, layer)"
-									@touchmove="handleResizeMove($event)" @touchend="handleResizeEnd($event)"
-									@mousedown="handleResizeStart($event, layer)">
-									<text class="iconfont icon-sort"></text>
+									:ref="el => textInputRefs[layer.id] = el">
+								</textarea>
+								<view v-if="props.selectedLayerId === layer.id">
+									<view class="layer__rotate-btn" @touchstart.stop="handleRotateStart($event, layer)"
+										@touchmove.stop="handleRotateMove" @touchend.stop="handleRotateEnd"
+										@mousedown.stop="handleRotateStart($event, layer)"
+										@mouseup.stop="handleRotateEnd" @mouseleave.stop="handleRotateEnd">
+										<text class="iconfont icon-repeat layer__rotate-btn-icon"></text>
+									</view>
+									<view class="layer__delete-btn" @click.stop="handleDeleteLayer(layer.id)">
+										<text class="iconfont icon-close layer__delete-btn-icon"></text>
+									</view>
+									<view class="layer__resize-handle" @touchstart="handleResizeStart($event, layer)"
+										@touchmove="handleResizeMove($event)" @touchend="handleResizeEnd($event)"
+										@mousedown="handleResizeStart($event, layer)">
+										<text class="iconfont icon-sort"></text>
+									</view>
+
 								</view>
 							</view>
 						</template>
 						<view v-else-if="layer.type === 'icon'" class="layer__icon-container">
 							<view class="layer__icon iconfont" :class="layer.text" :style="getIconStyle(layer)"></view>
-							<view v-if="props.selectedLayerId === layer.id" class="layer__rotate-btn" @touchstart.stop="handleRotateStart($event, layer)"
-								@touchmove.stop="handleRotateMove" @touchend.stop="handleRotateEnd"
-								@mousedown.stop="handleRotateStart($event, layer)" @mouseup.stop="handleRotateEnd"
-								@mouseleave.stop="handleRotateEnd">
+							<view v-if="props.selectedLayerId === layer.id" class="layer__rotate-btn"
+								@touchstart.stop="handleRotateStart($event, layer)" @touchmove.stop="handleRotateMove"
+								@touchend.stop="handleRotateEnd" @mousedown.stop="handleRotateStart($event, layer)"
+								@mouseup.stop="handleRotateEnd" @mouseleave.stop="handleRotateEnd">
 								<text class="iconfont icon-repeat layer__rotate-btn-icon"></text>
 							</view>
 							<view v-if="props.selectedLayerId === layer.id" class="layer__delete-btn"
@@ -662,10 +666,10 @@ const screenStyle = computed(() => {
 })
 
 function handleScreenClick(event) {
-	if (props.disabled) return
 
 	console.log("props.layers", props.layers)
 
+	if (props.disabled) return
 	if (props.editingLayerId) {
 		emit('exit-edit')
 		return
@@ -676,6 +680,8 @@ function handleScreenClick(event) {
 	if (props.selectedLayerId) {
 		emit('select-layer', null)
 	}
+	
+	
 	if (props.currentTool === 'text') {
 		if (hasCreatedText.value) {
 			emit('clear-tool')
@@ -737,6 +743,7 @@ function startEditing(layer) {
 }
 
 function handleInputFocus() {
+	
 }
 
 function handleInputMouseDown() {
@@ -814,10 +821,10 @@ function handleRotateMove(event) {
 		return
 	}
 
-	const deltaAngle = Math.atan2(deltaY, deltaX) * (180 / Math.PI)
+	const deltaAngle = Math.atan2(deltaY, deltaX) * (180 / Math.PI)  // 计算旋转角度
 
-	const rotationSpeed = 0.1
-	const rotationDelta = deltaAngle * rotationSpeed
+	const rotationSpeed = 0.1 // 旋转速度
+	const rotationDelta = Math.ceil(deltaAngle * rotationSpeed)  // 旋转角度取整
 
 	const layer = props.layers.find(l => l.id === rotatingLayerId.value)
 	if (layer) {
@@ -1067,7 +1074,7 @@ function getBrushImageStyle(layer) {
 
 .layer__text-input {
 	width: 100%;
-	/* height: 100%; */
+	height: inherit;
 	border: none;
 	outline: none;
 	background: transparent;
@@ -1076,6 +1083,9 @@ function getBrushImageStyle(layer) {
 	resize: none;
 	overflow: hidden;
 	box-sizing: border-box;
+}
+.layer--selected .layer__text-input {
+	height: auto;
 }
 
 .layer__text-editor {
