@@ -1,10 +1,7 @@
 <template>
 	<view class="toolbar-card">
-		<text 
-			class="iconfont toolbar-card-icondown"
-			:class="isExpanded ? 'icon-down' : 'icon-up icon-down'"
-			@click="togglePanel"
-		></text>
+		<text class="iconfont toolbar-card-icondown" :class="isExpanded ? 'icon-down' : 'icon-up icon-down'"
+			@click="togglePanel"></text>
 		<!-- 上层导航 -->
 		<view v-if="isExpanded" class="toolbar-top">
 			<view class="toolbar-top-left">
@@ -22,7 +19,7 @@
 				</view>
 			</view>
 			<view class="toolbar-top-right" @click="$emit('exit')">
-				<text class="toolbar-top-right-exit"></text> 
+				<text class="toolbar-top-right-exit"></text>
 			</view>
 		</view>
 
@@ -33,13 +30,9 @@
 				<view class="font-scroll-container">
 					<scroll-view scroll-x="true" style="width: 100%;" show-scrollbar="true">
 						<view class="font-list">
-							<view 
-								v-for="item in fonts" 
-								:key="item.value" 
-								class="font-item"
+							<view v-for="item in fonts" :key="item.value" class="font-item"
 								:class="{ 'font-item--active': textFont === item.value }"
-								@click="$emit('pick-font', item.value)"
-							>
+								@click="$emit('pick-font', item.value)">
 								<view class="font-item-preview" :style="{ fontFamily: item.value }">Aa</view>
 								<view class="font-item-name">{{ item.label }}</view>
 							</view>
@@ -51,10 +44,16 @@
 			<!-- 字体大小 -->
 			<view v-if="activeNav === 'size'" class="nav-content">
 				<view class="size-slider">
-					<text class="size-label">字体大小: {{ textSize }}</text>
-					<view class="slider-container">
-						<slider min="12" max="60" step="1" :value="textSize" @change="handleSizeChange" />
+					<view class="size-slider-content">
+						<text class="size-label">字体大小: {{ textSize }}</text>
+						<view class="slider-container">
+							<slider min="12" max="60" step="1" :value="textSize" @change="handleSizeChange" />
+						</view>
 					</view>
+				</view>
+				<view class="bold-switch">
+					<text class="bold-label">是否加粗</text>
+					<switch :checked="textBold" @change="handleBoldChange" color="#d86e33" />
 				</view>
 			</view>
 
@@ -98,6 +97,10 @@ const props = defineProps({
 		type: String,
 		default: 'Microsoft YaHei'
 	},
+	textBold: {
+		type: Boolean,
+		default: false
+	},
 	colors: {
 		type: Array,
 		default: () => []
@@ -123,10 +126,14 @@ const props = defineProps({
 	}
 })
 
-const emit = defineEmits(['update-draft', 'pick-color', 'change-size', 'pick-font', 'submit', 'exit'])
+const emit = defineEmits(['update-draft', 'pick-color', 'change-size', 'pick-font', 'toggle-bold', 'submit', 'exit'])
 
 function handleSizeChange(e) {
 	emit('change-size', e.detail.value - props.textSize)
+}
+
+function handleBoldChange(e) {
+	emit('toggle-bold', e.detail.value)
 }
 </script>
 
@@ -241,7 +248,7 @@ function handleSizeChange(e) {
 }
 
 .slider-container {
-	width: 100%;
+	flex:1;
 }
 
 .text-input-container {
@@ -276,6 +283,7 @@ function handleSizeChange(e) {
 .u-button::after {
 	border: none;
 }
+
 .toolbar-card {
 	width: 750rpx;
 	background: rgba(255, 255, 255, 0.95);
@@ -295,5 +303,23 @@ function handleSizeChange(e) {
 .toolbar-top-left {
 	display: flex;
 	gap: 56rpx;
+}
+.size-slider-content{
+	display: flex;
+	align-items: center;
+}
+
+.bold-switch {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 20rpx;
+	padding-top: 20rpx;
+	border-top: 2rpx solid #f2e7da;
+}
+
+.bold-label {
+	font-size: 26rpx;
+	color: #2f241f;
 }
 </style>

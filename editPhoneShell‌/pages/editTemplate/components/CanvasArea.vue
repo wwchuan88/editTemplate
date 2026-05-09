@@ -18,8 +18,7 @@
 								<textarea class="layer__text-input" :style="getTextStyle(layer)"
 									:value="layer.text || ''" placeholder="请输入" @blur="handleTextBlur(layer.id)"
 									@focus="handleInputFocus" @input="handleTextInput(layer.id, $event)"
-									@mousedown="handleInputMouseDown"
-									:ref="el => textInputRefs[layer.id] = el">
+									@mousedown="handleInputMouseDown" :ref="el => textInputRefs[layer.id] = el">
 								</textarea>
 								<view v-if="props.selectedLayerId === layer.id">
 									<view class="layer__rotate-btn" @touchstart.stop="handleRotateStart($event, layer)"
@@ -35,6 +34,9 @@
 										@touchmove="handleResizeMove($event)" @touchend="handleResizeEnd($event)"
 										@mousedown="handleResizeStart($event, layer)">
 										<text class="iconfont icon-sort"></text>
+									</view>
+									<view class="layer__bring-to-front-btn" @click.stop="handleBringToFront(layer.id)">
+										<text class="iconfont icon-intersection layer__bring-to-front-btn-icon"></text>
 									</view>
 
 								</view>
@@ -140,7 +142,7 @@ const props = defineProps({
 	}
 })
 
-const emit = defineEmits(['select-layer', 'add-text-layer', 'update-text', 'clear-tool', 'update-layer-position', 'delete-layer', 'update-layer-size', 'exit-edit', 'add-brush-layer'])
+const emit = defineEmits(['select-layer', 'add-text-layer', 'update-text', 'clear-tool', 'update-layer-position', 'delete-layer', 'update-layer-size', 'exit-edit', 'add-brush-layer', 'bring-to-front'])
 
 const editingText = ref('')
 const textInputRefs = ref({})
@@ -680,8 +682,8 @@ function handleScreenClick(event) {
 	if (props.selectedLayerId) {
 		emit('select-layer', null)
 	}
-	
-	
+
+
 	if (props.currentTool === 'text') {
 		if (hasCreatedText.value) {
 			emit('clear-tool')
@@ -743,7 +745,7 @@ function startEditing(layer) {
 }
 
 function handleInputFocus() {
-	
+
 }
 
 function handleInputMouseDown() {
@@ -777,6 +779,11 @@ function handleTextBlur(layerId) {
 function handleDeleteLayer(layerId) {
 	if (props.disabled) return
 	emit('delete-layer', layerId)
+}
+
+function handleBringToFront(layerId) {
+	if (props.disabled) return
+	emit('bring-to-front', layerId)
 }
 
 const rotatingLayerId = ref('')
@@ -988,7 +995,8 @@ function getTextStyle(layer) {
 	return {
 		fontSize: layer.size + 'rpx',
 		color: layer.color,
-		fontFamily: layer.font
+		fontFamily: layer.font,
+		fontWeight: layer.bold ? 'bold' : 'normal'
 	}
 }
 
@@ -1083,7 +1091,9 @@ function getBrushImageStyle(layer) {
 	resize: none;
 	overflow: hidden;
 	box-sizing: border-box;
+	font-weight: inherit;
 }
+
 .layer--selected .layer__text-input {
 	height: auto;
 }
@@ -1111,7 +1121,6 @@ function getBrushImageStyle(layer) {
 
 .layer__rotate-btn-icon {
 	color: #fff;
-	font-size: 24rpx;
 }
 
 .layer__delete-btn {
@@ -1131,18 +1140,35 @@ function getBrushImageStyle(layer) {
 
 .layer__delete-btn-icon {
 	color: #fff;
-	font-size: 24rpx;
 	font-weight: bold;
+}
+
+.layer__bring-to-front-btn {
+	position: absolute;
+	bottom: -24rpx;
+	left: -24rpx;
+    width: 40rpx;
+    height: 40rpx;
+    background: #5b8def;
+    border-radius: 4rpx;
+    z-index: 10;
+    cursor: nwse-resize;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.layer__bring-to-front-btn-icon {
+	color: #fff;
 }
 
 .layer__resize-handle {
 	position: absolute;
 	bottom: -24rpx;
 	right: -24rpx;
-	width: 36rpx;
-	height: 36rpx;
+	width: 40rpx;
+	height: 40rpx;
 	background: #f0b429;
-	border: 4rpx solid #fff;
 	border-radius: 4rpx;
 	z-index: 10;
 	cursor: nwse-resize;

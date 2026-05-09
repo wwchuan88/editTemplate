@@ -64,7 +64,7 @@
 						@update-text="handleUpdateText" @clear-tool="handleClearTool"
 						@update-layer-position="updateLayerPosition" @delete-layer="deleteLayer"
 						@update-layer-size="updateLayerSize" @exit-edit="exitEdit"
-						@add-brush-layer="handleAddBrushLayer" />
+						@add-brush-layer="handleAddBrushLayer" @bring-to-front="bringLayerToFront" />
 
 
 						<view  class="tool-bar-button-text">店管家移动端自定组件</view>
@@ -83,9 +83,9 @@
 		<view v-if="!is3DMode" class="toolbar-wrap">
 			<TextToolbar v-if="currentTool === 'text' || (selectedLayer && selectedLayer.type === 'text')"
 				:text-draft="textDraft" :text-color="textColor" :text-size="textSize" :text-font="textFont"
-				:colors="textColors" :is-editing="selectedLayer && selectedLayer.type === 'text'"
+				:text-bold="textBold" :colors="textColors" :is-editing="selectedLayer && selectedLayer.type === 'text'"
 				@update-draft="textDraft = $event" @pick-color="pickTextColor" @change-size="changeTextSize"
-				@pick-font="pickTextFont" @submit="upsertTextLayer" @exit="exitTool" />
+				@pick-font="pickTextFont" @toggle-bold="toggleTextBold" @submit="upsertTextLayer" @exit="exitTool" />
 			<IconEditToolbar v-else-if="selectedLayer && selectedLayer.type === 'icon'"
 				:icon-color="selectedLayer.color" :colors="textColors" @pick-color="updateIconColor" @exit="exitTool" />
 			<IconToolbar v-else-if="currentTool === 'icon'" :options="iconOptions" @add="addIconLayer"
@@ -204,6 +204,7 @@ const textDraft = ref('店管家')
 const textColor = ref('#2f241f')
 const textSize = ref(30)
 const textFont = ref('Microsoft YaHei')
+const textBold = ref(false)
 const brushColor = ref('#ff7b54')
 const brushSize = ref(3)
 const sidebarVisible = ref(false)
@@ -255,6 +256,7 @@ function addTextLayer(x, y) {
 		color: textColor.value,
 		size: textSize.value,
 		font: textFont.value,
+		bold: textBold.value,
 		width,
 		height,
 		x: position.x,
@@ -280,6 +282,7 @@ function upsertTextLayer() {
 		selectedLayer.value.color = textColor.value
 		selectedLayer.value.size = textSize.value
 		selectedLayer.value.font = textFont.value
+		selectedLayer.value.bold = textBold.value
 		selectedLayer.value.height = Math.max(48, textSize.value + 20)
 		return
 	}
@@ -422,6 +425,8 @@ function selectLayer(id) {
 		textDraft.value = layer.text
 		textColor.value = layer.color
 		textSize.value = layer.size
+		textFont.value = layer.font
+		textBold.value = layer.bold || false
 		editingLayerId.value = id
 	} else if (currentTool.value === 'brush') {
 	} else {
@@ -464,6 +469,14 @@ function deleteLayer(layerId) {
 	}
 	if (editingLayerId.value === layerId) {
 		editingLayerId.value = ''
+	}
+}
+
+function bringLayerToFront(layerId) {
+	const index = layers.value.findIndex((item) => item.id === layerId)
+	if (index !== -1 && index < layers.value.length - 1) {
+		const [layer] = layers.value.splice(index, 1)
+		layers.value.push(layer)
 	}
 }
 
@@ -565,6 +578,13 @@ function pickTextFont(font) {
 	textFont.value = font
 	if (selectedLayer.value && selectedLayer.value.type === 'text') {
 		selectedLayer.value.font = font
+	}
+}
+
+function toggleTextBold(value) {
+	textBold.value = value
+	if (selectedLayer.value && selectedLayer.value.type === 'text') {
+		selectedLayer.value.bold = value
 	}
 }
 
