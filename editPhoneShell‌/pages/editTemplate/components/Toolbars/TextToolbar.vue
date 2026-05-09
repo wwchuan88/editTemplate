@@ -45,14 +45,14 @@
 			<view v-if="activeNav === 'size'" class="nav-content">
 				<view class="size-slider">
 					<view class="size-slider-content">
-						<text class="size-label">字体大小: {{ textSize }}</text>
+						<text class="size-label">字体大小： {{ textSize }}</text>
 						<view class="slider-container">
 							<slider min="12" max="60" step="1" :value="textSize" @change="handleSizeChange" />
 						</view>
 					</view>
 				</view>
 				<view class="bold-switch">
-					<text class="bold-label">是否加粗</text>
+					<text class="bold-label">是否加粗： </text>
 					<switch :checked="textBold" @change="handleBoldChange" color="#d86e33" />
 				</view>
 			</view>
@@ -312,7 +312,6 @@ function handleBoldChange(e) {
 .bold-switch {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	margin-top: 20rpx;
 	padding-top: 20rpx;
 	border-top: 2rpx solid #f2e7da;

@@ -238,8 +238,9 @@ function getCenterPosition(width, height) {
 }
 
 function addTextLayer(x, y) {
+	const defaultSize = 30
 	const width = 180
-	const height = Math.max(48, textSize.value + 20)
+	const height = Math.max(48, defaultSize + 20)
 	let position
 	if (x !== undefined && y !== undefined) {
 		position = {
@@ -253,10 +254,10 @@ function addTextLayer(x, y) {
 		id: createId('text'),
 		type: 'text',
 		text: '请输入',
-		color: textColor.value,
-		size: textSize.value,
-		font: textFont.value,
-		bold: textBold.value,
+		color: '#000000',
+		size: defaultSize,
+		font: 'Microsoft YaHei',
+		bold: false,
 		width,
 		height,
 		x: position.x,
@@ -267,6 +268,11 @@ function addTextLayer(x, y) {
 	layers.value.push(layer)
 	selectedLayerId.value = layer.id
 	editingLayerId.value = layer.id
+	
+	textColor.value = '#000000'
+	textSize.value = defaultSize
+	textFont.value = 'Microsoft YaHei'
+	textBold.value = false
 }
 
 function handleAddTextLayer(x, y) {
