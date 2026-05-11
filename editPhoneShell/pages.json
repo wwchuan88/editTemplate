@@ -1,0 +1,17 @@
+{
+	"pages": [
+		{
+			"path": "pages/choose/choose",
+			"style": {
+				"navigationBarTitleText": "选择型号",
+				"navigationStyle": "custom"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "CaseCraft",
+		"navigationBarBackgroundColor": "#ffffff",
+		"backgroundColor": "#f6f6f6"
+	}
+}

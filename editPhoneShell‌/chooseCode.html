@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>选择型号 - CaseCraft</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#6c5a00",
+                    "primary-container": "#ffd709",
+                    "on-primary-container": "#5b4b00",
+                    "surface": "#f6f6f6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f0f1f1",
+                    "surface-container": "#e7e8e8",
+                    "surface-container-high": "#e1e3e3",
+                    "on-surface": "#2d2f2f",
+                    "on-surface-variant": "#5a5c5c",
+                    "outline": "#767777",
+                    "outline-variant": "#acadad",
+                    "secondary": "#166665",
+                    "secondary-container": "#a8efed",
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Be Vietnam Pro"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface h-screen flex flex-col overflow-hidden">
+<!-- 顶部栏 -->
+<header class="bg-surface-container-lowest px-6 py-4 flex items-center justify-between gap-4 z-50 border-b border-surface-container">
+<!-- 左侧：上次选择 -->
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-low hover:bg-surface-container rounded-full transition-colors flex-shrink-0 group">
+<span class="text-xs font-bold text-outline uppercase tracking-wider">上次选择</span>
+<span class="text-sm font-bold text-on-surface">iPhone 16 Pro</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<!-- 右侧：搜索框 -->
+<div class="relative flex-grow max-w-md">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-11 pr-4 py-2.5 bg-surface-container-low border-none rounded-full text-sm focus:ring-2 focus:ring-primary-container placeholder:text-outline-variant transition-all" placeholder="搜索型号或组件..." type="text"/>
+</div>
+</header>
+<!-- 内容区：左右分栏 -->
+<main class="flex-grow flex overflow-hidden">
+<!-- 左侧：品牌选择列表 (垂直选项卡) -->
+<aside class="bg-surface-container-low flex flex-col py-6 overflow-y-auto hide-scrollbar w-48 md:w-64">
+<nav class="flex flex-col gap-2">
+<button class="relative flex flex-col items-center py-4 text-primary font-bold group">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-primary-container rounded-r-full"></div>
+<div class="w-12 h-12 rounded-2xl bg-primary-container flex items-center justify-center mb-1 shadow-sm">
+<span class="material-symbols-outlined text-2xl">apple</span>
+</div>
+<span class="text-xs font-headline">苹果</span>
+</button>
+<button class="relative flex flex-col items-center py-4 text-on-surface-variant hover:text-on-surface transition-colors group">
+<div class="w-12 h-12 rounded-2xl bg-surface-container flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-2xl">smartphone</span>
+</div>
+<span class="text-xs font-headline">华为</span>
+</button>
+<button class="relative flex flex-col items-center py-4 text-on-surface-variant hover:text-on-surface transition-colors group">
+<div class="w-12 h-12 rounded-2xl bg-surface-container flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-2xl">devices</span>
+</div>
+<span class="text-xs font-headline">小米</span>
+</button>
+<button class="relative flex flex-col items-center py-4 text-on-surface-variant hover:text-on-surface transition-colors group">
+<div class="w-12 h-12 rounded-2xl bg-surface-container flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-2xl">grid_view</span>
+</div>
+<span class="text-xs font-headline">荣耀</span>
+</button>
+</nav>
+</aside>
+<!-- 右侧：具体型号展示 -->
+<section class="flex-grow bg-surface-container-lowest p-6 overflow-y-auto">
+<div class="mb-6">
+<h2 class="text-2xl font-extrabold tracking-tight">Apple iPhone</h2>
+<p class="text-on-surface-variant text-sm mt-1">选择您的 iPhone 型号以开始设计</p>
+</div>
+<div class="grid grid-cols-2 gap-4 pb-24 max-w-2xl mx-auto">
+<!-- 型号卡片：选中态 -->
+<div class="relative group cursor-pointer bg-primary-container/10 border-2 border-primary-container rounded-2xl p-4 transition-all duration-300">
+<div class="absolute top-2 right-2 bg-primary-container text-on-primary-container w-6 h-6 rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[16px] font-bold">check</span>
+</div>
+<div class="aspect-[3/4] mb-4 flex items-center justify-center bg-white/50 rounded-xl">
+<img alt="iPhone 16 Pro" class="h-4/5 object-contain drop-shadow-xl group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFtNOjJZJMGHR-PGcjovXcGLp_Jf5lA0ja2imfXIbQMjh3Di5TcJR7J66qkLzS8p8iBcpSNh3KIEqMkoFZzRl4JUbPq1bGG8gCg3VM3vk160P3u00AsgqNQvuXjM6-qsDPRI_c7D-UIbClpJiIozmYqHLyWMUqnF9gHyBl8DeVmPxdyThYsq1i8IDNKog0EhOTXBQ29yMK53z6jv12Bc-p6SzjVXZ-scjiFT91e4EddFoYjgBlrS0xyqP6Qa0n-hIi_jOJv2lQnRk"/>
+</div>
+<div class="text-center">
+<p class="font-headline font-bold text-on-surface leading-none mb-1">iPhone 16 Pro</p>
+<p class="text-[10px] text-on-surface-variant font-medium">钛金属系列</p>
+</div>
+</div>
+<!-- 其他型号 -->
+<div class="relative group cursor-pointer bg-surface-container-low hover:bg-surface-container transition-all duration-300 rounded-2xl p-4">
+<div class="aspect-[3/4] mb-4 flex items-center justify-center">
+<img alt="iPhone 16" class="h-4/5 object-contain opacity-80 group-hover:opacity-100 transition-all duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOW22tMB6aF5x0sOqVeoydOeEWafQtQPAxQsaE_gRy6mY2EDrnYbnnvX7rMkF8hDJcYErUVN-nqEg7W86wxwbxT6dhEJaq8o3vHE5ygI5r_QOHl4WsfdRHvlMrJ_XjC2A70Sp37eozCEznrOgpeen8xqduRWpxdz3sKx_LG8TX_LhwXlCEBMqN42sqii-IqSHmoLarqyZw_iE1zBiVumqG8Iq1vGMy-OM_rvbHbRQj93uCI8_-7rx_vWgV1xJf2AvqqOvYNDUYlnE"/>
+</div>
+<div class="text-center">
+<p class="font-headline font-bold text-on-surface leading-none mb-1 text-sm">iPhone 16</p>
+<p class="text-[10px] text-on-surface-variant font-medium">灵动岛</p>
+</div>
+</div>
+<div class="relative group cursor-pointer bg-surface-container-low hover:bg-surface-container transition-all duration-300 rounded-2xl p-4">
+<div class="aspect-[3/4] mb-4 flex items-center justify-center">
+<img alt="iPhone 15 Pro" class="h-4/5 object-contain opacity-80 group-hover:opacity-100 transition-all duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOvVfI_EeVHGHGTqbASp3BJd0rxLuZ9keCK8UjvOelpinH5qibe4ivmVK_anYoqvbEH4y73RRBqZHI7ahToq3Xmh6Aq6phzdxjcc8R-3HILiSFU7sjWiAujoHdAzLCEDjOgSKLAZ6cdmqnlKUXyxZnuBz8wc_eH_bmtNkx3HVGZ6951vgw8-Mj2_xZ3875KZTZJvzyTTvMeDxF2Det_uLtORRa7xB8h_OTEnlas_E0IU8djhuV9grdgCtSniI5n0LXfSuJmI0pVPI"/>
+</div>
+<div class="text-center">
+<p class="font-headline font-bold text-on-surface leading-none mb-1 text-sm">iPhone 15 Pro</p>
+<p class="text-[10px] text-on-surface-variant font-medium">操作按钮</p>
+</div>
+</div>
+<div class="relative group cursor-pointer bg-surface-container-low hover:bg-surface-container transition-all duration-300 rounded-2xl p-4">
+<div class="aspect-[3/4] mb-4 flex items-center justify-center">
+<img alt="iPhone 15" class="h-4/5 object-contain opacity-80 group-hover:opacity-100 transition-all duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj6HMwqRt5eIi7bPhq2shEiZQZCkrnlYqJvcsiRKCEUlX4lZVEg3TuljNwQIAfH9nigH4N22uZQlF-mem36cE38uLLe7Me_tC2bWe9DeeWKMGNU-C3AEV4ydW-vdr7OpVvmUGoc3hdgv6GJ6oRFmzt1Aa5o4JImoNkATW-6OOOPImYDSjluFObqQ0gySysbWJv7U2cKDoU9CgLob2OaDf0-Dqzp5gSOh9xGQXTI8MI8MIIGXXubqzWUSZy0bv_Lp8penaRNN0dLrI"/>
+</div>
+<div class="text-center">
+<p class="font-headline font-bold text-on-surface leading-none mb-1 text-sm">iPhone 15</p>
+<p class="text-[10px] text-on-surface-variant font-medium">USB-C 系列</p>
+</div>
+</div>
+<div class="relative group cursor-pointer bg-surface-container-low hover:bg-surface-container transition-all duration-300 rounded-2xl p-4 border-2 border-dashed border-outline-variant flex flex-col items-center justify-center min-h-[160px]">
+<span class="material-symbols-outlined text-3xl text-outline-variant mb-2">more_horiz</span>
+<p class="text-xs font-bold text-on-surface-variant">更多型号</p>
+</div>
+</div>
+</section>
+</main>
+<!-- 底部固定按钮 -->
+<footer class="fixed bottom-0 left-0 right-0 p-6 bg-surface-container-lowest/90 backdrop-blur-md z-40 border-t border-surface-container">
+<div class="max-w-4xl mx-auto">
+<button class="w-full py-5 bg-primary-container text-on-primary-container font-headline font-extrabold text-lg rounded-full shadow-[0_10px_20px_-5px_rgba(255,215,9,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(255,215,9,0.6)] transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+<span>下一步</span>
+<span class="material-symbols-outlined font-bold">arrow_forward</span>
+</button>
+</div>
+</footer>
+</body></html>

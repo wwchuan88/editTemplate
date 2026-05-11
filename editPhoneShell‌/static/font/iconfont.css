@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 5164916 */
-  src: url('iconfont.woff2?t=1778305804815') format('woff2'),
-       url('iconfont.woff?t=1778305804815') format('woff'),
-       url('iconfont.ttf?t=1778305804815') format('truetype');
+  src: url('iconfont.woff2?t=1778483785056') format('woff2'),
+       url('iconfont.woff?t=1778483785056') format('woff'),
+       url('iconfont.ttf?t=1778483785056') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-H:before {
+  content: "\e6d1";
+}
+
+.icon-xiaomi:before {
+  content: "\e661";
+}
+
+.icon-huawei:before {
+  content: "\e82e";
+}
+
+.icon-apple-fill:before {
+  content: "\e881";
+}
+
+.icon-rongyao:before {
+  content: "\e81c";
+}
+
+.icon-sousuo:before {
+  content: "\e63c";
 }
 
 .icon-yizhidingceng:before {

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffefec",
+                    "secondary": "#166665",
+                    "surface-container-highest": "#dbdddd",
+                    "primary": "#6c5a00",
+                    "on-secondary-container": "#005c5b",
+                    "surface-dim": "#d3d5d5",
+                    "surface-tint": "#6c5a00",
+                    "surface-variant": "#dbdddd",
+                    "primary-fixed-dim": "#efc900",
+                    "on-tertiary-fixed-variant": "#6f3541",
+                    "secondary-fixed-dim": "#9ae1df",
+                    "on-primary-fixed-variant": "#665500",
+                    "error-dim": "#b92902",
+                    "surface": "#f6f6f6",
+                    "on-tertiary-fixed": "#4b1825",
+                    "on-tertiary-container": "#652c39",
+                    "inverse-surface": "#0c0f0f",
+                    "background": "#f6f6f6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#e7e8e8",
+                    "on-surface": "#2d2f2f",
+                    "on-tertiary": "#ffeff0",
+                    "surface-container-low": "#f0f1f1",
+                    "secondary-container": "#a8efed",
+                    "on-primary": "#fff2cd",
+                    "error": "#b02500",
+                    "on-primary-fixed": "#453900",
+                    "on-secondary-fixed": "#004747",
+                    "on-background": "#2d2f2f",
+                    "outline": "#767777",
+                    "tertiary-fixed": "#ffaebc",
+                    "on-surface-variant": "#5a5c5c",
+                    "inverse-primary": "#ffd709",
+                    "inverse-on-surface": "#9c9d9d",
+                    "on-primary-container": "#5b4b00",
+                    "tertiary-fixed-dim": "#efa0ae",
+                    "primary-fixed": "#ffd709",
+                    "secondary-fixed": "#a8efed",
+                    "tertiary-dim": "#793d4a",
+                    "on-error-container": "#520c00",
+                    "secondary-dim": "#005958",
+                    "tertiary-container": "#ffaebc",
+                    "surface-container-high": "#e1e3e3",
+                    "primary-dim": "#5e4e00",
+                    "error-container": "#f95630",
+                    "on-secondary": "#bcfffd",
+                    "tertiary": "#884855",
+                    "on-secondary-fixed-variant": "#166665",
+                    "surface-bright": "#f6f6f6",
+                    "primary-container": "#ffd709",
+                    "outline-variant": "#acadad"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Be Vietnam Pro"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-gradient-login {
+            background: linear-gradient(135deg, #ffaebc 0%, #e8e1f5 100%);
+        }
+        .doodle-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.4;
+            z-index: 0;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Ambient Doodles Background -->
+<div class="doodle-overlay">
+<svg class="absolute top-10 left-10 text-tertiary-dim w-16 h-16 opacity-30" viewbox="0 0 100 100">
+<path d="M50 10 L60 40 L90 50 L60 60 L50 90 L40 60 L10 50 L40 40 Z" fill="currentColor"></path>
+</svg>
+<svg class="absolute bottom-20 right-10 text-secondary w-24 h-24 opacity-20" viewbox="0 0 100 100">
+<path d="M10 50 Q30 20 50 50 T90 50" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<svg class="absolute top-1/2 -left-8 text-primary-fixed-dim w-20 h-20 opacity-25 rotate-45" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="30" stroke="currentColor" stroke-dasharray="10 5" stroke-width="2"></circle>
+</svg>
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-10 w-full max-w-md px-6 py-12 flex flex-col h-full min-h-screen">
+<!-- Header Brand Anchor -->
+<header class="flex justify-between items-center mb-12">
+<div class="flex flex-col">
+<span class="text-3xl font-black italic text-primary tracking-tighter drop-shadow-sm">CaseCraft</span>
+<span class="text-sm font-medium text-secondary opacity-70">Design your dream</span>
+</div>
+<div class="w-12 h-12 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-secondary">brush</span>
+</div>
+</header>
+<!-- Popular Designs Horizontal Scroll -->
+<section class="mb-12">
+<div class="flex justify-between items-end mb-4">
+<h2 class="text-xl font-extrabold tracking-tight text-on-surface">Trending Now</h2>
+<span class="text-xs font-bold text-tertiary">VIEW ALL</span>
+</div>
+<div class="flex overflow-x-auto gap-5 hide-scrollbar pb-4 -mx-6 px-6 snap-x">
+<!-- Case Item 1 -->
+<div class="flex-shrink-0 w-44 snap-center">
+<div class="bg-surface-container-lowest rounded-xl p-3 shadow-[0_10px_30px_rgba(0,0,0,0.05)] transform rotate-[-2deg]">
+<img class="w-full h-56 object-cover rounded-lg mb-3" data-alt="Modern minimalist aesthetic phone case with abstract pastel organic shapes and soft grain texture against a neutral studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSyQ5ee0dVXGqZ5lmh-edWSyPfCdf8vkWwy7eKvs8nAOsSUYoNhKYR4VntXahtPCxKVLh6t0xbRp7MkWpP0dabHF9-ynlh3JDgvnMRewop_P6W5HM7-_upuXvNTZ_LeLZomRcrIR1l_VNNrAPzMWT3uag_DLzBxRLX5XliJfwxNOIZVbx1AJ4az4_u_sl-W78RnXYR7-Ad22LeF1Qp8bZi16Od5RFDDA3gG0rwJBqXgHMImi5gtXkL4bUUqglEQx09utdC9p6uoCo"/>
+<p class="text-xs font-bold text-center text-on-surface-variant">Pastel Dream</p>
+</div>
+</div>
+<!-- Case Item 2 -->
+<div class="flex-shrink-0 w-44 snap-center">
+<div class="bg-surface-container-lowest rounded-xl p-3 shadow-[0_10px_30px_rgba(0,0,0,0.05)] transform rotate-[3deg]">
+<img class="w-full h-56 object-cover rounded-lg mb-3" data-alt="Durable high-tech clear phone case showcasing a vibrant neon cyber-punk inspired sticker art design with vivid electric blues and magentas" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmmmFDFLdMavpuw4yxQu-MLDROZo7avP34QpaS7HEXYLXmiyekLvmumbrHoD0QxRff8U2Ex7Iv4El3qxfT4xoVWvIqZ3GJRfmZFIwlOqUpzQZZn8BpDT2PO3EVhpNykaGJAN9qhYpv39ZYbVwBqZOpHHphvij_qaNVF0tl-4Ry7gYfCOgfSOjP42cXzFD9_o02P45lqa-S4QSagFbekTfHsUj1NGHadrNbhUd5FvRQljEsne33N3LSnp5vDsmeSoCrA-8jp1Olesg"/>
+<p class="text-xs font-bold text-center text-on-surface-variant">Electric City</p>
+</div>
+</div>
+<!-- Case Item 3 -->
+<div class="flex-shrink-0 w-44 snap-center">
+<div class="bg-surface-container-lowest rounded-xl p-3 shadow-[0_10px_30px_rgba(0,0,0,0.05)] transform rotate-[-1deg]">
+<img class="w-full h-56 object-cover rounded-lg mb-3" data-alt="Elegant premium leather phone case in deep forest green with embossed gold foil botanical illustrations in a luxury studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAI9K17zlK4-pZAAJMtlpnO1Pz4NOLRwl7MkdyUwu85ZM9SsvQfHcg4FCNq316swmgkmdF3YgjtYVcoqbkjJFeY0oMO5EJ8NQTB1xfvMOmP0J0pwlBuM1o88eoZwBrPK7MP2s60vk6Z71evzfs4u_3wEJJismc435jeji6ZdcivqqiJr2l5-VOk2niDAGKUsLZyK4Bi1THfmdSNCkVXAkZVll3w5owvn3rjndFmgN28YCB824YAg-T7O9hiHHAM3-B6nyhWLttr5X0"/>
+<p class="text-xs font-bold text-center text-on-surface-variant">Forest Luxe</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Login Actions -->
+<section class="flex-grow flex flex-col justify-center space-y-4">
+<button class="w-full py-5 px-8 rounded-full bg-primary-container text-on-primary-container font-bold text-lg shadow-[0_8px_20px_rgba(255,215,9,0.3)] flex items-center justify-center gap-3 transition-transform active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">phone_iphone</span>
+                Login with Phone
+            </button>
+<button class="w-full py-5 px-8 rounded-full bg-zinc-900 text-white font-bold text-lg flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-xl">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24">
+<path d="M17.05 20.28c-.98.95-2.05 1.61-3.22 1.61-1.14 0-1.52-.67-2.83-.67-1.32 0-1.78.65-2.83.65-1.13 0-2.22-.72-3.24-1.66-2.09-1.92-3.66-5.41-3.66-8.52 0-3.07 1.61-4.75 3.16-4.75 1.13 0 1.93.63 2.65.63s1.53-.7 2.85-.7c1.1 0 2.24.47 3.08 1.48-2.61 1.43-2.18 5.25.46 6.32-.48 1.12-1.32 2.67-2.43 3.63zm-3.01-15.65c-.06-2.58 2.1-4.63 4.54-4.63.1 2.92-2.31 4.95-4.54 4.63z"></path>
+</svg>
+                Apple Login
+            </button>
+<div class="relative py-6 flex items-center">
+<div class="flex-grow border-t border-secondary/10"></div>
+<span class="px-4 text-xs font-bold text-secondary/40 uppercase tracking-widest">or continue with</span>
+<div class="flex-grow border-t border-secondary/10"></div>
+</div>
+<!-- Social/New User Area -->
+<div class="flex flex-col items-center gap-6">
+<button class="w-16 h-16 rounded-full bg-surface-container-lowest shadow-lg flex items-center justify-center transition-transform active:scale-90">
+<svg class="w-8 h-8" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+</button>
+<div class="text-center group">
+<p class="text-sm font-medium text-on-surface-variant">New to CaseCraft?</p>
+<button class="text-lg font-extrabold text-secondary hover:text-primary transition-colors mt-1">
+                        New User Signup
+                    </button>
+</div>
+</div>
+</section>
+<!-- Legal Footer -->
+<footer class="mt-auto pt-8 text-center">
+<p class="text-[10px] text-secondary opacity-40 uppercase tracking-widest leading-relaxed">
+                By logging in you agree to our<br/>
+<a class="underline" href="#">Terms of Service</a> &amp; <a class="underline" href="#">Privacy Policy</a>
+</p>
+</footer>
+</main>
+<!-- Visual Polish: Soft Glow -->
+<div class="absolute -bottom-20 -left-20 w-80 h-80 bg-primary-container/20 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute -top-20 -right-20 w-80 h-80 bg-tertiary-container/30 rounded-full blur-[100px] pointer-events-none"></div>
+</body></html>

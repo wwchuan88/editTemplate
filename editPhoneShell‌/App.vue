@@ -12,6 +12,7 @@
 	}
 </script>
 <style lang="scss">
+	@import '@/static/css/common.scss';
 	@import '@/static/font/iconfont.css';
 	@import '@/static/font-icons/iconfont.css';
 	@import '@/uni_modules/uview-plus_3.8.9/index.scss';
