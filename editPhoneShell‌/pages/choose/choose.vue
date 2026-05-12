@@ -18,15 +18,12 @@
 			<!-- 左侧：品牌选择列表 -->
 			<aside class="brand-list">
 				<nav class="brand-nav">
-					<button 
-						v-for="(brand, index) in brands" 
-						:key="index"
+					<button v-for="(brand, index) in brands" :key="index"
 						:class="['brand-item', { active: currentBrand === brand.name }]"
-						@click="selectBrand(brand.name)"
-					>
+						@click="selectBrand(brand.name)">
 						<view v-if="currentBrand === brand.name" class="active-indicator"></view>
 						<view class="brand-icon" :class="{ active: currentBrand === brand.name }">
-							<text class="material-symbols-outlined iconfont "  :class="brand.icon"></text>
+							<text class="material-symbols-outlined iconfont " :class="brand.icon"></text>
 						</view>
 						<span class="brand-name">{{ brand.label }}</span>
 					</button>
@@ -41,22 +38,13 @@
 				</view>
 
 				<view class="model-grid">
-					<view 
-						v-for="(model, index) in currentModels" 
-						:key="index"
-						:class="['model-card', { active: selectedModel === model.name }]"
-						@click="selectModel(model)"
-					>
+					<view v-for="(model, index) in currentModels" :key="index"
+						:class="['model-card', { active: selectedModel === model.name }]" @click="selectModel(model)">
 						<view v-if="selectedModel === model.name" class="check-badge">
 							<text class="material-symbols-outlined iconfont icon-tick" style="font-size: 24rpx;"></text>
 						</view>
 						<view class="model-image-wrap">
-							<image 
-								class="model-image" 
-								mode="aspectFit" 
-								:src="model.image" 
-								:alt="model.name"
-							/>
+							<image class="model-image" mode="aspectFit" :src="model.image" :alt="model.name" />
 						</view>
 						<view class="model-info">
 							<p class="model-name">{{ model.name }}</p>
@@ -76,7 +64,8 @@
 		<footer class="footer">
 			<button class="btn-next" @click="handleNext">
 				<span>下一步</span>
-				<text class="material-symbols-outlined next-icon iconfont icon-left-arrow" style="transform: rotate(180deg);"></text>
+				<text class="material-symbols-outlined next-icon iconfont icon-left-arrow"
+					style="transform: rotate(180deg);"></text>
 			</button>
 		</footer>
 	</view>
@@ -107,17 +96,17 @@ const models = {
 		{
 			name: 'iPhone 16',
 			subtitle: '灵动岛',
-			image: buildUrl('/public/images/models/unnamed2.png')
+			image: buildUrl('/public/images/models/unnamed-2.png')
 		},
 		{
 			name: 'iPhone 15 Pro',
 			subtitle: '操作按钮',
-			image: buildUrl('/public/images/models/unnamed3.png')	
+			image: buildUrl('/public/images/models/unnamed-3.png')
 		},
 		{
 			name: 'iPhone 15',
 			subtitle: 'USB-C 系列',
-			image: buildUrl('/public/images/models/unnamed4.png')
+			image: buildUrl('/public/images/models/unnamed-4.png')
 		}
 	],
 	huawei: [
@@ -199,7 +188,10 @@ function handleLastChoice() {
 }
 
 function handleNext() {
-	uni.showToast({ title: `已选择 ${selectedModel.value}`, icon: 'none' })
+	// uni.showToast({ title: `已选择 ${selectedModel.value}`, icon: 'none' })
+	uni.navigateTo({
+		url: '/pages/choose/choseEditTemplate'
+	})
 }
 </script>
 
@@ -232,7 +224,7 @@ function handleNext() {
 	height: 72rpx;
 	display: inline-flex;
 	align-items: center;
-	padding:0 16rpx;
+	padding: 0 16rpx;
 }
 
 .btn-last-choice:active {
@@ -346,8 +338,9 @@ function handleNext() {
 .brand-icon.active {
 	background: #ffd709;
 }
-.brand-icon.active .material-symbols-outlined.iconfont{
-	color:#fff;
+
+.brand-icon.active .material-symbols-outlined.iconfont {
+	color: #fff;
 }
 
 .brand-icon .material-symbols-outlined {
@@ -446,7 +439,6 @@ function handleNext() {
 
 .model-image-wrap {
 	width: 100%;
-	padding-bottom: 100%;
 	background: rgba(255, 255, 255, 0.5);
 	border-radius: 24rpx;
 	display: flex;
@@ -457,8 +449,8 @@ function handleNext() {
 }
 
 .model-image {
-	width: 80%;
-	height: 80%;
+	width: 205rpx;
+	height: 205rpx;
 	transition: all 0.3s;
 }
 
@@ -520,19 +512,19 @@ function handleNext() {
 
 .btn-next {
 	width: 100%;
-	height: 88rpx;
+	padding: 24rpx;
 	background: linear-gradient(135deg, #ffd709 0%, #f5c800 100%);
 	border-radius: 100rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	gap: 12rpx;
-	font-size: 32rpx;
-	font-weight: 800;
+	font-size: 28rpx;
 	color: #5b4b00;
 	font-family: 'Plus Jakarta Sans', sans-serif;
 	box-shadow: 0 10rpx 20rpx -5rpx rgba(255, 215, 9, 0.4);
 	transition: all 0.2s;
+	box-sizing: border-box;
 }
 
 .btn-next:active {
@@ -541,8 +533,7 @@ function handleNext() {
 }
 
 .next-icon {
-	font-size: 36rpx;
-	font-weight: bold;
+	font-size: 28rpx;
 }
 
 .material-symbols-outlined {

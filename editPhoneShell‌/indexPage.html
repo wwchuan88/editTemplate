@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CaseCraft - 视频教程</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffefec",
+                    "secondary": "#166665",
+                    "surface-container-highest": "#dbdddd",
+                    "primary": "#6c5a00",
+                    "on-secondary-container": "#005c5b",
+                    "surface-dim": "#d3d5d5",
+                    "surface-tint": "#6c5a00",
+                    "surface-variant": "#dbdddd",
+                    "primary-fixed-dim": "#efc900",
+                    "on-tertiary-fixed-variant": "#6f3541",
+                    "secondary-fixed-dim": "#9ae1df",
+                    "on-primary-fixed-variant": "#665500",
+                    "error-dim": "#b92902",
+                    "surface": "#f6f6f6",
+                    "on-tertiary-fixed": "#4b1825",
+                    "on-tertiary-container": "#652c39",
+                    "inverse-surface": "#0c0f0f",
+                    "background": "#f6f6f6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#e7e8e8",
+                    "on-surface": "#2d2f2f",
+                    "on-tertiary": "#ffeff0",
+                    "surface-container-low": "#f0f1f1",
+                    "secondary-container": "#a8efed",
+                    "on-primary": "#fff2cd",
+                    "error": "#b02500",
+                    "on-primary-fixed": "#453900",
+                    "on-secondary-fixed": "#004747",
+                    "on-background": "#2d2f2f",
+                    "outline": "#767777",
+                    "tertiary-fixed": "#ffaebc",
+                    "on-surface-variant": "#5a5c5c",
+                    "inverse-primary": "#ffd709",
+                    "inverse-on-surface": "#9c9d9d",
+                    "on-primary-container": "#5b4b00",
+                    "tertiary-fixed-dim": "#efa0ae",
+                    "primary-fixed": "#ffd709",
+                    "secondary-fixed": "#a8efed",
+                    "tertiary-dim": "#793d4a",
+                    "on-error-container": "#520c00",
+                    "secondary-dim": "#005958",
+                    "tertiary-container": "#ffaebc",
+                    "surface-container-high": "#e1e3e3",
+                    "primary-dim": "#5e4e00",
+                    "error-container": "#f95630",
+                    "on-secondary": "#bcfffd",
+                    "tertiary": "#884855",
+                    "on-secondary-fixed-variant": "#166665",
+                    "surface-bright": "#f6f6f6",
+                    "primary-container": "#ffd709",
+                    "outline-variant": "#acadad"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Be Vietnam Pro"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f6f6f6;
+        }
+        h1, h2, h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#f6f6f6] dark:bg-zinc-950 flex justify-between items-center w-full px-6 py-4 sticky top-0 z-40">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-yellow-500 text-2xl">menu</span>
+<h1 class="text-2xl font-black italic text-yellow-500 drop-shadow-sm font-['Plus_Jakarta_Sans'] tracking-tighter">CaseCraft</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-surface-container-low rounded-full p-2 flex items-center shadow-inner">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<span class="material-symbols-outlined text-yellow-500 text-2xl">shopping_bag</span>
+</div>
+</header>
+<main class="px-6 space-y-8 max-w-screen-xl mx-auto">
+<!-- Top Banner: Challenge -->
+<section class="relative overflow-hidden rounded-lg bg-[#FFD700] min-h-[180px] flex items-center p-8 group shadow-lg">
+<div class="relative z-10 space-y-3">
+<span class="bg-on-background text-background px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">专属定制</span>
+<div class="space-y-1">
+<h2 class="text-3xl font-black text-on-background leading-tight italic tracking-tighter">专属你的定制手机壳</h2>
+<p class="text-on-background/80 font-bold text-sm">随心所欲，拼出个性</p>
+</div>
+<button class="bg-on-background text-background px-8 py-3 rounded-full font-black shadow-lg transform group-hover:scale-105 active:scale-95 transition-all">立即开启</button>
+</div>
+<!-- Cartoon Illustration Area -->
+<div class="absolute right-4 top-1/2 -translate-y-1/2 w-1/2 h-full flex items-center justify-end pointer-events-none">
+<div class="relative">
+<div class="w-32 h-48 bg-white rounded-2xl border-4 border-on-background rotate-12 shadow-[8px_8px_0px_rgba(0,0,0,0.1)] flex items-center justify-center overflow-hidden">
+<div class="w-full h-full bg-gradient-to-br from-tertiary-container to-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-5xl text-on-background/20 scale-150">auto_fix_high</span>
+</div>
+</div>
+<div class="absolute -top-4 -right-4 w-12 h-12 bg-tertiary rounded-full animate-bounce"></div>
+<div class="absolute bottom-0 -left-6 w-10 h-10 bg-secondary rotate-45"></div>
+</div>
+</div>
+<!-- Background Decorative Elements -->
+<div class="absolute -bottom-10 -left-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
+<div class="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
+<svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="20" id="dots" patternunits="userSpaceOnUse" width="20" x="0" y="0">
+<circle cx="2" cy="2" fill="black" r="2"></circle>
+</pattern>
+</defs>
+<rect fill="url(#dots)" height="100%" width="100%"></rect>
+</svg>
+</div>
+</section>
+<!-- Video Tutorials Section -->
+<section class="mt-8">
+<div class="flex justify-between items-end mb-6">
+<div class="space-y-1">
+<h3 class="text-2xl font-black tracking-tight text-on-background">视频教程</h3>
+<p class="text-on-surface-variant text-sm font-medium">教你如何定制手机壳</p>
+</div>
+<span class="text-secondary font-bold text-sm">查看更多</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Video Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative aspect-video">
+<img class="w-full h-full object-cover" data-alt="close up of hands applying custom stickers to a clear phone case in a sunny studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnrGv7aK6iR_S1pL4-U0H-I8i6E7U9y9X1Y8z7G6F5E4D3C2B1A0-9876543210"/>
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center transition-colors group-hover:bg-black/30">
+<div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl text-primary fill-1">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-3 right-3 bg-black/60 text-white text-[10px] px-2 py-1 rounded-md font-bold backdrop-blur-sm">05:24</div>
+</div>
+<div class="p-4 space-y-2">
+<h4 class="font-black text-lg leading-tight group-hover:text-primary transition-colors">小白入门：三步拼出你的专属外壳</h4>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-outline">visibility</span>
+<span class="text-xs text-on-surface-variant font-medium">2.8w</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-outline">thumb_up</span>
+<span class="text-xs text-on-surface-variant font-medium">1.2k</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Video Card 2 -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative aspect-video">
+<img class="w-full h-full object-cover" data-alt="creative design software interface showing custom phone case template with floral patterns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmO9P8Q7R6S5T4U3V2W1X0Y-Z9A8B7C6D5E4F3G2H1I0_J9K8L7M6N5"/>
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center transition-colors group-hover:bg-black/30">
+<div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl text-primary fill-1">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-3 right-3 bg-black/60 text-white text-[10px] px-2 py-1 rounded-md font-bold backdrop-blur-sm">08:12</div>
+</div>
+<div class="p-4 space-y-2">
+<h4 class="font-black text-lg leading-tight group-hover:text-primary transition-colors">进阶指南：如何使用艺术滤镜与贴纸组合</h4>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-outline">visibility</span>
+<span class="text-xs text-on-surface-variant font-medium">1.5w</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-outline">thumb_up</span>
+<span class="text-xs text-on-surface-variant font-medium">856</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Video Card 3 -->
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow group">
+<div class="relative aspect-video">
+<img class="w-full h-full object-cover" data-alt="various finished custom phone cases displayed on a minimal wooden table with aesthetic accessories" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1D2E3F4G5H6I7J8K9L0M1N2O3P4Q5R6S7T8U9V0W1X2Y3Z4A5B6C7"/>
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center transition-colors group-hover:bg-black/30">
+<div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl text-primary fill-1">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-3 right-3 bg-black/60 text-white text-[10px] px-2 py-1 rounded-md font-bold backdrop-blur-sm">04:45</div>
+</div>
+<div class="p-4 space-y-2">
+<h4 class="font-black text-lg leading-tight group-hover:text-primary transition-colors">灵感分享：当下最火的手机壳设计趋势</h4>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-outline">visibility</span>
+<span class="text-xs text-on-surface-variant font-medium">3.2w</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-outline">thumb_up</span>
+<span class="text-xs text-on-surface-variant font-medium">2.4k</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar + Central FAB -->
+<div class="fixed bottom-0 w-full rounded-t-[3rem] z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-[0_-10px_40px_rgba(0,0,0,0.06)] px-6 pb-6 pt-2 flex justify-around items-center">
+<!-- Home (Active) -->
+<div class="flex flex-col items-center justify-center bg-yellow-400 text-zinc-900 rounded-full px-5 py-2 scale-110 -translate-y-2 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-[10px] tracking-tight">首页</span>
+</div>
+<!-- Explore -->
+<div class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 px-4 py-2 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-[10px] tracking-tight">探索</span>
+</div>
+<!-- Central FAB -->
+<div class="relative -top-8">
+<div class="bg-tertiary shadow-[0_8px_25px_rgba(136,72,85,0.4)] rounded-full w-16 h-16 flex items-center justify-center text-white ring-8 ring-background">
+<span class="material-symbols-outlined text-3xl font-bold">add</span>
+</div>
+</div>
+<!-- Messages -->
+<div class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 px-4 py-2 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">mail</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-[10px] tracking-tight">消息</span>
+</div>
+<!-- Me -->
+<div class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 px-4 py-2 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-[10px] tracking-tight">我的</span>
+</div>
+</div>
+</body></html>

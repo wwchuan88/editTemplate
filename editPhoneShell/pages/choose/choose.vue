@@ -18,12 +18,9 @@
 			<!-- 左侧：品牌选择列表 -->
 			<aside class="brand-list">
 				<nav class="brand-nav">
-					<button 
-						v-for="(brand, index) in brands" 
-						:key="index"
+					<button v-for="(brand, index) in brands" :key="index"
 						:class="['brand-item', { active: currentBrand === brand.name }]"
-						@click="selectBrand(brand.name)"
-					>
+						@click="selectBrand(brand.name)">
 						<view v-if="currentBrand === brand.name" class="active-indicator"></view>
 						<view class="brand-icon" :class="{ active: currentBrand === brand.name }">
 							<text class="material-symbols-outlined">{{ brand.icon }}</text>
@@ -41,22 +38,13 @@
 				</view>
 
 				<view class="model-grid">
-					<view 
-						v-for="(model, index) in currentModels" 
-						:key="index"
-						:class="['model-card', { active: selectedModel === model.name }]"
-						@click="selectModel(model)"
-					>
+					<view v-for="(model, index) in currentModels" :key="index"
+						:class="['model-card', { active: selectedModel === model.name }]" @click="selectModel(model)">
 						<view v-if="selectedModel === model.name" class="check-badge">
 							<text class="material-symbols-outlined check-icon">check</text>
 						</view>
 						<view class="model-image-wrap">
-							<image 
-								class="model-image" 
-								mode="aspectFit" 
-								:src="model.image" 
-								:alt="model.name"
-							/>
+							<image class="model-image" mode="aspectFit" :src="model.image" :alt="model.name" />
 						</view>
 						<view class="model-info">
 							<p class="model-name">{{ model.name }}</p>
@@ -198,7 +186,10 @@ function handleLastChoice() {
 }
 
 function handleNext() {
-	uni.showToast({ title: `已选择 ${selectedModel.value}`, icon: 'none' })
+	// uni.showToast({ title: `已选择 ${selectedModel.value}`, icon: 'none' })
+	uni.navigateTo({
+		url: '/pages/choose/choseEditTemplate'
+	})
 }
 </script>
 

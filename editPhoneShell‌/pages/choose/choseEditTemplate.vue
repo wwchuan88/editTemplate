@@ -2,15 +2,7 @@
 	<view class="choose-edit-page">
 		<!-- TopAppBar -->
 		<header class="top-app-bar">
-			<view class="top-bar-left">
-				<view class="icon-btn" @click="handleMenu">
-					<text class="material-symbols-outlined">menu</text>
-				</view>
-				<h1 class="brand-name">CaseCraft</h1>
-			</view>
-			<view class="icon-btn" @click="handleCart">
-				<text class="material-symbols-outlined">shopping_bag</text>
-			</view>
+
 		</header>
 
 		<main class="main-content">
@@ -37,12 +29,9 @@
 			<!-- Horizontal Categories -->
 			<section class="categories-section">
 				<scroll-view class="categories-scroll" scroll-x show-scrollbar="false">
-					<button 
-						v-for="(cat, index) in categories" 
-						:key="index"
+					<button v-for="(cat, index) in categories" :key="index"
 						:class="['category-btn', { active: currentCategory === cat.name }]"
-						@click="selectCategory(cat.name)"
-					>{{ cat.label }}</button>
+						@click="selectCategory(cat.name)">{{ cat.label }}</button>
 				</scroll-view>
 			</section>
 
@@ -50,12 +39,8 @@
 			<section class="template-grid">
 				<!-- Column 1 -->
 				<view class="grid-column">
-					<view 
-						v-for="(template, index) in column1Templates" 
-						:key="template.id"
-						class="template-card"
-						@click="useTemplate(template)"
-					>
+					<view v-for="(template, index) in column1Templates" :key="template.id" class="template-card"
+						@click="useTemplate(template)">
 						<view class="card-inner">
 							<view class="card-image-wrap">
 								<image class="card-image" mode="aspectFill" :src="template.image" />
@@ -78,12 +63,8 @@
 
 				<!-- Column 2 -->
 				<view class="grid-column column-2">
-					<view 
-						v-for="(template, index) in column2Templates" 
-						:key="template.id"
-						class="template-card"
-						@click="useTemplate(template)"
-					>
+					<view v-for="(template, index) in column2Templates" :key="template.id" class="template-card"
+						@click="useTemplate(template)">
 						<view class="card-inner">
 							<view class="card-image-wrap">
 								<image class="card-image" mode="aspectFill" :src="template.image" />
@@ -108,7 +89,7 @@
 		<view class="modal-overlay" v-if="showModal" @click="closeModal">
 			<view class="modal-content" @click.stop>
 				<h3 class="modal-title">定制您的外壳</h3>
-				
+
 				<view class="modal-preview">
 					<image class="preview-image" mode="aspectFit" :src="selectedTemplate?.image" />
 					<view class="preview-badge">
@@ -117,14 +98,10 @@
 				</view>
 
 				<view class="color-section">
-					<p class="color-label">选择颜色</p>
 					<view class="color-dots">
-						<view 
-							v-for="(color, index) in colors" 
-							:key="index"
+						<view v-for="(color, index) in colors" :key="index"
 							:class="['color-dot-wrap', { selected: selectedColor === color.name }]"
-							@click="selectColor(color)"
-						>
+							@click="selectColor(color)">
 							<view class="color-dot" :style="{ background: color.hex }"></view>
 							<text class="color-name" v-if="color.label">{{ color.label }}</text>
 						</view>
@@ -132,8 +109,8 @@
 				</view>
 
 				<view class="modal-actions">
-					<button class="modal-btn modal-btn-primary" @click="confirmTemplate">确认使用</button>
 					<button class="modal-btn modal-btn-secondary" @click="closeModal">取消</button>
+					<button class="modal-btn modal-btn-primary" @click="confirmTemplate">确认使用</button>
 				</view>
 			</view>
 		</view>
@@ -194,7 +171,7 @@ const templates = [
 
 const colors = [
 	{ name: 'white', hex: '#F5F5F5', label: '柔和白', image: buildUrl('/public/images/editPhoneShell/unnamed-1.png') },
-	{ name: 'pink', hex: '#FFD1DC', label: '粉彩粉', image: buildUrl('/public/images/editPhoneShell/unnamed-2.png')},
+	{ name: 'pink', hex: '#FFD1DC', label: '粉彩粉', image: buildUrl('/public/images/editPhoneShell/unnamed-2.png') },
 	{ name: 'yellow', hex: '#FFF44F', label: '柠檬黄', image: buildUrl('/public/images/editPhoneShell/unnamed-3.png') },
 	{ name: 'mint', hex: '#AAF0D1', label: '薄荷绿', image: buildUrl('/public/images/editPhoneShell/unnamed-4.png') }
 ]
@@ -227,8 +204,11 @@ function closeModal() {
 }
 
 function confirmTemplate() {
-	uni.showToast({ title: `已选择 ${selectedTemplate.value?.name}`, icon: 'none' })
-	showModal.value = false
+	// uni.showToast({ title: `已选择 ${selectedTemplate.value?.name}`, icon: 'none' })
+	// showModal.value = false
+	uni.navigateTo({
+		url: '/pages/editTemplate/editTemplate'
+	})
 }
 
 function handleMenu() {
@@ -465,7 +445,7 @@ function switchTab(tab) {
 }
 
 .column-2 {
-	padding-top: 96rpx;
+	/* padding-top: 96rpx; */
 }
 
 .template-card {
@@ -493,8 +473,8 @@ function switchTab(tab) {
 }
 
 .card-image {
-	width: 100%;
-	height: auto;
+	width: 310rpx;
+	height: 310rpx;
 	display: block;
 }
 
@@ -632,7 +612,8 @@ function switchTab(tab) {
 
 .preview-image {
 	width: 384rpx;
-	height: auto;
+	height: 384rpx;
+	display: block;
 }
 
 .preview-badge {
@@ -698,6 +679,7 @@ function switchTab(tab) {
 	color: #2d2f2f;
 	opacity: 0;
 	transition: opacity 0.2s;
+	margin-top: 8rpx;
 }
 
 .color-dot-wrap.selected .color-name {
@@ -706,13 +688,13 @@ function switchTab(tab) {
 
 .modal-actions {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	gap: 16rpx;
 }
 
 .modal-btn {
 	width: 100%;
-	padding: 28rpx;
+	padding: 16rpx 28rpx;
 	border-radius: 100rpx;
 	font-size: 28rpx;
 	font-weight: 700;

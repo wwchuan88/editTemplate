@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI 实验室 - Atelier DIY</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,700;0,800;1,800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "secondary-fixed": "#a8efed",
+                "on-secondary": "#bcfffd",
+                "on-tertiary-container": "#652c39",
+                "on-surface": "#2d2f2f",
+                "on-primary-fixed-variant": "#665500",
+                "on-tertiary": "#ffeff0",
+                "on-secondary-fixed-variant": "#166665",
+                "on-primary": "#fff2cd",
+                "primary-fixed-dim": "#efc900",
+                "tertiary-container": "#ffaebc",
+                "on-surface-variant": "#5a5c5c",
+                "surface-container-high": "#e1e3e3",
+                "error": "#b02500",
+                "on-background": "#2d2f2f",
+                "on-secondary-container": "#005c5b",
+                "error-container": "#f95630",
+                "primary-container": "#ffd709",
+                "surface-container": "#e7e8e8",
+                "tertiary-fixed": "#ffaebc",
+                "surface-variant": "#dbdddd",
+                "on-primary-fixed": "#453900",
+                "primary-dim": "#5e4e00",
+                "on-primary-container": "#5b4b00",
+                "surface-variant": "#dbdddd",
+                "primary": "#6c5a00",
+                "surface-container-lowest": "#ffffff",
+                "error-dim": "#b92902",
+                "surface": "#f6f6f6",
+                "on-error-container": "#520c00",
+                "surface-container-highest": "#dbdddd",
+                "tertiary-fixed-dim": "#efa0ae",
+                "outline-variant": "#acadad",
+                "on-secondary-fixed": "#004747",
+                "surface-tint": "#6c5a00",
+                "secondary-fixed-dim": "#9ae1df",
+                "primary-fixed": "#ffd709",
+                "on-tertiary-fixed": "#4b1825",
+                "on-error": "#ffefec",
+                "tertiary-dim": "#793d4a",
+                "secondary": "#166665",
+                "surface-container-low": "#f0f1f1",
+                "inverse-on-surface": "#9c9d9d",
+                "surface-bright": "#f6f6f6",
+                "secondary-container": "#a8efed",
+                "tertiary": "#884855",
+                "inverse-primary": "#ffd709",
+                "outline": "#767777",
+                "on-tertiary-fixed-variant": "#6f3541",
+                "background": "#f6f6f6",
+                "inverse-surface": "#0c0f0f"
+              },
+              "borderRadius": {
+                "DEFAULT": "1rem",
+                "lg": "2rem",
+                "xl": "3rem",
+                "full": "9999px"
+              },
+              "fontFamily": {
+                "headline": ["Plus Jakarta Sans"],
+                "display": ["Plus Jakarta Sans"],
+                "body": ["Be Vietnam Pro"],
+                "label": ["Plus Jakarta Sans"]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .solar-gradient {
+            background: linear-gradient(135deg, #ffd709 0%, #efc900 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-surface-container-low dark:bg-surface-container-high w-full top-0 z-50 sticky">
+<div class="flex justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">palette</span>
+<h1 class="text-display-md font-headline font-black text-primary dark:text-primary-fixed-dim italic tracking-tight">AI 实验室</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed">shopping_bag</span>
+</button>
+</div>
+</div>
+</header>
+<main class="px-6 pt-8 space-y-8 max-w-2xl mx-auto">
+<!-- Hero Intro Section -->
+<section class="space-y-2">
+<p class="font-headline font-bold text-secondary text-sm uppercase tracking-[0.2em]">Creative Studio</p>
+<h2 class="text-4xl font-headline font-extrabold tracking-tight text-on-surface">释放你的想象力</h2>
+<p class="text-on-surface-variant text-lg">在 Atelier DIY 实验室中，使用先进的 AI 工具打造独一无二的手机壳。</p>
+</section>
+<!-- Functional Card 1: Text-to-Image -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_10px_40px_rgba(0,0,0,0.04)] overflow-hidden relative group">
+<div class="flex justify-between items-start mb-6">
+<div class="space-y-2 z-10">
+<span class="inline-flex items-center px-3 py-1 bg-primary-container text-on-primary-container rounded-full text-xs font-bold uppercase tracking-wider">Popular</span>
+<h3 class="text-2xl font-headline font-extrabold">文字生图</h3>
+<p class="text-on-surface-variant max-w-[200px]">描述你的灵感，AI 将瞬间为你创作精美图案。</p>
+</div>
+<div class="w-32 h-32 relative">
+<img class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-500" data-alt="A whimsical, professional illustration of a stylized golden pencil drawing a trail of glowing stars and miniature colorful abstract shapes. The scene is set against a clean, minimal white studio background with soft ambient shadows. The lighting is bright and airy, emphasizing a playful and creative atelier atmosphere with pastel color accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNl2-shaKmdEf48OkK4tE_tSDx-E5narA0UhGxjG2PBl_WsQWf46WSQzs06-DJVfmh4VrMS6Vqkh9JIPEKDOpH1b3tWwgHnYVDYGDtD3-wPvoOFQL2HDxFjqecV3eTfYdrnNIqpQ7241BSfXyP8GOCvWJ4rCMfjPbFnsHd7t7UiQ8DkeNjD7ZqLElNF-ssQpkYwcGHXpJWOlu8OGWiDsvEDMAqr51Xy2PVaGgxBPzWcrVMWm4PIplq2Z1qhP027vM-H-JrVrmqtZA"/>
+</div>
+</div>
+<div class="space-y-4 relative z-10">
+<div class="relative">
+<textarea class="w-full bg-surface-container-low border-none rounded-lg p-4 text-on-surface placeholder-outline focus:ring-2 focus:ring-primary-container resize-none h-24" placeholder="例如：一只戴着墨镜在海滩冲浪的柯基猫..."></textarea>
+</div>
+<div class="flex justify-center mb-2"><button class="flex items-center gap-1 text-on-surface-variant hover:text-primary transition-colors text-xs font-bold"><span class="material-symbols-outlined text-sm">history</span><span>预览已生成图片</span></button></div><button class="w-full solar-gradient text-on-primary-fixed py-4 rounded-full font-headline font-bold text-lg shadow-lg shadow-primary-container/20 active:scale-95 transition-all">
+                    开始生成
+                </button>
+</div>
+<!-- Decorative scribble -->
+<div class="absolute -bottom-4 -right-4 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-9xl">auto_fix_high</span>
+</div>
+</div>
+<!-- Grid for Other Tools -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Functional Card 2: Face Swap -->
+<div class="bg-secondary-container/30 rounded-lg p-6 flex flex-col items-center text-center space-y-6">
+<div class="space-y-1">
+<h3 class="text-xl font-headline font-bold text-on-secondary-container">图片换脸</h3>
+<p class="text-xs text-on-secondary-fixed-variant">将自拍完美融入艺术创作</p>
+</div>
+<div class="flex items-center justify-center gap-3 w-full">
+<div class="w-20 h-20 rounded-full border-4 border-white bg-white shadow-md overflow-hidden flex items-center justify-center relative">
+<img class="w-full h-full object-cover" data-alt="A close-up studio portrait of a smiling woman with clear lighting, set against a neutral, minimal background. The image is framed in a clean circular crop, showing high-end photography quality with a soft-matte finish to fit a professional DIY app's user interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAi2pjCrdkHNXCINjiJuwlJLJEl9rMGQWKgYIxqSvhq-1pRC49z8SWhV1r3r9GsaxpXYHFWriGIhmoH6-ti_6lEDQuoFNycLOhg9a8CVeyy40WNcwD0J4mi7Y-MEw9z2n0l1EldYSef3UIR-R65gYKxbAWEq3N5C5_Xz_4vIoyhcMx4vH6c6oSB3QpDlDtVGTd7PO_pAQfji2Y4PYpX1t5iknkF6h7COi4gMGMTc0sHq-tpQxs96ZThrlmTjHs_c5o3Sm9L3XWQULQ"/>
+<span class="absolute bottom-0 right-0 bg-primary rounded-full p-1 border-2 border-white">
+<span class="material-symbols-outlined text-[12px] text-white">person</span>
+</span>
+</div>
+<span class="material-symbols-outlined text-outline">swap_horiz</span>
+<div class="w-20 h-20 rounded-full border-4 border-dashed border-outline-variant bg-surface-container-low flex flex-col items-center justify-center cursor-pointer hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-outline">add_a_photo</span>
+<span class="text-[8px] font-bold text-outline uppercase mt-1">Source</span>
+</div>
+</div>
+<div class="flex justify-center mb-1"><button class="flex items-center gap-1 text-on-secondary-fixed-variant hover:text-secondary transition-colors text-xs font-bold"><span class="material-symbols-outlined text-sm">history</span><span>预览已生成图片</span></button></div><button class="w-full bg-secondary text-on-secondary-fixed py-3 rounded-full font-headline font-bold text-sm active:scale-95 transition-all">
+                    一键换脸
+                </button>
+</div>
+<!-- Functional Card 3: Background Removal -->
+<div class="bg-tertiary-container/20 rounded-lg p-6 flex flex-col justify-between">
+<div class="space-y-1 mb-4">
+<h3 class="text-xl font-headline font-bold text-on-tertiary-fixed">智能抠图</h3>
+<p class="text-xs text-on-tertiary-fixed-variant">精准提取主体，背景秒变透明</p>
+</div>
+<div class="relative h-32 w-full bg-white rounded-lg overflow-hidden border border-white shadow-sm flex items-center justify-center">
+<div class="absolute inset-0 grid grid-cols-2">
+<div class="bg-surface-dim"></div>
+<div class="bg-[radial-gradient(#dbdddd_1px,transparent_1px)] [background-size:8px_8px]"></div>
+</div>
+<!-- Phone Case Mockup -->
+<div class="relative z-10 w-24 transform -rotate-12 transition-transform hover:rotate-0 duration-500">
+<img class="w-full drop-shadow-2xl" data-alt="A premium 3D render of a modern smartphone case floating in mid-air. The case features a vibrant abstract design with bold primary colors and a high-gloss finish. The image demonstrates a before-and-after background removal effect with one side having a solid studio background and the other transitioning to a clean transparency checkerboard pattern." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNISbCS8n-R_lfKaeYnPoJ0PNxHq54RJiFmV3Fv5c2oieiYpAlgO8mhilZl1FsK6MV7FARfnf7t8PeCnS_yYvnLRL2_aQD7P7iqWTO0SrNcCbqIyA4EN6z5Fu2rAHQCmBPW1eRLEEa8jB03T0eySYcSvLGqNYW8T0zKUhTiFoggy8XVx1r7ILyWn-rQrWi6Da6FyhTU6w2z3j8T0utFCovctZLIQF7T_LrBmMx1vbcub5kYzpYy33J79LT9UXmt5P5oP3AwB2zxvE"/>
+</div>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="h-full w-0.5 bg-white z-20 shadow-sm"></div>
+</div>
+</div>
+<div class="flex justify-center mb-1"><button class="flex items-center gap-1 text-on-tertiary-fixed-variant hover:text-tertiary transition-colors text-xs font-bold"><span class="material-symbols-outlined text-sm">history</span><span>预览已生成图片</span></button></div><button class="w-full bg-tertiary text-white py-3 rounded-full font-headline font-bold text-sm mt-6 active:scale-95 transition-all">
+                    开始提取
+                </button>
+</div>
+</div>
+<!-- Featured Section -->
+<section class="pb-10">
+<div class="flex justify-between items-end mb-6">
+<h3 class="text-2xl font-headline font-extrabold">社区灵感</h3>
+<a class="text-primary font-bold text-sm" href="#">查看全部</a>
+</div>
+<div class="columns-2 gap-4 space-y-4">
+<div class="bg-surface-container-low rounded-lg overflow-hidden">
+<img class="w-full" data-alt="A stunning digital art piece of a futuristic floral pattern with bioluminescent petals in deep teals and vibrant yellows. The style is editorial and high-end, perfect for a designer smartphone case cover. The lighting is dramatic, highlighting the intricate textures and fluid curves." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLSzvIHDUVwc29wv35I1qpBrzq2gK15yTP46Qs9_hlFJ7vXA04TWVkz_rRkW397EXbqrmmnjvJWvLIZN4qOOPcgHSQ74VXkjAHuPhY0D1enaS3YeNiT9RkF1uPL6ulm9o8vbTKrFH9mk_KPsr_j80sOMtrjR1dHPpaOXFf6GUCIBl5mnKxRSpo3ME-rjhaqIK28e3TLSVjnIB6Ls-c5d6gtfQFvrCVhPgeJX9MtQEwG_6PRMJ-MvNbePueja7Qce3kI3nRWzsZ6d4"/>
+</div>
+<div class="bg-surface-container-low rounded-lg overflow-hidden">
+<img class="w-full" data-alt="Minimalist abstract vector art featuring geometric circles and playful wavy lines in a palette of primary yellow, soft pink, and deep slate. The composition is asymmetrical and modern, reflecting a youthful atelier aesthetic. High contrast and clean edges define the visual style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJnzPp_fBpAFiSPZIJKhjdRkiIaCW0LXeuxDhdsH6p3xyak8-lqPtjn5FABSeG2FH2RteJRxlRP56vCrtXjCWiXi7ZnkUo7LDrzOdEHXIW2Rlg510eJXTfi8bsAxsQYj-s3YIab5l23dNgPW7BYpSJNi4R8cqgdVs-HYUF6-6ruJCA5gtQS0X9yfCrNDtj785_bsQ6vwkV4MAssrzU5znWxQgeF3-NrRwFQDdo3-7N9M2gBuA__StJ7Jg4aegm94JzB_GEhVYDoTc"/>
+</div>
+<div class="bg-surface-container-low rounded-lg overflow-hidden">
+<img class="w-full" data-alt="A trendy, hand-drawn illustration of diverse cartoon characters in a vibrant city park setting. The art style is playful and expressive with thick outlines and bold colors, suitable for a personalized DIY product. The mood is energetic and optimistic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFnBDAI7dWKeXm4YLbyO0pgIlBcq6azGFzzNWMdtmeFClg-m1tmZle-NaxQVc0hHo4I_dTYqce3pnbuFOOLOMIGQd_JXwmfoAOEatsyAWFXROwMC7_kaaVFCB0zBzrUppLBYevyT8b5tjE-k09NUsnj_8eq-NuVkCLhdlGi5EK9Qmn7rb2qeTC5VPVATX7xQjYc5QOzXU7qeLQPoVro9vOwfWW8-JkK59SMnMM02YIahoFtii8WUSjj7xRcBIB58s0AT2lGP26xYQ"/>
+</div>
+<div class="bg-surface-container-low rounded-lg overflow-hidden">
+<img class="w-full" data-alt="A soft, colorful gradient mesh background transitioning from golden yellow to peach and soft teal. The texture is smooth and liquid-like, creating a premium and calming visual atmosphere. This elegant abstract art is ideal for modern tech accessories." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGMn3OP6ZX8z-MnIOxW5vH6a_L1oIT0ueVVTujb-XEtgwQNiZfN4hwygKblvlWC6XrVkX1DY0XmywmMVEBzDlmI7e-bpDDefMlcSLO8Kv2C6oPvIRPZYUPl3r64omOqbttYgreIFjLuKsPmrtl2mkwr5UZvJdSf3bzzQBtLmgKTPN7duAzFD8mDsKh7mbg-QTLPxNAEgMY-xbaJ7FX_OiTRecBh_v-qu6pQMLJcZB0e2r4pupbZkTSJPBSuRGfU7Perxn78tjOfs4"/>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-surface-container-lowest/80 dark:bg-surface-container-low/80 backdrop-blur-xl shadow-[0_-10px_40px_rgba(0,0,0,0.06)] rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-2 hover:bg-secondary-container/50 dark:hover:bg-secondary-dim/30 rounded-full active:scale-90 transition-all duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined">draw</span>
+<span class="font-label font-medium uppercase tracking-wider text-[10px] mt-1">Studio</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-2 hover:bg-secondary-container/50 dark:hover:bg-secondary-dim/30 rounded-full active:scale-90 transition-all duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-label font-medium uppercase tracking-wider text-[10px] mt-1">Gallery</span>
+</div>
+<!-- Active Tab: AI Tools -->
+<div class="flex flex-col items-center justify-center bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container rounded-full px-5 py-2 active:scale-90 transition-all duration-300 ease-out cursor-pointer shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_fix_high</span>
+<span class="font-label font-medium uppercase tracking-wider text-[10px] mt-1">AI Tools</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-2 hover:bg-secondary-container/50 dark:hover:bg-secondary-dim/30 rounded-full active:scale-90 transition-all duration-300 ease-out cursor-pointer">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label font-medium uppercase tracking-wider text-[10px] mt-1">Me</span>
+</div>
+</nav>
+</body></html>

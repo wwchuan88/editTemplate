@@ -249,8 +249,10 @@ function closeModal() {
 }
 
 function confirmTemplate() {
-	uni.showToast({ title: `已选择 ${selectedTemplate.value?.name}`, icon: 'none' })
 	showModal.value = false
+	uni.navigateTo({
+		url: '/pages/editTemplate/editTemplate'
+	})
 }
 
 function handleMenu() {

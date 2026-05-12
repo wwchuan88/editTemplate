@@ -7,14 +7,24 @@
 		}
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-	
+		{
+			"path": "pages/productShow/productShow",
+			"style": {
+				"navigationBarTitleText": "灵感广场"
+			}
+		},
+		{
+			"path": "pages/choose/choose",
+			"style": {
+				"navigationBarTitleText": "选择型号"
+			}
+		},
 		{
 			"path": "pages/choose/choseEditTemplate",
 			"style": {
 				"navigationBarTitleText": "选择模板"
 			}
 		},
-
 		{
 			"path": "pages/login/login",
 			"style": {
@@ -35,6 +45,18 @@
 			}
 		},
 		{
+			"path": "pages/index/indexPage",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/ai/aiCreatePic",
+			"style": {
+				"navigationBarTitleText": "AI生图"
+			}
+		},
+		{
 			"path": "pages/tabbar/mine",
 			"style": {
 				"navigationBarTitleText": "我的"
@@ -48,12 +70,20 @@
 		"borderStyle": "black",
 		"list": [
 			{
-				"pagePath": "pages/index/index",
+				"pagePath": "pages/index/indexPage",
 				"text": "首页"
 			},
 			{
-				"pagePath": "pages/editTemplate/editTemplate",
+				"pagePath": "pages/productShow/productShow",
+				"text": "灵感广场"
+			},
+			{
+				"pagePath": "pages/choose/choose",
 				"text": "编辑模板"
+			},
+			{
+				"pagePath": "pages/ai/aiCreatePic",
+				"text": "AI生图"
 			},
 			{
 				"pagePath": "pages/tabbar/mine",
