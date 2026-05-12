@@ -1,6 +1,13 @@
 {
 	"pages": [
 		{
+			"path": "pages/choose/choseEditTemplate",
+			"style": {
+				"navigationBarTitleText": "选择模板",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/choose/choose",
 			"style": {
 				"navigationBarTitleText": "选择型号",

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-error": "#ffefec",
+            "secondary": "#166665",
+            "surface-container-highest": "#dbdddd",
+            "primary": "#6c5a00",
+            "on-secondary-container": "#005c5b",
+            "surface-dim": "#d3d5d5",
+            "surface-tint": "#6c5a00",
+            "surface-variant": "#dbdddd",
+            "primary-fixed-dim": "#efc900",
+            "on-tertiary-fixed-variant": "#6f3541",
+            "secondary-fixed-dim": "#9ae1df",
+            "on-primary-fixed-variant": "#665500",
+            "error-dim": "#b92902",
+            "surface": "#f6f6f6",
+            "on-tertiary-fixed": "#4b1825",
+            "on-tertiary-container": "#652c39",
+            "inverse-surface": "#0c0f0f",
+            "background": "#f6f6f6",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#e7e8e8",
+            "on-surface": "#2d2f2f",
+            "on-tertiary": "#ffeff0",
+            "surface-container-low": "#f0f1f1",
+            "secondary-container": "#a8efed",
+            "on-primary": "#fff2cd",
+            "error": "#b02500",
+            "on-primary-fixed": "#453900",
+            "on-secondary-fixed": "#004747",
+            "on-background": "#2d2f2f",
+            "outline": "#767777",
+            "tertiary-fixed": "#ffaebc",
+            "on-surface-variant": "#5a5c5c",
+            "inverse-primary": "#ffd709",
+            "inverse-on-surface": "#9c9d9d",
+            "on-primary-container": "#5b4b00",
+            "tertiary-fixed-dim": "#efa0ae",
+            "primary-fixed": "#ffd709",
+            "secondary-fixed": "#a8efed",
+            "tertiary-dim": "#793d4a",
+            "on-error-container": "#520c00",
+            "secondary-dim": "#005958",
+            "tertiary-container": "#ffaebc",
+            "surface-container-high": "#e1e3e3",
+            "primary-dim": "#5e4e00",
+            "error-container": "#f95630",
+            "on-secondary": "#bcfffd",
+            "tertiary": "#884855",
+            "on-secondary-fixed-variant": "#166665",
+            "surface-bright": "#f6f6f6",
+            "primary-container": "#ffd709",
+            "outline-variant": "#acadad"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": ["Plus Jakarta Sans"],
+            "body": ["Be Vietnam Pro"],
+            "label": ["Plus Jakarta Sans"]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+
+<body class="bg-surface text-on-surface selection:bg-primary-container min-h-screen pb-32">
+  <!-- TopAppBar -->
+  <header class="bg-surface sticky top-0 z-50">
+    <div class="flex justify-between items-center w-full px-6 py-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2 hover:bg-yellow-50/50 dark:hover:bg-yellow-900/20 rounded-full transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-yellow-500">menu</span>
+        </div>
+        <h1 class="text-2xl font-black italic text-yellow-500 drop-shadow-sm tracking-tighter">CaseCraft</h1>
+      </div>
+      <div class="p-2 hover:bg-yellow-50/50 dark:hover:bg-yellow-900/20 rounded-full transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-yellow-500">shopping_bag</span>
+      </div>
+    </div>
+  </header>
+  <main class="max-w-2xl mx-auto px-6">
+    <!-- Premium Banner -->
+    <section class="mt-4 mb-8">
+      <div
+        class="relative overflow-hidden bg-secondary text-on-secondary-container rounded-xl p-6 flex items-center justify-between shadow-lg">
+        <div class="relative z-10">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="material-symbols-outlined text-tertiary-fixed"
+              style="font-variation-settings: 'FILL' 1;">diamond</span>
+            <span class="font-headline font-bold text-sm tracking-widest uppercase">高级模板</span>
+          </div>
+          <p class="text-white/80 text-sm max-w-[200px]">解锁 500+ 独家手工设计与特效。</p>
+        </div>
+        <button
+          class="relative z-10 bg-primary-container text-on-primary-fixed px-5 py-2 rounded-full font-headline font-bold text-sm shadow-xl transition-transform active:scale-95">立即升级</button>
+        <!-- Decorative background elements -->
+        <div class="absolute -right-4 -bottom-4 w-32 h-32 bg-secondary-container/20 rounded-full blur-2xl"></div>
+        <div class="absolute -left-4 -top-4 w-24 h-24 bg-tertiary-container/10 rounded-full blur-xl"></div>
+      </div>
+    </section>
+    <!-- Popular Templates Header -->
+    <section class="mb-6">
+      <h2 class="text-3xl font-black tracking-tighter text-on-surface mb-2">热门模板</h2>
+      <p class="text-on-surface-variant text-sm font-medium">在最受创作者欢迎的风格中找到你的灵感。</p>
+    </section>
+    <!-- Horizontal Categories -->
+    <section class="mb-10 -mx-6">
+      <div class="flex gap-4 overflow-x-auto px-6 no-scrollbar">
+        <button
+          class="whitespace-nowrap px-6 py-3 rounded-full bg-primary-container text-on-primary-container font-headline font-bold text-sm shadow-md transition-all">极简</button>
+        <button
+          class="whitespace-nowrap px-6 py-3 rounded-full bg-surface-container-low text-on-surface-variant font-headline font-medium text-sm hover:bg-surface-container-highest transition-all">复古</button>
+        <button
+          class="whitespace-nowrap px-6 py-3 rounded-full bg-surface-container-low text-on-surface-variant font-headline font-medium text-sm hover:bg-surface-container-highest transition-all">可爱</button>
+        <button
+          class="whitespace-nowrap px-6 py-3 rounded-full bg-surface-container-low text-on-surface-variant font-headline font-medium text-sm hover:bg-surface-container-highest transition-all">艺术</button>
+        <button
+          class="whitespace-nowrap px-6 py-3 rounded-full bg-surface-container-low text-on-surface-variant font-headline font-medium text-sm hover:bg-surface-container-highest transition-all">渐变</button>
+        <button
+          class="whitespace-nowrap px-6 py-3 rounded-full bg-surface-container-low text-on-surface-variant font-headline font-medium text-sm hover:bg-surface-container-highest transition-all">涂鸦</button>
+      </div>
+    </section>
+    <!-- Waterfall Grid (Double Column) -->
+    <section class="grid grid-cols-2 gap-6 items-start">
+      <!-- Column 1 -->
+      <div class="flex flex-col gap-8">
+        <!-- Template Card 1 -->
+        <div class="group cursor-pointer">
+          <div class="bg-surface-container-low rounded-lg p-3 transition-all group-hover:scale-[1.02]">
+            <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-surface-dim mb-4 shadow-sm">
+              <img class="w-full h-full object-cover"
+                data-alt="minimalist white 3D phone case render with soft studio lighting and clean shadows on a neutral background"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2c9Xtjz2g5R_aZzOVXtiDT0p1UNsUQwQDmGCZLmCB2hd_aodb4bBdsYGN8vJS6nYqExRKazIMmbrnEVY2KqfSC__VinPQhxWQyTvbuoX56-xaX1wguApRJzBK1KzbIlO4OIt8AMW9AoxRfuriipwds0VvemD25ppVWJiZP0eQLPAgq-JK1swOpzLk7Zb7R3VdLC3MYfub3YNtFLQrVO0QyUGqgP3GB94kW05jneTCT6y1kT8M99g9A3Ijexw_HrUCNap_feDcA4o" />
+              <div
+                class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                <span class="material-symbols-outlined text-[14px] text-primary"
+                  style="font-variation-settings: 'FILL' 1;">bolt</span>
+                <span class="text-[10px] font-bold text-on-surface">极简波浪</span>
+              </div>
+            </div>
+            <div class="px-1 mb-4">
+              <div class="flex items-center gap-1 text-on-surface-variant text-[11px] font-medium mb-1"><span
+                  class="material-symbols-outlined text-[14px]">visibility</span> 24.5k 次使用</div>
+              <h3 class="font-headline font-extrabold text-on-surface leading-tight">柔和粉笔白</h3>
+            </div>
+            <button
+              class="w-full py-3 bg-secondary text-on-secondary rounded-full font-headline font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 group-hover:shadow-lg">使用此模板</button>
+          </div>
+        </div>
+        <!-- Template Card 3 -->
+        <div class="group cursor-pointer">
+          <div class="bg-surface-container-low rounded-lg p-3 transition-all group-hover:scale-[1.02]">
+            <div class="relative aspect-[4/5] rounded-lg overflow-hidden bg-surface-dim mb-4 shadow-sm">
+              <img class="w-full h-full object-cover"
+                data-alt="vibrant abstract watercolor phone case design with swirling pink and orange hues and gold metallic flecks"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuB8D1mvb4WJestpyKcMbxPZv82iVTBK7fscdGLUCQCx8YsVhdWbu_qD2qONO2hFAWw8vqXJI-hexVn--EW-sQenk5IkboV_5mCLdDbYyVC6vZTXR5xDztehhP-i5MSayOnU_OxeZADlmYHSylF-wMMMstXzGA8qrtbdGFdp1zb3lO-e8dLylJXE2iZy4BrWizH--NPMxhbC4OdCj0KoEOoucJoDRFZt56Aqgyp6YyhG_VKjkA62l6s80GAQI-g6F7DZxIpAm2RNI" />
+              <div
+                class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                <span class="material-symbols-outlined text-[14px]">visibility</span> 12.8k 次使用
+              </div>
+            </div>
+            <div class="px-1 mb-4">
+              <div class="flex items-center gap-1 text-on-surface-variant text-[11px] font-medium mb-1"><span
+                  class="material-symbols-outlined text-[14px]">visibility</span> 12.8k 次使用</div>
+              <h3 class="font-headline font-extrabold text-on-surface leading-tight">日落旋涡</h3>
+            </div>
+            <button
+              class="w-full py-3 bg-secondary text-on-secondary rounded-full font-headline font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 group-hover:shadow-lg">使用此模板</button>
+          </div>
+        </div>
+      </div>
+      <!-- Column 2 -->
+      <div class="flex flex-col gap-8 pt-12">
+        <!-- Template Card 2 -->
+        <div class="group cursor-pointer">
+          <div class="bg-surface-container-low rounded-lg p-3 transition-all group-hover:scale-[1.02]">
+            <div class="relative aspect-[1/1] rounded-lg overflow-hidden bg-surface-dim mb-4 shadow-sm">
+              <img class="w-full h-full object-cover"
+                data-alt="retro checkered pattern phone case with nostalgic cream and sage green colors and a vintage matte finish"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdwbI8Q80NS6Wv-NqvLW0WeTN8yQQjzlzXm1emyiWTh5dlG9imqsIawvZrKyR9fJXhw_cSJzvHYWbp7I5Rv4DWrtlA6v19erbYF7aXLyXh9FCZ6DVAvjq4MK2taGjCXRUw_LRR6Gu2w_Wir0mvktG5tEW2ectxPiwWlwSGixKAf9sL623Z0elPRqJGG6ydGlFbnv5QMFLjFmO90d0Pl3CcawjPnvo8wv1z770wLrR9Scryh_Zh9uqqaFsNaNpDt8vS5__hlDI-DBU" />
+              <div
+                class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                <span class="material-symbols-outlined text-[14px]">visibility</span> 45.2k 次使用
+              </div>
+            </div>
+            <div class="px-1 mb-4">
+              <div class="flex items-center gap-1 text-on-surface-variant text-[11px] font-medium mb-1"><span
+                  class="material-symbols-outlined text-[14px]">visibility</span> 45.2k 次使用</div>
+              <h3 class="font-headline font-extrabold text-on-surface leading-tight">棋盘格鼠尾草</h3>
+            </div>
+            <button
+              class="w-full py-3 bg-secondary text-on-secondary rounded-full font-headline font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 group-hover:shadow-lg">使用此模板</button>
+          </div>
+        </div>
+        <!-- Template Card 4 -->
+        <div class="group cursor-pointer">
+          <div class="bg-surface-container-low rounded-lg p-3 transition-all group-hover:scale-[1.02]">
+            <div class="relative aspect-[3/4] rounded-lg overflow-hidden bg-surface-dim mb-4 shadow-sm">
+              <img class="w-full h-full object-cover"
+                data-alt="fun sticker collage phone case with cute doodles, rainbows, and smiley faces on a clear base"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRwGHyZqH7T_0usD81Z6DQJuj0IDSFEYwxLDYUd6WJDncj6uPWhUJ_NPIZt5YYwB5OAZyzUlYrE5QHaFUVQBwgOLn0MlM0A985C5BiCFeupvokVtLDUVtX_2bkuewMX7aqXySyr9eE2L0zRBdCoIpq1XhWqprBmwaIivqroz_Anm02d6gpSvtt5okVWQALAlrQdrhwShK4reCgqHhEg-AQwegJGXd8aNeJMmi-k_nQV-jGot5sferhKA8_NNAzOvM9LEADkrdXSNE" />
+              <div
+                class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                <span class="material-symbols-outlined text-[14px]">visibility</span> 31.9k 次使用
+              </div>
+            </div>
+            <div class="px-1 mb-4">
+              <div class="flex items-center gap-1 text-on-surface-variant text-[11px] font-medium mb-1"><span
+                  class="material-symbols-outlined text-[14px]">visibility</span> 31.9k 次使用</div>
+              <h3 class="font-headline font-extrabold text-on-surface leading-tight">萌系涂鸦</h3>
+            </div>
+            <button
+              class="w-full py-3 bg-secondary text-on-secondary rounded-full font-headline font-bold text-sm shadow-md flex items-center justify-center gap-2 transition-all active:scale-95 group-hover:shadow-lg">使用此模板</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- BottomNavBar -->
+  <nav
+    class="fixed bottom-0 left-0 w-full flex justify-around items-center px-6 pb-6 pt-2 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl rounded-t-[3rem] z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.06)]">
+    <div
+      class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 px-4 py-2 hover:opacity-80 transition-opacity active:scale-95 duration-200 cursor-pointer">
+      <span class="material-symbols-outlined">home</span>
+      <span class="font-['Plus_Jakarta_Sans'] font-medium text-[10px] tracking-tight">首页</span>
+    </div>
+    <div
+      class="flex flex-col items-center justify-center bg-yellow-400 text-zinc-900 rounded-full px-5 py-2 scale-110 -translate-y-2 transition-all shadow-lg cursor-pointer">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+      <span class="font-['Plus_Jakarta_Sans'] font-medium text-[10px] tracking-tight">探索</span>
+    </div>
+    <div
+      class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 px-4 py-2 hover:opacity-80 transition-opacity active:scale-95 duration-200 cursor-pointer">
+      <span class="material-symbols-outlined">add_circle</span>
+      <span class="font-['Plus_Jakarta_Sans'] font-medium text-[10px] tracking-tight">设计</span>
+    </div>
+    <div
+      class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 px-4 py-2 hover:opacity-80 transition-opacity active:scale-95 duration-200 cursor-pointer">
+      <span class="material-symbols-outlined">mail</span>
+      <span class="font-['Plus_Jakarta_Sans'] font-medium text-[10px] tracking-tight">消息</span>
+    </div>
+    <div
+      class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-400 px-4 py-2 hover:opacity-80 transition-opacity active:scale-95 duration-200 cursor-pointer">
+      <span class="material-symbols-outlined">person</span>
+      <span class="font-['Plus_Jakarta_Sans'] font-medium text-[10px] tracking-tight">我的</span>
+    </div>
+  </nav>
+  <!-- Color Selection Modal -->
+  <div class="fixed inset-0 z-[100] hidden items-center justify-center p-4" id="colorModal">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+      id="modalOverlay"></div>
+    <div
+      class="relative bg-surface rounded-xl w-full max-w-sm p-6 shadow-2xl transition-all duration-300 scale-90 opacity-0"
+      id="modalContent">
+      <h3 class="text-xl font-headline font-extrabold text-on-surface mb-4 text-center">定制您的外壳</h3>
+      <!-- Dynamic Product Image -->
+      <div
+        class="relative bg-surface-container-low rounded-lg p-4 mb-6 flex justify-center items-center shadow-inner overflow-hidden">
+        <img alt="Phone Case Preview" class="w-48 h-auto object-contain transition-all duration-300 transform"
+          id="modalProductImage"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2c9Xtjz2g5R_aZzOVXtiDT0p1UNsUQwQDmGCZLmCB2hd_aodb4bBdsYGN8vJS6nYqExRKazIMmbrnEVY2KqfSC__VinPQhxWQyTvbuoX56-xaX1wguApRJzBK1KzbIlO4OIt8AMW9AoxRfuriipwds0VvemD25ppVWJiZP0eQLPAgq-JK1swOpzLk7Zb7R3VdLC3MYfub3YNtFLQrVO0QyUGqgP3GB94kW05jneTCT6y1kT8M99g9A3Ijexw_HrUCNap_feDcA4o" />
+        <div class="absolute bottom-2 right-2 bg-primary-container/20 px-2 py-0.5 rounded-full">
+          <span class="text-[10px] font-bold text-primary italic">PREVIEW</span>
+        </div>
+      </div>
+      <!-- Color Dot Selector -->
+      <div class="mb-8">
+        <p class="text-xs font-bold text-on-surface-variant mb-3 text-center uppercase tracking-wider">选择颜色</p>
+        <div class="flex justify-center gap-4">
+          <button class="color-dot group relative" data-color="white"
+            data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuC2c9Xtjz2g5R_aZzOVXtiDT0p1UNsUQwQDmGCZLmCB2hd_aodb4bBdsYGN8vJS6nYqExRKazIMmbrnEVY2KqfSC__VinPQhxWQyTvbuoX56-xaX1wguApRJzBK1KzbIlO4OIt8AMW9AoxRfuriipwds0VvemD25ppVWJiZP0eQLPAgq-JK1swOpzLk7Zb7R3VdLC3MYfub3YNtFLQrVO0QyUGqgP3GB94kW05jneTCT6y1kT8M99g9A3Ijexw_HrUCNap_feDcA4o">
+            <div
+              class="w-8 h-8 rounded-full border-2 border-white bg-[#F5F5F5] shadow-sm transition-all group-[.selected]:ring-2 group-[.selected]:ring-primary group-[.selected]:scale-110">
+            </div>
+            <span
+              class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-on-surface opacity-0 group-[.selected]:opacity-100 transition-opacity whitespace-nowrap">柔和白</span>
+          </button>
+          <button class="color-dot group relative selected" data-color="pink"
+            data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuBuB8D1mvb4WJestpyKcMbxPZv82iVTBK7fscdGLUCQCx8YsVhdWbu_qD2qONO2hFAWw8vqXJI-hexVn--EW-sQenk5IkboV_5mCLdDbYyVC6vZTXR5xDztehhP-i5MSayOnU_OxeZADlmYHSylF-wMMMstXzGA8qrtbdGFdp1zb3lO-e8dLylJXE2iZy4BrWizH--NPMxhbC4OdCj0KoEOoucJoDRFZt56Aqgyp6YyhG_VKjkA62l6s80GAQI-g6F7DZxIpAm2RNI">
+            <div
+              class="w-8 h-8 rounded-full border-2 border-white bg-[#FFD1DC] shadow-sm transition-all group-[.selected]:ring-2 group-[.selected]:ring-primary group-[.selected]:scale-110">
+            </div>
+            <span
+              class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-on-surface opacity-0 group-[.selected]:opacity-100 transition-opacity whitespace-nowrap">粉彩粉</span>
+          </button>
+          <button class="color-dot group relative" data-color="yellow"
+            data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuCdwbI8Q80NS6Wv-NqvLW0WeTN8yQQjzlzXm1emyiWTh5dlG9imqsIawvZrKyR9fJXhw_cSJzvHYWbp7I5Rv4DWrtlA6v19erbYF7aXLyXh9FCZ6DVAvjq4MK2taGjCXRUw_LRR6Gu2w_Wir0mvktG5tEW2ectxPiwWlwSGixKAf9sL623Z0elPRqJGG6ydGlFbnv5QMFLjFmO90d0Pl3CcawjPnvo8wv1z770wLrR9Scryh_Zh9uqqaFsNaNpDt8vS5__hlDI-DBU">
+            <div
+              class="w-8 h-8 rounded-full border-2 border-white bg-[#FFF44F] shadow-sm transition-all group-[.selected]:ring-2 group-[.selected]:ring-primary group-[.selected]:scale-110">
+            </div>
+            <span
+              class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-on-surface opacity-0 group-[.selected]:opacity-100 transition-opacity whitespace-nowrap">柠檬黄</span>
+          </button>
+          <button class="color-dot group relative" data-color="mint"
+            data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuCRwGHyZqH7T_0usD81Z6DQJuj0IDSFEYwxLDYUd6WJDncj6uPWhUJ_NPIZt5YYwB5OAZyzUlYrE5QHaFUVQBwgOLn0MlM0A985C5BiCFeupvokVtLDUVtX_2bkuewMX7aqXySyr9eE2L0zRBdCoIpq1XhWqprBmwaIivqroz_Anm02d6gpSvtt5okVWQALAlrQdrhwShK4reCgqHhEg-AQwegJGXd8aNeJMmi-k_nQV-jGot5sferhKA8_NNAzOvM9LEADkrdXSNE">
+            <div
+              class="w-8 h-8 rounded-full border-2 border-white bg-[#AAF0D1] shadow-sm transition-all group-[.selected]:ring-2 group-[.selected]:ring-primary group-[.selected]:scale-110">
+            </div>
+            <span
+              class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-on-surface opacity-0 group-[.selected]:opacity-100 transition-opacity whitespace-nowrap">薄荷绿</span>
+          </button>
+          <button class="color-dot group relative" data-color="blue"
+            data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuC2c9Xtjz2g5R_aZzOVXtiDT0p1UNsUQwQDmGCZLmCB2hd_aodb4bBdsYGN8vJS6nYqExRKazIMmbrnEVY2KqfSC__VinPQhxWQyTvbuoX56-xaX1wguApRJzBK1KzbIlO4OIt8AMW9AoxRfuriipwds0VvemD25ppVWJiZP0eQLPAgq-JK1swOpzLk7Zb7R3VdLC3MYfub3YNtFLQrVO0QyUGqgP3GB94kW05jneTCT6y1kT8M99g9A3Ijexw_HrUCNap_feDcA4o">
+            <div
+              class="w-8 h-8 rounded-full border-2 border-white bg-[#A7C7E7] shadow-sm transition-all group-[.selected]:ring-2 group-[.selected]:ring-primary group-[.selected]:scale-110">
+            </div>
+            <span
+              class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-on-surface opacity-0 group-[.selected]:opacity-100 transition-opacity whitespace-nowrap">天空蓝</span>
+          </button>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button
+          class="flex-1 py-3 px-4 rounded-full font-headline font-bold text-sm bg-surface-container text-on-surface-variant hover:bg-surface-container-high transition-colors"
+          id="closeModal">取消</button>
+        <button
+          class="flex-1 py-3 px-4 rounded-full font-headline font-bold text-sm bg-secondary text-on-secondary shadow-md active:scale-95 transition-all"
+          id="confirmColor">确认</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const modal = document.getElementById('colorModal');
+    const overlay = document.getElementById('modalOverlay');
+    const content = document.getElementById('modalContent');
+    const productImage = document.getElementById('modalProductImage');
+
+    function showModal() {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => {
+        overlay.classList.replace('opacity-0', 'opacity-100');
+        content.classList.replace('opacity-0', 'opacity-100');
+        content.classList.replace('scale-90', 'scale-100');
+      }, 10);
+    }
+
+    function hideModal() {
+      overlay.classList.replace('opacity-100', 'opacity-0');
+      content.classList.replace('opacity-100', 'opacity-0');
+      content.classList.replace('scale-100', 'scale-90');
+      setTimeout(() => {
+        modal.classList.replace('flex', 'hidden');
+      }, 300);
+    }
+
+    // Using delegation for dynamically added/replaced content
+    document.addEventListener('click', (e) => {
+      // Close modal triggers
+      if (e.target.id === 'closeModal' || e.target.id === 'modalOverlay') {
+        hideModal();
+      }
+
+      // Confirm button
+      if (e.target.id === 'confirmColor') {
+        hideModal();
+      }
+
+      // Color dot interaction
+      const dot = e.target.closest('.color-dot');
+      if (dot) {
+        document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+        dot.classList.add('selected');
+
+        // Fade out image, swap, and fade in
+        if (productImage) {
+          productImage.classList.add('opacity-0', 'scale-95');
+          setTimeout(() => {
+            productImage.src = dot.dataset.img;
+            productImage.classList.remove('opacity-0', 'scale-95');
+          }, 200);
+        }
+      }
+
+      // 'Use template' buttons
+      if (e.target.tagName === 'BUTTON' && e.target.textContent.includes('使用此模板')) {
+        e.stopPropagation();
+        showModal();
+      }
+    });
+  </script>
+</body>
+
+</html>

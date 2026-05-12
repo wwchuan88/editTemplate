@@ -7,12 +7,14 @@
 		}
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	
 		{
-			"path": "pages/choose/choose",
+			"path": "pages/choose/choseEditTemplate",
 			"style": {
-				"navigationBarTitleText": "选择型号"
+				"navigationBarTitleText": "选择模板"
 			}
 		},
+
 		{
 			"path": "pages/login/login",
 			"style": {
