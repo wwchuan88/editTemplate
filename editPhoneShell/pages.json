@@ -48,6 +48,13 @@
 				"navigationBarTitleText": "编辑模板",
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "My Atelier",
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"globalStyle": {

@@ -57,7 +57,7 @@
 			}
 		},
 		{
-			"path": "pages/tabbar/mine",
+			"path": "pages/home/home",
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
@@ -86,7 +86,7 @@
 				"text": "AI生图"
 			},
 			{
-				"pagePath": "pages/tabbar/mine",
+				"pagePath": "pages/home/home",
 				"text": "我的"
 			}
 		]

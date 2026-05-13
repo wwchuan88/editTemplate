@@ -519,12 +519,13 @@ function handleNext() {
 	align-items: center;
 	justify-content: center;
 	gap: 12rpx;
-	font-size: 28rpx;
+	font-size: 24rpx;
 	color: #5b4b00;
 	font-family: 'Plus Jakarta Sans', sans-serif;
 	box-shadow: 0 10rpx 20rpx -5rpx rgba(255, 215, 9, 0.4);
 	transition: all 0.2s;
 	box-sizing: border-box;
+	font-weight: 700;
 }
 
 .btn-next:active {

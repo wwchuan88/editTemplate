@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "8198409",
+      "name": "客服",
+      "font_class": "kefu",
+      "unicode": "e6d0",
+      "unicode_decimal": 59088
+    },
+    {
+      "icon_id": "17542182",
+      "name": "我的-我的收货地址",
+      "font_class": "wode-wodeshouhuodizhi",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "1305451",
+      "name": "标签",
+      "font_class": "biaoqian",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "10487551",
+      "name": "购物袋",
+      "font_class": "gouwudai",
+      "unicode": "e696",
+      "unicode_decimal": 59030
+    },
+    {
       "icon_id": "11372756",
       "name": "爱心",
       "font_class": "aixin",

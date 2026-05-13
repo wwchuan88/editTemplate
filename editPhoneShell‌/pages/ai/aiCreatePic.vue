@@ -361,9 +361,10 @@ function switchTab(tab) {
 	background: linear-gradient(135deg, #ffd709 0%, #efc900 100%);
 	color: #453900;
 	border-radius: 100rpx;
-	font-size:28rpx;
+	font-size:24rpx;
 	font-family: 'Plus Jakarta Sans', sans-serif;
 	box-shadow: 0 10rpx 24rpx rgba(255, 215, 9, 0.3);
+	font-weight: 700;
 }
 
 .generate-btn:active {

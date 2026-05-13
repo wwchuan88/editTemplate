@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#453900",
+                        "error-container": "#f95630",
+                        "surface": "#f6f6f6",
+                        "secondary-fixed-dim": "#9ae1df",
+                        "background": "#f6f6f6",
+                        "tertiary-fixed-dim": "#efa0ae",
+                        "on-tertiary-fixed": "#4b1825",
+                        "tertiary-fixed": "#ffaebc",
+                        "primary-container": "#ffd709",
+                        "tertiary-dim": "#793d4a",
+                        "tertiary": "#884855",
+                        "inverse-surface": "#0c0f0f",
+                        "surface-tint": "#6c5a00",
+                        "surface-variant": "#dbdddd",
+                        "secondary": "#166665",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-dim": "#005958",
+                        "on-tertiary-container": "#652c39",
+                        "surface-container-highest": "#dbdddd",
+                        "primary-dim": "#5e4e00",
+                        "on-secondary": "#bcfffd",
+                        "on-tertiary-fixed-variant": "#6f3541",
+                        "inverse-on-surface": "#9c9d9d",
+                        "primary": "#6c5a00",
+                        "on-surface-variant": "#5a5c5c",
+                        "error-dim": "#b92902",
+                        "outline-variant": "#acadad",
+                        "on-error": "#ffefec",
+                        "tertiary-container": "#ffaebc",
+                        "secondary-container": "#a8efed",
+                        "outline": "#767777",
+                        "secondary-fixed": "#a8efed",
+                        "on-secondary-fixed": "#004747",
+                        "on-primary-container": "#5b4b00",
+                        "surface-container-low": "#f0f1f1",
+                        "on-secondary-container": "#005c5b",
+                        "on-background": "#2d2f2f",
+                        "surface-container": "#e7e8e8",
+                        "on-secondary-fixed-variant": "#166665",
+                        "on-primary": "#fff2cd",
+                        "surface-container-high": "#e1e3e3",
+                        "surface-bright": "#f6f6f6",
+                        "primary-fixed": "#ffd709",
+                        "on-error-container": "#520c00",
+                        "surface-dim": "#d3d5d5",
+                        "on-surface": "#2d2f2f",
+                        "primary-fixed-dim": "#efc900",
+                        "inverse-primary": "#ffd709",
+                        "on-tertiary": "#ffeff0",
+                        "error": "#b02500",
+                        "on-primary-fixed-variant": "#665500"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-toolbar {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .solar-gradient {
+            background: linear-gradient(135deg, #ffd709 0%, #ffefec 100%);
+        }
+        .bento-card {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .bento-card:active {
+            transform: scale(0.96);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-40 bg-surface flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline font-bold text-headline-md tracking-tight text-primary">My Atelier</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-low hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-6 max-w-2xl mx-auto space-y-8">
+<!-- Profile Header Section -->
+<section class="flex flex-col items-center pt-4">
+<div class="relative mb-4">
+<div class="w-32 h-32 rounded-xl p-1 bg-primary-container overflow-hidden rotate-3 hover:rotate-0 transition-transform duration-500">
+<img class="w-full h-full object-cover rounded-lg" data-alt="A playful, high-quality 3D rendered avatar of a trendy creative professional wearing oversized yellow glasses and a fashionable hoodie. The background is a soft pastel secondary_container teal. The lighting is warm and cinematic, emphasizing smooth textures and a friendly, minimalist cartoon aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiDNAy1n4Q9FZpxIx1fICKTP8wT1_Vzsd_FwKZakaxE1PywCvaGcIs_b9fLbE2uPP-A_SrdgYWQLm2ni8K3mQf_-DNOniIf5z9UxFMLHwNTcbnRNmq4YX0LuTw6cUXrKeEaTR4BMb-0BAa4vHLf9QV7nwm5bVskSL4diedTlz8hAfIZMa2IfC1yONHNe2Cz9TkqpzUkAQZWDlUHyp7V8J4o38zgBx4hV_6ZUHWZyV0znAn3ksvXUXr5Eyl2XB_QW1KYz-DzzhFpbQ"/>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-primary text-on-primary font-headline font-bold text-xs px-3 py-1 rounded-full shadow-lg">
+                    Level 5
+                </div>
+</div>
+<div class="text-center space-y-1">
+<h2 class="text-display-sm font-headline font-extrabold tracking-tight text-on-background">Creative Maker</h2>
+<p class="text-body-md text-on-surface-variant">Level 5 Designer • 创作达人</p>
+</div>
+</section>
+<!-- Stats Row: Tonal Layering -->
+<section class="grid grid-cols-3 gap-4">
+<div class="bg-surface-container-lowest p-6 rounded-xl text-center bento-card shadow-sm">
+<div class="text-headline-md font-headline font-extrabold text-on-background">24</div>
+<div class="text-label-sm text-on-surface-variant uppercase tracking-widest mt-1">作品</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl text-center bento-card shadow-sm">
+<div class="text-headline-md font-headline font-extrabold text-on-background">1.2k</div>
+<div class="text-label-sm text-on-surface-variant uppercase tracking-widest mt-1">粉丝</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl text-center bento-card shadow-sm">
+<div class="text-headline-md font-headline font-extrabold text-on-background">382</div>
+<div class="text-label-sm text-on-surface-variant uppercase tracking-widest mt-1">关注</div>
+</div>
+</section>
+<!-- Action Grid: Asymmetric Bento Style -->
+<section class="grid grid-cols-2 gap-4">
+<div class="bg-secondary-container p-6 rounded-xl flex flex-col justify-between h-32 bento-card group">
+<span class="material-symbols-outlined text-on-secondary-container text-4xl group-hover:scale-110 transition-transform" data-icon="shopping_bag">shopping_bag</span>
+<span class="font-headline font-bold text-on-secondary-container">我的订单</span>
+</div>
+<div class="bg-tertiary-container p-6 rounded-xl flex flex-col justify-between h-32 bento-card group">
+<span class="material-symbols-outlined text-on-tertiary-container text-4xl group-hover:scale-110 transition-transform" data-icon="sell">sell</span>
+<span class="font-headline font-bold text-on-tertiary-container">我的优惠券</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between h-32 bento-card group">
+<span class="material-symbols-outlined text-on-surface-variant text-4xl group-hover:scale-110 transition-transform" data-icon="location_on">location_on</span>
+<span class="font-headline font-bold text-on-surface">收货地址</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between h-32 bento-card group">
+<span class="material-symbols-outlined text-on-surface-variant text-4xl group-hover:scale-110 transition-transform" data-icon="support_agent">support_agent</span>
+<span class="font-headline font-bold text-on-surface">联系客服</span>
+</div>
+</section>
+<!-- Portfolio Tabs -->
+<section class="space-y-6">
+<div class="flex items-center justify-center gap-8 border-b-0">
+<button class="relative py-2 font-headline font-bold text-primary text-lg">
+                    我的作品
+                    <div class="absolute bottom-0 left-0 w-full h-1 bg-primary rounded-full"></div>
+</button>
+<button class="py-2 font-headline font-bold text-on-surface-variant text-lg hover:text-primary transition-colors">
+                    我的收藏
+                </button>
+</div>
+<!-- Masonry-like Grid for Designs -->
+<div class="grid grid-cols-2 gap-6">
+<!-- Case Item 1 -->
+<div class="space-y-3 bento-card">
+<div class="aspect-[3/4] bg-surface-container-high rounded-xl overflow-hidden relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A stylized professional 3D mockup of a customizable smartphone case featuring vibrant lemon yellow and soft teal geometric patterns. The case is displayed in a brightly lit studio setting with soft ambient shadows. The overall aesthetic is clean, playful, and minimalist, using the app's signature Solar Primary color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYPlfnDnoWczT-qqpA41B8G7nVo_tk02W8jT8Co4Ebxnh_1qGDO6FU6x420c-UAD0wA_0bytXk5u02L1Dr-IWAgNooeZMwaq09Q0KKXtbozvTREoZmXd20c-TGUQLMxFu04KTibABx3ix6_goclBmvvuLxcS32Y_qwRvkA1yC9FEtcS7pd-oG7G560viZWlGU7w1nbJ7F5lzTe8zq8XKsnE-YXUobXcABNYf2264B5oTzog337qrLlEOyLb_lX4O7gIzfm2hJv1bE"/>
+<div class="absolute top-3 right-3 bg-white/80 backdrop-blur-md p-2 rounded-full">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+</div>
+<div class="px-2">
+<h3 class="font-headline font-bold text-on-background">夏日柠黄限定</h3>
+<p class="text-label-sm text-on-surface-variant">Created 2 days ago</p>
+</div>
+</div>
+<!-- Case Item 2 -->
+<div class="space-y-3 bento-card mt-8">
+<div class="aspect-[3/4] bg-surface-container-high rounded-xl overflow-hidden relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A premium 3D phone case design featuring hand-drawn whimsical doodles of clouds and stars in a soft pastel pink and white color scheme. The lighting is dreamy and ethereal, creating a soft-matte texture on the case surface. The background is a clean off-white studio space, emphasizing the 'Playful Atelier' brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnbpjxHfYr6dBZVIx8cnlos-K4vQ3aolZRfUPnGa5spje2JVRiiS10Kv67W5KQxeyqTCrDB84B2Y6Rg7nQiUQAPFe7yE-KVfE0G8iNHqgzLgeMaIwM9ZBEEDD3XTGl8-iQ5DaKLnTQJ_ygNpyJEoIiL4AG7dlQS5l7Id_ZFbmXpVhFU-awwixNPI0i9UX3Ihk728t41Jmon7nv73ECJFTlt64KegVqud6KTNaJCmDp3FRTFJ1_NChT3FXRDy3B8AEpfXxRLz2XBbg"/>
+</div>
+<div class="px-2">
+<h3 class="font-headline font-bold text-on-background">梦幻云朵系列</h3>
+<p class="text-label-sm text-on-surface-variant">Created 1 week ago</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-2 bg-surface-container-lowest/80 backdrop-blur-xl rounded-t-xl shadow-lg shadow-on-surface/5">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-6 py-2 hover:bg-surface-container-high rounded-full transition-all active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="palette">palette</span>
+<span class="font-label text-label-sm">Studio</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-6 py-2 hover:bg-surface-container-high rounded-full transition-all active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="font-label text-label-sm">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-6 py-2 hover:bg-surface-container-high rounded-full transition-all active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="shopping_bag">shopping_bag</span>
+<span class="font-label text-label-sm">Orders</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-6 py-2 transition-all active:scale-90 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label text-label-sm">Me</span>
+</a>
+</nav>
+</body></html>
