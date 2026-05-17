@@ -7,6 +7,19 @@
 		}
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		
+			{
+			"path": "pages/choose/choseEditTemplate",
+			"style": {
+				"navigationBarTitleText": "选择模板"
+			}
+		},
+		{
+			"path": "pages/editTemplate/editTemplate",
+			"style": {
+				"navigationBarTitleText": "店管家手机端"
+			}
+		},
 		{
 			"path": "pages/productShow/productShow",
 			"style": {
@@ -19,23 +32,12 @@
 				"navigationBarTitleText": "选择型号"
 			}
 		},
-		{
-			"path": "pages/choose/choseEditTemplate",
-			"style": {
-				"navigationBarTitleText": "选择模板"
-			}
-		},
+
 		{
 			"path": "pages/login/login",
 			"style": {
 				"navigationBarTitleText": "店管家手机端",
 				"navigationStyle": "custom"
-			}
-		},
-		{
-			"path": "pages/editTemplate/editTemplate",
-			"style": {
-				"navigationBarTitleText": "店管家手机端"
 			}
 		},
 		{

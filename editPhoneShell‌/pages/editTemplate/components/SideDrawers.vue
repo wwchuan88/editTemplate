@@ -56,7 +56,7 @@
 	.sidebar {
 		width: 132rpx;
 		background: #fff;
-		border-radius: 0 24rpx 24rpx 0;
+		border-radius: 0 50rpx 50rpx 0;
 		box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 		position: fixed;
 		top: 50%;
@@ -123,7 +123,7 @@
 
 
 	.tool-item--active {
-		background: linear-gradient(135deg, #ea7c42 0%, #e45d47 100%);
+		background: #d6eaea;
 	}
 
 	.tool-item__label {
@@ -142,7 +142,7 @@
 	}
 
 	.tool-item--active .tool-item__label {
-		color: #fff9f2;
+		color: #166665;
 		font-weight: 700;
 	}
 </style>

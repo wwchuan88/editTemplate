@@ -53,7 +53,7 @@
 	.sidebar {
 		width: 132rpx;
 		background: #fff;
-		border-radius: 0 24rpx 24rpx 0;
+		border-radius: 0 50rpx 50rpx 0;
 		box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
 		position: fixed;
 		top: 50%;

@@ -15,11 +15,11 @@
 								{{ layer.text }}
 							</view>
 							<view v-else class="layer__text-editor">
-								<textarea class="layer__text-input" :style="getTextStyle(layer)"
-									:value="layer.text || ''" placeholder="请输入" @blur="handleTextBlur(layer.id)"
-									@focus="handleInputFocus" @input="handleTextInput(layer.id, $event)"
-									@mousedown="handleInputMouseDown" :ref="el => textInputRefs[layer.id] = el">
-								</textarea>
+								<input class="layer__text-input" :style="getTextStyle(layer)"
+									:value="editingText[layer.id] || layer.text || ''" placeholder="请输入"
+									@blur="handleTextBlur(layer.id)" @focus="handleInputFocus"
+									@input="handleTextInput(layer.id, $event)" @mousedown="handleInputMouseDown"
+									:ref="el => textInputRefs[layer.id] = el" />
 								<view v-if="props.selectedLayerId === layer.id">
 									<view class="layer__rotate-btn" @touchstart.stop="handleRotateStart($event, layer)"
 										@touchmove.stop="handleRotateMove" @touchend.stop="handleRotateEnd"
@@ -97,7 +97,6 @@
 		</view>
 	</view>
 </template>
-
 <script setup>
 import { computed, ref, shallowRef, nextTick, watch, onMounted, getCurrentInstance } from 'vue'
 
@@ -144,7 +143,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select-layer', 'add-text-layer', 'update-text', 'clear-tool', 'update-layer-position', 'delete-layer', 'update-layer-size', 'exit-edit', 'add-brush-layer', 'bring-to-front'])
 
-const editingText = ref('')
+const editingText = ref({})
 const textInputRefs = ref({})
 const draggingLayerId = ref('')
 const dragStartPos = ref({ x: 0, y: 0 })
@@ -236,7 +235,6 @@ function initBrushCanvas() {
 				if (el) {
 					const rect = el.getBoundingClientRect()
 					cachedRect.value = { left: rect.left, top: rect.top, width: rect.width, height: rect.height }
-					// 计算canvas绘制尺寸与显示尺寸的比例
 					brushCanvasScale.value = {
 						scaleX: canvas.width / rect.width,
 						scaleY: canvas.height / rect.height
@@ -305,7 +303,6 @@ function getPointerPos(e) {
 	}
 
 	if (isCanvasRelative) {
-		// 小程序端使用touch.x/touch.y（相对canvas坐标）
 		const x = clientX / props.scale
 		const y = clientY / props.scale
 		return { x, y }
@@ -314,15 +311,12 @@ function getPointerPos(e) {
 	const rect = cachedRect.value
 
 	if (isH5.value) {
-		// H5端：需要考虑canvas绘制尺寸与显示尺寸的比例
 		const scaleX = brushCanvasScale.value.scaleX || 1
 		const scaleY = brushCanvasScale.value.scaleY || 1
-		// 先计算相对canvas显示区域的位置，再乘以缩放比例得到绘制坐标
 		const x = ((clientX - rect.left) * scaleX) / props.scale
 		const y = ((clientY - rect.top) * scaleY) / props.scale
 		return { x, y }
 	} else {
-		// 小程序端
 		const x = (clientX - rect.left) / props.scale
 		const y = (clientY - rect.top) / props.scale
 		return { x, y }
@@ -635,6 +629,15 @@ watch(() => props.selectedLayerId, (newId) => {
 	}
 })
 
+watch(() => props.editingLayerId, (newId) => {
+	if (newId && props.currentTool === 'text') {
+		const layer = props.layers.find(l => l.id === newId)
+		if (layer && layer.type === 'text') {
+			startEditing(layer)
+		}
+	}
+})
+
 const activeFilterLabel = computed(() => {
 	const map = {
 		none: '滤镜：原图',
@@ -663,7 +666,7 @@ const filterStyle = computed(() => {
 
 const screenStyle = computed(() => {
 	return {
-		backgroundColor: '#fffdf8'
+		backgroundColor: '#fff'
 	}
 })
 
@@ -735,8 +738,9 @@ function handleLayerClick(layer) {
 }
 
 function startEditing(layer) {
-	editingText.value = layer.text || ''
-	emit('select-layer', layer.id)
+	if (!editingText.value[layer.id]) {
+		editingText.value[layer.id] = layer.text || ''
+	}
 	nextTick(() => {
 		if (textInputRefs.value[layer.id] && typeof textInputRefs.value[layer.id].focus === 'function') {
 			textInputRefs.value[layer.id].focus()
@@ -762,18 +766,15 @@ function handleTextInput(layerId, event) {
 		} else if (typeof event === 'string') {
 			value = event
 		}
+		editingText.value[layerId] = value
+
 	}
 
-	editingText.value = value
-
-	const layer = props.layers.find(item => item.id === layerId)
-	if (layer) {
-		layer.text = value
-	}
 }
 
 function handleTextBlur(layerId) {
-	emit('update-text', layerId, editingText.value)
+	console.log("editingText", editingText.value)
+	emit('update-text', layerId, editingText.value[layerId])
 }
 
 function handleDeleteLayer(layerId) {
@@ -828,10 +829,10 @@ function handleRotateMove(event) {
 		return
 	}
 
-	const deltaAngle = Math.atan2(deltaY, deltaX) * (180 / Math.PI)  // 计算旋转角度
+	const deltaAngle = Math.atan2(deltaY, deltaX) * (180 / Math.PI)
 
-	const rotationSpeed = 0.1 // 旋转速度
-	const rotationDelta = Math.ceil(deltaAngle * rotationSpeed)  // 旋转角度取整
+	const rotationSpeed = 0.1
+	const rotationDelta = Math.ceil(deltaAngle * rotationSpeed)
 
 	const layer = props.layers.find(l => l.id === rotatingLayerId.value)
 	if (layer) {
@@ -1038,20 +1039,20 @@ function getBrushImageStyle(layer) {
 .phone-frame {
 	width: 500rpx;
 	height: 1000rpx;
-	background: #292929;
-	border-radius: 50rpx;
+	background: #e9e9e9;
+	border-radius: 60rpx;
 	position: relative;
 	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.2);
 }
 
 .phone-screen {
-	width: 480rpx;
-	height: 980rpx;
-	background: #fffdf8;
+	width: 460rpx;
+	height: 960rpx;
+	background: #fff;
 	position: absolute;
-	top: 10rpx;
-	left: 10rpx;
-	border-radius: 50rpx;
+	top: 20rpx;
+	left: 20rpx;
+	border-radius: 45rpx;
 	overflow: hidden;
 }
 
@@ -1086,16 +1087,13 @@ function getBrushImageStyle(layer) {
 	border: none;
 	outline: none;
 	background: transparent;
-	word-break: break-word;
 	min-height: 40rpx;
-	resize: none;
-	overflow: hidden;
 	box-sizing: border-box;
 	font-weight: inherit;
 }
 
 .layer--selected .layer__text-input {
-	height: auto;
+	/* height: auto; */
 }
 
 .layer__text-editor {
@@ -1147,15 +1145,15 @@ function getBrushImageStyle(layer) {
 	position: absolute;
 	bottom: -24rpx;
 	left: -24rpx;
-    width: 40rpx;
-    height: 40rpx;
-    background: #5b8def;
-    border-radius: 4rpx;
-    z-index: 10;
-    cursor: nwse-resize;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	width: 40rpx;
+	height: 40rpx;
+	background: #5b8def;
+	border-radius: 4rpx;
+	z-index: 10;
+	cursor: nwse-resize;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .layer__bring-to-front-btn-icon {

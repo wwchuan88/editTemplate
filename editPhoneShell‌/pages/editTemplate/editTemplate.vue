@@ -1,12 +1,11 @@
 <template>
-	<view class="page-shell" :class="{ 'page-shell--3d': is3DMode }">
-		<view v-if="!is3DMode" style="width: 200rpx;position: fixed;top: 20rpx;right: 20rpx;z-index: 1000;">
-			<up-button type="warning" shape="circle" size="medium" text="保存设计" style="width: 100%;"></up-button>
+	<view class="page-shell wu-background" :class="{ 'page-shell--3d': is3DMode }">
+		<view v-if="!is3DMode" style="width: 200rpx;position: fixed;top: 16rpx;right: 16rpx;z-index: 1000;">
+			<button class="category-btn wu-btn1">保存设计</button>
 		</view>
 		<view v-if="!is3DMode" class="tool-bar tool-bar-move" :style="{
 			display: 'flex',
 			justifyContent: 'flex-end',
-			marginTop: '16rpx',
 			position: 'fixed',
 			left: toolbarPosition.left + 'rpx',
 			top: toolbarPosition.top + 'rpx',
@@ -67,7 +66,6 @@
 						@add-brush-layer="handleAddBrushLayer" @bring-to-front="bringLayerToFront" />
 
 
-						<view  class="tool-bar-button-text">店管家移动端自定组件</view>
 				</view>
 			</view>
 		</view>
@@ -82,10 +80,8 @@
 
 		<view v-if="!is3DMode" class="toolbar-wrap">
 			<TextToolbar v-if="currentTool === 'text' || (selectedLayer && selectedLayer.type === 'text')"
-				:text-draft="textDraft" :text-color="textColor" :text-size="textSize" :text-font="textFont"
-				:text-bold="textBold" :colors="textColors" :is-editing="selectedLayer && selectedLayer.type === 'text'"
-				@update-draft="textDraft = $event" @pick-color="pickTextColor" @change-size="changeTextSize"
-				@pick-font="pickTextFont" @toggle-bold="toggleTextBold" @submit="upsertTextLayer" @exit="exitTool" />
+			 :colors="textColors"
+				 />
 			<IconEditToolbar v-else-if="selectedLayer && selectedLayer.type === 'icon'"
 				:icon-color="selectedLayer.color" :colors="textColors" @pick-color="updateIconColor" @exit="exitTool" />
 			<IconToolbar v-else-if="currentTool === 'icon'" :options="iconOptions" @add="addIconLayer"
@@ -115,7 +111,7 @@
 	</view>
 </template>
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, nextTick } from 'vue'
 import SideDrawers from './components/SideDrawers.vue'
 import DecorSideDrawers from './components/DecorSideDrawers.vue'
 import CanvasArea from './components/CanvasArea.vue'
@@ -214,7 +210,7 @@ const is3DMode = ref(false)
 const is3DRotating = ref(false)
 const rotate3D = ref({ x: -15, y: 15 })
 const last3DPos = ref({ x: 0, y: 0 })
-const toolbarPosition = ref({ left: 20, top: 10 })
+const toolbarPosition = ref({ left: 80, top: 16 })
 const dragOffset = ref({ x: 0, y: 0 })
 const phoneFrameScale = ref(1)
 
@@ -266,13 +262,16 @@ function addTextLayer(x, y) {
 		rotation: 0
 	}
 	layers.value.push(layer)
-	selectedLayerId.value = layer.id
-	editingLayerId.value = layer.id
 	
 	textColor.value = '#000000'
 	textSize.value = defaultSize
 	textFont.value = 'Microsoft YaHei'
 	textBold.value = false
+	
+	nextTick(() => {
+		selectedLayerId.value = layer.id
+		editingLayerId.value = layer.id
+	})
 }
 
 function handleAddTextLayer(x, y) {
@@ -412,6 +411,8 @@ function handleAddBrushLayer(layerData) {
 }
 
 function handleUpdateText(id, text) {
+	console.log("id:", id, "text:", text)
+
 	const layer = layers.value.find((item) => item.id === id)
 	if (!layer) return
 	layer.text = text
@@ -754,12 +755,7 @@ function zoomOut() {
 	}
 }
 
-function clearAll() {
-	// 清空所有内容
-	console.log('清空所有内容')
-	layers.value = []
-	selectedLayerId.value = ''
-}
+
 
 function handleClearTool() {
 	// 只有在非编辑状态下才清除工具
@@ -808,10 +804,10 @@ page {
 
 .tool-bar {
 	background: rgba(255, 255, 255, 0.82);
-	border-radius: 20px;
-	padding: 8rpx;
+	border-radius: 30px;
+	padding: 24rpx;
 	box-shadow: 0 8rpx 24rpx rgba(80, 56, 30, 0.08);
-	height: 40px;
+	font-size: 24rpx;
 	display: inline-flex;
 	position: fixed;
 	justify-content: center;
@@ -819,11 +815,12 @@ page {
 	left: 20rpx;
 	box-sizing: border-box;
 	z-index: 1001;
+	color:#5a5c5c;
 }
 
 .tool-bar .iconfont {
 	font-size: 28rpx;
-	color: #473126;
+	color:#5a5c5c;
 	padding: 0 20rpx;
 	display: inline-block;
 }
@@ -1015,9 +1012,9 @@ page {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 16rpx;
+	padding: 24rpx;
 	background: rgba(255, 255, 255, 0.95);
-	border-radius: 0 24rpx 24rpx 0;
+	border-radius: 0 40rpx 40rpx 0;
 	box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.1);
 	cursor: pointer;
 	transition: all 0.3s ease;
@@ -1192,7 +1189,7 @@ page {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 2rpx solid #f2e7da;
+	border-bottom: 2rpx solid #a8efed;
 	margin-bottom: 20rpx;
 }
 

@@ -103,7 +103,9 @@ const props = defineProps({
 	},
 	colors: {
 		type: Array,
-		default: () => []
+		default: () => [
+			
+		]
 	},
 	fonts: {
 		type: Array,
@@ -140,16 +142,16 @@ function handleBoldChange(e) {
 <style scoped>
 .nav-item {
 	font-size: 26rpx;
-	color: #826c60;
+	color: #5a5c5c;
 	cursor: pointer;
 	transition: all 0.3s ease;
 	padding: 16rpx 0;
 }
 
 .nav-item--active {
-	color: #d86e33;
+	color: #166665;
 	font-weight: 600;
-	border-bottom: 2rpx solid #d86e33;
+	border-bottom: 2rpx solid #166665;
 }
 
 .toolbar-top-right {
@@ -211,15 +213,15 @@ function handleBoldChange(e) {
 	flex-direction: column;
 	align-items: center;
 	padding: 16rpx;
-	border-radius: 16rpx;
-	background: #fff7ef;
+	border-radius: 40rpx;
+	background: #f0f1f1;
 	border: 2rpx solid transparent;
 	min-width: 120rpx;
 }
 
 .font-item--active {
-	border-color: #d86e33;
-	background: #fff;
+	border-color: #166665;
+	background: #d6eaea;
 }
 
 .font-item-preview {
@@ -296,7 +298,7 @@ function handleBoldChange(e) {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 2rpx solid #f2e7da;
+	border-bottom: 2rpx solid #f5f5f5;
 	margin-bottom: 20rpx;
 }
 
@@ -314,7 +316,7 @@ function handleBoldChange(e) {
 	align-items: center;
 	margin-top: 20rpx;
 	padding-top: 20rpx;
-	border-top: 2rpx solid #f2e7da;
+	border-top: 2rpx solid #f5f5f5;
 }
 
 .bold-label {
