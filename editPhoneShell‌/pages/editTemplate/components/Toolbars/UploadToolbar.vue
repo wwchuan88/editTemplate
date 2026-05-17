@@ -104,11 +104,10 @@ defineEmits(['choose', 'demo', 'exit', 'select-template'])
 	display: inline-flex;
 	gap: 16rpx;
 }
-
 .template-item {
-	padding: 20rpx;
-	border-radius: 24rpx;
-	background: #fff7ef;
+	padding: 16rpx;
+	border-radius: 40rpx;
+	background: #f0f1f1;
 	text-align: center;
 	cursor: pointer;
 	transition: all 0.3s ease;
@@ -117,11 +116,9 @@ defineEmits(['choose', 'demo', 'exit', 'select-template'])
 	align-items: center;
 	justify-content: center;
 }
-
 .template-item:active {
-	background: #f2e7da;
+	background: #d6eaea;
 }
-
 .template-item__icon {
 	display: block;
 	margin-bottom: 8rpx;

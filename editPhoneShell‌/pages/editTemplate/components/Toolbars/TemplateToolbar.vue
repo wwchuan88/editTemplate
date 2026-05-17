@@ -31,7 +31,7 @@
 		<view v-if="isExpanded" class="toolbar-bottom">
 			<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
 				<view class="template-list">
-					<view v-for="(item, index) in currentTemplates" :key="index" class="template-item"
+					<view v-for="(item, index) in currentTemplates" :key="index" class="template-item toolbar-bottom-item"
 						@click="$emit('select-template', item)">
 						<image class="template-item__image" :src="item.icon" mode="aspectFill"></image>
 						<text class="template-item__label">{{ item.label }}</text>
@@ -87,33 +87,6 @@ defineEmits(['select-template', 'exit'])
 	border-top-right-radius: 32rpx;
 }
 
-.toolbar-top {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	border-bottom: 2rpx solid #f2e7da;
-	margin-bottom: 20rpx;
-}
-
-.toolbar-top-left {
-	display: flex;
-	gap: 56rpx;
-}
-
-.nav-item {
-	font-size: 26rpx;
-	color: #826c60;
-	cursor: pointer;
-	transition: all 0.3s ease;
-	padding: 16rpx 0;
-}
-
-.nav-item--active {
-	color: #d86e33;
-	font-weight: 600;
-	border-bottom: 2rpx solid #d86e33;
-}
-
 .toolbar-top-right {
 	width: 80rpx;
 	height: 80rpx;
@@ -139,21 +112,9 @@ defineEmits(['select-template', 'exit'])
 	gap: 16rpx;
 }
 
-.template-item {
-	padding: 16rpx;
-	border-radius: 24rpx;
-	background: #fff7ef;
-	text-align: center;
-	cursor: pointer;
-	transition: all 0.3s ease;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-}
 
 .template-item:active {
-	background: #f2e7da;
+	background: #d6eaea;
 }
 
 .template-item__image {

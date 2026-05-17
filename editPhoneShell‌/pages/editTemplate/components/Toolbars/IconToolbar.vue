@@ -25,7 +25,7 @@
 			<view  class="nav-content">
 				<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
 					<view class="emoji-row">
-						<view v-for="item in cartoonOptions.icons" :key="item.type" class="emoji-card"
+						<view v-for="item in cartoonOptions.icons" :key="item.type" class="emoji-card toolbar-bottom-item"
 							@click="$emit('add', item)">
 							<text class="emoji-card__icon iconfont " :class="item.icon"></text>
 							<text class="emoji-card__label">{{ item.label }}</text>
@@ -33,50 +33,6 @@
 					</view>
 				</scroll-view>
 			</view>
-
-
-
-			<!-- 图形 -->
-			<!-- <view v-if="activeNav === 'graphics'" class="nav-content">
-				<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
-					<view class="emoji-row">
-						<view v-for="item in graphicsOptions" :key="item.label" class="emoji-card"
-							@click="$emit('add', item)">
-							<text class="emoji-card__icon">{{ item.icon }}</text>
-							<text class="emoji-card__label">{{ item.label }}</text>
-						</view>
-					</view>
-				</scroll-view>
-			</view> -->
-
-			<!-- 人物 -->
-			<!-- <view v-if="activeNav === 'people'" class="nav-content">
-				<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
-					<view class="emoji-row">
-						<view v-for="item in peopleOptions" :key="item.label" class="emoji-card"
-							@click="$emit('add', item)">
-							<text class="emoji-card__icon">{{ item.icon }}</text>
-							<text class="emoji-card__label">{{ item.label }}</text>
-						</view>
-					</view>
-				</scroll-view>
-			</view> -->
-
-			<!-- 卡通 -->
-			<!-- <view v-if="activeNav === 'cartoon'" class="nav-content">
-				<scroll-view scroll-x class="chip-scroll" show-scrollbar="false">
-					<view class="emoji-row">
-						<view v-for="item in cartoonOptions" :key="item.type" class="emoji-card"
-							@click="$emit('add', item)">
-							<text class="emoji-card__icon">{{ item.icon }}</text>
-							<text class="emoji-card__label">{{ item.label }}</text>
-						</view>
-					</view>
-				</scroll-view>
-			</view> -->
-
-
-
 		</view>
 	</view>
 </template>
@@ -158,37 +114,6 @@ defineEmits(['add'])
 	color: #826c60;
 }
 
-/* 上层导航样式 */
-.toolbar-top {
-	display: flex;
-	border-bottom: 2rpx solid #f2e7da;
-	margin-bottom: 20rpx;
-}
-
-.nav-item {
-	flex: 1;
-	padding: 16rpx 0;
-	text-align: center;
-	font-size: 26rpx;
-	color: #826c60;
-	cursor: pointer;
-	transition: all 0.3s ease;
-}
-
-.nav-item--active {
-	color: #d86e33;
-	font-weight: 600;
-	border-bottom: 4rpx solid #d86e33;
-}
-
-/* 下层内容样式 */
-.toolbar-bottom {
-	padding-top: 10rpx;
-}
-
-.nav-content {
-	padding: 10rpx 0;
-}
 
 .chip-scroll {
 	white-space: nowrap;
@@ -197,14 +122,6 @@ defineEmits(['add'])
 .emoji-row {
 	display: inline-flex;
 	gap: 16rpx;
-}
-
-.emoji-card {
-	width: 132rpx;
-	padding: 20rpx 12rpx;
-	border-radius: 24rpx;
-	background: #fff7ef;
-	text-align: center;
 }
 
 .emoji-card__icon {

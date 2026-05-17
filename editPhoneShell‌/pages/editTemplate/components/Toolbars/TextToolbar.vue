@@ -140,43 +140,7 @@ function handleBoldChange(e) {
 </script>
 
 <style scoped>
-.nav-item {
-	font-size: 26rpx;
-	color: #5a5c5c;
-	cursor: pointer;
-	transition: all 0.3s ease;
-	padding: 16rpx 0;
-}
 
-.nav-item--active {
-	color: #166665;
-	font-weight: 600;
-	border-bottom: 2rpx solid #166665;
-}
-
-.toolbar-top-right {
-	width: 80rpx;
-	height: 80rpx;
-	display: flex;
-	justify-content: center;
-}
-
-.toolbar-top-right-exit {
-	display: flex;
-	width: 55rpx;
-	height: 55rpx;
-	border-radius: 50%;
-	background: #fff;
-	box-shadow: 0 4px 6px 0 #cccccc;
-}
-
-.toolbar-bottom {
-	padding: 20rpx 24rpx;
-}
-
-.nav-content {
-	padding: 10rpx 0;
-}
 
 .color-row {
 	display: flex;

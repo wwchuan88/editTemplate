@@ -117,6 +117,9 @@
 		margin: 0 12rpx;
 		transition: all 0.2s ease;
 	}
+	.sidebar-content .tool-item:last-child {
+		border-bottom-right-radius: 40rpx;
+	}
 
 	.tool-item:hover {
 		background: #f0f0f0;

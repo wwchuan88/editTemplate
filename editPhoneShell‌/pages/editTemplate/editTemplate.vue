@@ -1189,7 +1189,7 @@ page {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 2rpx solid #a8efed;
+	border-bottom: 2rpx solid #f5f5f5;
 	margin-bottom: 20rpx;
 }
 
@@ -1197,5 +1197,58 @@ page {
 	display: flex;
 	gap: 56rpx;
 }
+
+.nav-item {
+	font-size: 26rpx;
+	color: #5a5c5c;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	padding: 16rpx 0;
+}
+
+.nav-item--active {
+	color: #166665;
+	font-weight: 600;
+	border-bottom: 2rpx solid #166665;
+}
+
+.toolbar-top-right {
+	width: 80rpx;
+	height: 80rpx;
+	display: flex;
+	justify-content: center;
+}
+
+.toolbar-top-right-exit {
+	display: flex;
+	width: 55rpx;
+	height: 55rpx;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 4px 6px 0 #cccccc;
+}
+
+.toolbar-bottom {
+	padding: 20rpx 24rpx;
+}
+.toolbar-bottom .toolbar-bottom-item{
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16rpx;
+    border-radius: 40rpx;
+    background: #f0f1f1;
+    border: 2rpx solid transparent;
+    min-width: 120rpx;
+}
+.toolbar-bottom .toolbar-bottom-item--active{
+	border-color: #166665;
+    background: #d6eaea;
+}
+.nav-content {
+	padding: 10rpx 0;
+}
+
+
 
 </style>

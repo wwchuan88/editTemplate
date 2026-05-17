@@ -139,17 +139,17 @@ defineEmits(['pick', 'exit'])
 }
 
 .filter-card {
-	padding: 22rpx;
-	border-radius: 24rpx;
-	background: #fff7ef;
+	padding: 16rpx;
+	border-radius: 40rpx;
+	background: #f0f1f1;
 	border: 2rpx solid transparent;
 	display: flex;
 	flex-direction: row;
 }
 
 .filter-card--active {
-	border-color: #e86f2d;
-	background: #fff1e6;
+	border-color: #166665;
+	background: #d6eaea;
 }
 
 .filter-card__title {
