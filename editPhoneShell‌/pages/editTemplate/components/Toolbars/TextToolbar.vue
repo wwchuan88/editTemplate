@@ -148,17 +148,7 @@ function handleBoldChange(e) {
 	flex-wrap: wrap;
 }
 
-.color-chip {
-	width: 50rpx;
-	height: 50rpx;
-	border-radius: 50%;
-	border: 2rpx solid #f2e7da;
-}
 
-.color-chip--active {
-	border-color: #f2e7da;
-	box-shadow: 0 0 0 4rpx #d86e33;
-}
 
 .font-scroll-container {
 	width: 100%;

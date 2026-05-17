@@ -81,6 +81,15 @@
 		<view v-if="!is3DMode" class="toolbar-wrap">
 			<TextToolbar v-if="currentTool === 'text' || (selectedLayer && selectedLayer.type === 'text')"
 			 :colors="textColors"
+			 :text-color="textColor"
+			 :text-size="textSize"
+			 :text-font="textFont"
+			 :text-bold="textBold"
+			 @pick-color="pickTextColor"
+			 @change-size="changeTextSize"
+			 @pick-font="pickTextFont"
+			 @toggle-bold="toggleTextBold"
+			 @exit="exitTool"
 				 />
 			<IconEditToolbar v-else-if="selectedLayer && selectedLayer.type === 'icon'"
 				:icon-color="selectedLayer.color" :colors="textColors" @pick-color="updateIconColor" @exit="exitTool" />
@@ -425,8 +434,10 @@ function handleUpdateText(id, text) {
 }
 
 function selectLayer(id) {
+	console.log('selectLayer called', id, 'layers count:', layers.value.length)
 	selectedLayerId.value = id
 	const layer = layers.value.find((item) => item.id === id)
+	console.log('selectLayer found layer:', layer?.type, layer?.id)
 	if (!layer) return
 	if (layer.type === 'text') {
 		textDraft.value = layer.text
@@ -470,6 +481,7 @@ function removeSelectedLayer() {
 }
 
 function deleteLayer(layerId) {
+	console.log('deleteLayer called for', layerId)
 	layers.value = layers.value.filter((item) => item.id !== layerId)
 	if (selectedLayerId.value === layerId) {
 		selectedLayerId.value = ''
@@ -1249,6 +1261,20 @@ page {
 	padding: 10rpx 0;
 }
 
-
+.color-chip{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 48rpx;
+	height: 48rpx;
+	border-radius: 50%;
+    border: 2rpx solid #ffffff;
+    box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+.color-chip--active{
+    transform: scale(1.2);
+    box-shadow: 0 0 0 5rpx #ffd709;
+}
 
 </style>

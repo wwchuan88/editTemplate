@@ -98,18 +98,6 @@ function handleSizeChange(e) {
 	align-items: center;
 }
 
-.color-chip {
-	width: 48rpx;
-	height: 48rpx;
-	border-radius: 999rpx;
-	border: 4rpx solid transparent;
-}
-
-.color-chip--active {
-	border-color: #f2e7da;
-	box-shadow: 0 0 0 4rpx #d86e33;
-}
-
 .size-slider {
 	padding: 10rpx 0;
 }
